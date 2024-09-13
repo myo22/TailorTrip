@@ -1,4 +1,4 @@
-package com.tailortrip;
+package com.tailorTrip;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -27,12 +27,42 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    // Lombok 라이브러리가 테스트 환경에서의 설정이 빠져있어서 추가해준다.
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.modelmapper:modelmapper:3.2.0'
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // @Valid 검증 방식
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 스프링 시큐리티 설정
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Thymeleaf에서 인증 정보 설정
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+    // 소셜 로그인
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // JSON 처리를 쉽게 할 수 있는 라이브러리
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    // jwt 라이브러리
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+
 }
 
 tasks.named('test') {

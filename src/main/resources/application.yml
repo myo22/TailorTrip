@@ -17,3 +17,12 @@ spring:
         show_sql: true
         # ??? ???? SQL? ????? ???? ?? ?????.
         format_sql: true
+
+logging:
+  level:
+    org:
+      springframework: info
+      springframework.security: trace
+    com:
+      tailorTrip: debug
+

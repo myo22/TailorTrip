@@ -63,6 +63,11 @@ dependencies {
     // jwt 라이브러리
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // Google API 클라이언트 라이브러리 의존성 추가
+    implementation 'com.google.api-client:google-api-client:1.33.2'
+    implementation 'com.google.maps:google-maps-services:0.18.1'
+
+
 
 }
 

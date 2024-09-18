@@ -18,7 +18,8 @@ public class PlacesController {
     @GetMapping("/places")
     public PlacesSearchResponse searchPlaces(
             @RequestParam String query,
-            @RequestParam String location) throws Exception {
-        return googlePlaceService.searchPlaces(query, location);
+            @RequestParam String lat,
+            @RequestParam String lng) throws Exception {
+        return googlePlaceService.searchPlaces(query, lat, lng);
         }
 }

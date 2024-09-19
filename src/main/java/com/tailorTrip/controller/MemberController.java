@@ -16,5 +16,9 @@ public class MemberController {
     public void loginGET(String error, String logout){
         log.info("login get..................");
         log.info("logout: "+ logout);
+
+        if(logout != null){
+            log.info("user logout.......");
+        }
     }
 }

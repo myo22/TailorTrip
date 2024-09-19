@@ -23,7 +23,7 @@ public class CustomSecurityConfig {
 
         log.info("------------------configure----------------------");
 
-        http.formLogin().loginPage("/memeber/login");
+        http.formLogin().loginPage("/member/login");
 
         http.csrf().disable();
 

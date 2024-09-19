@@ -30,3 +30,7 @@ logging:
 google:
   api:
     key: AIzaSyD-jQLahI4UP9r5Zttz6yG7XJdhljzPjFw
+
+weather:
+  api:
+    key: 58ac08cc8af3bbe943855ca0e973fff9

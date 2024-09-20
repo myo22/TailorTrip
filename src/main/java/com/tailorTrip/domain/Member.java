@@ -20,7 +20,7 @@ public class Member extends BaseEntity{
     @Id
     private String mid;
 
-    private String npw;
+    private String mpw;
     private String email;
     private boolean del;
 
@@ -31,7 +31,7 @@ public class Member extends BaseEntity{
     private Set<MemberRole> roleSet = new HashSet<>();
 
     public void changePassword(String mpw){
-        this.npw = mpw;
+        this.mpw = mpw;
     }
 
     public void changeEmail(String email){

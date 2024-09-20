@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>회원가입 페이지</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+</head>
+<body class="align-middle" >
+<div class="container-fluid d-flex justify-content-center" style="height: 100vh">
+    <div class="card align-self-center">
+        <div class="card-header">
+            회원가입
+        </div>
+        <div class="card-body">
+            <form id="registerForm" action="/member/join" method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">이름</span>
+                    <input type="text" name="mid" class="form-control" placeholder="홍길동">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">패스워드</span>
+                    <input type="password" name="mpw" class="form-control" placeholder="1글자 이상입니다.">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">이메일</span>
+                    <input type="email" name="email" class="form-control" placeholder="이메일 형식입니다.">
+                </div>
+
+                <div class="my-4">
+                    <div class="float-end">
+                        <button type="submit" class="btn btn-primary submitBtn">확인</button>
+                        <button type="reset" class="btn btn-secondary">다시 입력</button>
+                    </div>
+                </div>
+            </form>
+        </div><!--end card body-->
+
+    </div>
+</div>
+</body>
+</html>
+<script>
+
+
+</script>

@@ -45,6 +45,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
     // swagger ui maven
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'

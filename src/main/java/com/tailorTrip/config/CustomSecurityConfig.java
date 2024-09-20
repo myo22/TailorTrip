@@ -1,6 +1,7 @@
 package com.tailorTrip.config;
 
 import com.tailorTrip.security.CustomUserDetailsService;
+import com.tailorTrip.security.handler.Custom403Handler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -50,7 +52,14 @@ public class CustomSecurityConfig {
                 .userDetailsService(userDetailsService)
                 .tokenValiditySeconds(60*60*24*30));
 
+        http.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(accessDeniedHanler())); // 403
+
         return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHanler() {
+        return new Custom403Handler();
     }
 
     // css 파일, js 파일 등 정적파일들에는 굳이 시큐리티를 적용할 필요가 없다.

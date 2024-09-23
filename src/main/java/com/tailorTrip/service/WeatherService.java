@@ -14,7 +14,7 @@ public class WeatherService {
 
     public String getWeather(String cityName) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = String.format("%s?id=%s&appid=%s", apiUrl, cityName, apiKey);
+        String url = String.format("%s?q=%s&appid=%s&lang=kr&units=metric", apiUrl, cityName, apiKey);
         return restTemplate.getForObject(url, String.class);
     }
 }

@@ -2,6 +2,7 @@ package com.tailorTrip.config;
 
 import com.tailorTrip.security.CustomUserDetailsService;
 import com.tailorTrip.security.handler.Custom403Handler;
+import com.tailorTrip.security.handler.CustomSocialLoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -57,7 +59,9 @@ public class CustomSecurityConfig {
         http.oauth2Login(oauth2Login ->
                 oauth2Login.loginPage("/member/login")
                         .defaultSuccessUrl("/") // 로그인 성공 후 리디렉션 URL
-                        .failureUrl("/member/login?error=true")); // 로그인 실패 시
+                        .failureUrl("/member/login?error=true") // 로그인 실패 시
+                        .successHandler(authenticationSuccessHandler()));
+
 
         return http.build();
     }
@@ -81,6 +85,11 @@ public class CustomSecurityConfig {
         JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
         repo.setDataSource(dataSource);
         return repo;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+        return new CustomSocialLoginSuccessHandler(passwordEncoder());
     }
 
 }

@@ -36,9 +36,10 @@ spring:
             client-id: f0758a30cb8b661db1c0fc6cf81da576
 
             client-secret: 7WDgVcwpEEWapJalUp4PhiNwhji6Deqr
-            client-authentication-method: POST
+            client-authentication-method: post
             scope:
-              - profile_nickname,account_email
+              - profile_nickname
+              - account_email
 
 logging:
   level:

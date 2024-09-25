@@ -36,7 +36,7 @@ spring:
             client-id: f0758a30cb8b661db1c0fc6cf81da576
 
             client-secret: 7WDgVcwpEEWapJalUp4PhiNwhji6Deqr
-            client-authentication-method: post
+            client-authentication-method: client_secret_post  # new version orthography
             scope:
               - profile_nickname
               - account_email
@@ -45,7 +45,7 @@ logging:
   level:
     org:
       springframework: info
-      springframework.security: trace
+      springframework.security: DEBUG
     com:
       tailorTrip: debug
 

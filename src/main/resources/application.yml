@@ -18,6 +18,28 @@ spring:
         # ??? ???? SQL? ????? ???? ?? ?????.
         format_sql: true
 
+  security:
+    oauth2:
+      client:
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            user-name-attribute: id
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+
+        registration:
+          kakao:
+            client-name: kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            client-id: ddab188573460213ee004e7b312ba889
+
+            client-secret: 7WDgVcwpEEWapJalUp4PhiNwhji6Deqr
+            client-authentication-method: POST
+            scope:
+              - profile_nickname,account_email
+
 logging:
   level:
     org:
@@ -29,8 +51,8 @@ logging:
 
 google:
   api:
-    key:
+    key: AIzaSyD-jQLahI4UP9r5Zttz6yG7XJdhljzPjFw
 
 weather:
   api:
-    key:
+    key: 58ac08cc8af3bbe943855ca0e973fff9

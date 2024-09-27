@@ -1,10 +1,9 @@
 package com.tailorTrip.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -31,5 +30,10 @@ public class Place {
     private String website; // 웹 사이트
 
     private String openingHours; // 운영 시간 (예: "09:00-18:00")
-    // 추가 필드 (예: 사진 URL 등)
+
+    private boolean walkable; // 도보 가능 여부
+    private boolean fastAccess; // 빠른 접근 가능 여부
+
+    @ElementCollection
+    private List<String> photoUrls; // 사진 URL 리스트
 }

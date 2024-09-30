@@ -20,14 +20,13 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // 카테고리별로 장소 데이터를 수집하고 저장
-        String location = "Seoul"; // 예시 지역
+        // 예시: 서울의 카페, 맛집, 관광명소 데이터를 가져와 저장
+        List<Place> cafes = googlePlacesService.fetchPlaces("Seoul", "cafe");
+        List<Place> restaurants = googlePlacesService.fetchPlaces("Seoul", "restaurant");
+        List<Place> attractions = googlePlacesService.fetchPlaces("Seoul", "tourist attraction");
 
-        String[] categories = {"카페", "맛집", "관광명소", "산책"};
-
-        for(String category : categories) {
-            List<Place> places = googlePlacesService.fetchPlaces(location, category);
-            placeRepository.saveAll(places);
-        }
+        placeRepository.saveAll(cafes);
+        placeRepository.saveAll(restaurants);
+        placeRepository.saveAll(attractions);
     }
 }

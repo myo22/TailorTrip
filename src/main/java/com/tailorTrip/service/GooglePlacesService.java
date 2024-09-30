@@ -4,7 +4,6 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
-import com.tailorTrip.Repository.CategoryRepository;
 import com.tailorTrip.domain.Place;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,27 +29,25 @@ public class GooglePlacesService {
                 .build();
     }
 
-    public List<Place> fetchPlaces(String location, String category) {
+    public List<Place> fetchPlaces(String location, String type) {
         GeoApiContext context = getGeoContext();
         List<Place> places = new ArrayList<>();
 
         try {
-            PlacesSearchResponse response = PlacesApi.textSearchQuery(context, category + " in " + location)
+            PlacesSearchResponse response = PlacesApi.textSearchQuery(context, type + " in " + location)
                     .await();
 
             for (PlacesSearchResult result : response.results) {
                 Place place = Place.builder()
-                        .placeId(result.placeId)
                         .name(result.name)
-                        .category(getCategoryName(category))
+                        .category(type)
                         .lat(result.geometry.location.lat)
                         .lng(result.geometry.location.lng)
                         .rating(result.rating != null ? result.rating : 0.0)
                         .userRatingsTotal(result.userRatingsTotal != null ? result.userRatingsTotal : 0)
+                        .openNow(result.openingHours != null && result.openingHours.openNow)
                         .address(result.formattedAddress)
-                        .openingHours(getOpeningHours(result))
-                        .walkable(isWalkable(category))
-                        .fastAccess(isFastAccess(category))
+                        .types(List.of(result.types))
                         .build();
                 places.add(place);
             }
@@ -61,10 +58,6 @@ public class GooglePlacesService {
         return places;
     }
 
-    private String getCategoryName(String category) {
-        // 필요에 따라 카테고리 이름 변환 로직 구현
-        return category;
-    }
 
     private String getOpeningHours(PlacesSearchResult result) {
         if(result.openingHours != null && result.openingHours.weekdayText != null) {
@@ -72,34 +65,6 @@ public class GooglePlacesService {
             return String.join(", ", result.openingHours.weekdayText);
         }
         return "운영 시간 정보 없음";
-    }
-
-    private boolean isWalkable(String category) {
-        // 카테고리에 따라 도보 가능 여부 설정
-        switch (category.toLowerCase()) {
-            case "카페":
-            case "산책":
-            case "관광명소":
-                return true;
-            case "맛집":
-                return false;
-            default:
-                return false;
-        }
-    }
-
-    private boolean isFastAccess(String category) {
-        // 카테고리에 따라 빠른 접근 가능 여부 설정
-        switch (category.toLowerCase()) {
-            case "카페":
-            case "맛집":
-                return true;
-            case "산책":
-            case "관광명소":
-                return false;
-            default:
-                return false;
-        }
     }
 
 }

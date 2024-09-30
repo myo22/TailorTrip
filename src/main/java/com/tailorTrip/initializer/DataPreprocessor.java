@@ -4,7 +4,6 @@ import com.tailorTrip.Repository.MemberRepository;
 import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.domain.Member;
 import com.tailorTrip.domain.Place;
-import com.tailorTrip.domain.UserPreference;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

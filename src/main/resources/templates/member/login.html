@@ -23,7 +23,7 @@
             <th:block th:if="${param.logout != null}">
                 <h1>Logout.......</h1>
             </th:block>
-            <form id="registerForm" action="/member/login" method="post" th:if="${param.logout == null}">
+            <form id="registerForm" action="/templates/member/login" method="post" th:if="${param.logout == null}">
                 <div class="input-group mb-3">
                     <span class="input-group-text">아이디</span>
                     <input type="text" name="username" class="form-control" placeholder="이메일 형식입니다.">

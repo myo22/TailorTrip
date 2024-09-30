@@ -1,7 +1,7 @@
 package com.tailorTrip.controller;
 
 import com.google.maps.model.PlacesSearchResponse;
-import com.tailorTrip.service.GooglePlaceService;
+import com.tailorTrip.service.DirectionsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PlacesController {
 
-    private final GooglePlaceService googlePlaceService;
+    private final DirectionsService googlePlaceService;
 
-    public PlacesController(GooglePlaceService googlePlaceService) {
+    public PlacesController(DirectionsService googlePlaceService) {
         this.googlePlaceService = googlePlaceService;
     }
 

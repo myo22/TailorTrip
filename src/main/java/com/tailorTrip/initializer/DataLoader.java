@@ -2,7 +2,6 @@ package com.tailorTrip.initializer;
 
 import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.domain.Place;
-import com.tailorTrip.service.GooglePlaceService;
 import com.tailorTrip.service.GooglePlacesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

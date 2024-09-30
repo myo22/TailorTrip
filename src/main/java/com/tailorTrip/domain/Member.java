@@ -29,9 +29,6 @@ public class Member extends BaseEntity{
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserPreference> preferences = new ArrayList<>();
-
     public void changePassword(String mpw){
         this.mpw = mpw;
     }
@@ -46,11 +43,6 @@ public class Member extends BaseEntity{
 
     public void addRole(MemberRole role){
         this.roleSet.add(role);
-    }
-
-    public void addPreference(UserPreference preference){
-        preferences.add(preference);
-        preference.setMember(this);
     }
 
     public void clearRoles() {

@@ -6,17 +6,20 @@
 <body>
 <h1>추천된 여행 경로</h1>
 
-<ul>
-    <li th:each="place : ${places}">
-        <strong th:text="${place.name}"></strong> - <span th:text="${place.category}"></span>
-        <br/>
-        위치: <span th:text="${place.lat}"></span>, <span th:text="${place.lng}"></span>
-        <br/>
-        별점: <span th:text="${place.rating}"></span> / 리뷰 수: <span th:text="${place.userRatingsTotal}"></span>
-        <br/>
-        가격 수준: <span th:text="${place.priceLevel}"></span> - <span th:text="${place.openNow ? '영업 중' : '휴무'}"></span>
-        <br/><br/>
-    </li>
-</ul>
+<div th:each="route, iterStat : ${routes}">
+    <h2>경로 <span th:text="${iterStat.index + 1}"></span></h2>
+    <ul>
+        <li th:each="place : ${route}">
+            <strong th:text="${place.name}"></strong> - <span th:text="${place.category}"></span>
+            <br/>
+            위치: <span th:text="${place.lat}"></span>, <span th:text="${place.lng}"></span>
+            <br/>
+            별점: <span th:text="${place.rating}"></span> / 리뷰 수: <span th:text="${place.userRatingsTotal}"></span>
+            <br/>
+            가격 수준: <span th:text="${place.priceLevel}"></span> - <span th:text="${place.openNow ? '영업 중' : '휴무'}"></span>
+            <br/><br/>
+        </li>
+    </ul>
+</div>
 </body>
 </html>

@@ -31,7 +31,7 @@ public class DirectionsService {
     }
 
     public List<Place> optimizeRoute(List<Place> places, String transportation) {
-        if (places.isEmpty()) return places;
+        if (places.size() < 2) return places;
 
         GeoApiContext context = getGeoContext();
 

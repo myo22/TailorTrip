@@ -29,9 +29,9 @@ public class RecommendationController {
                             @RequestParam String interest,
                             Model model) {
 
-        List<Place> recommendedPlaces = recommendationService.filterAndRecommend(purpose, pace, transportation, interest);
-        model.addAttribute("places", recommendedPlaces);
+        List<List<Place>> recommendedRoutes = recommendationService.getRecommendsRoutes(purpose, pace, transportation, interest);
+        model.addAttribute("routes", recommendedRoutes);
 
-        return "recommend";
+        return "recommendResult";
     }
 }

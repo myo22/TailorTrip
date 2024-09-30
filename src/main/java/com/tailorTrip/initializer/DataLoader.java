@@ -15,7 +15,7 @@ public class DataLoader implements CommandLineRunner {
 
     private final GooglePlacesService googlePlacesService;
 
-    private PlaceRepository placeRepository;
+    private final PlaceRepository placeRepository;
 
     @Override
     public void run(String... args) throws Exception {

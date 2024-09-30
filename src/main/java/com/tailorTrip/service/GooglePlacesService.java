@@ -20,8 +20,6 @@ public class GooglePlacesService {
     @Value("${google.api.key}")
     private String apiKey;
 
-    private final CategoryRepository categoryRepository;
-
 
     private GeoApiContext getGeoContext() {
         return new GeoApiContext.Builder()
@@ -43,9 +41,9 @@ public class GooglePlacesService {
                         .category(type)
                         .lat(result.geometry.location.lat)
                         .lng(result.geometry.location.lng)
-                        .rating(result.rating != null ? result.rating : 0.0)
-                        .userRatingsTotal(result.userRatingsTotal != null ? result.userRatingsTotal : 0)
-                        .openNow(result.openingHours != null && result.openingHours.openNow)
+                        .rating(result.rating)
+                        .userRatingsTotal(result.userRatingsTotal)
+                        .openNow(getOpeningHours(result))
                         .address(result.formattedAddress)
                         .types(List.of(result.types))
                         .build();
@@ -59,12 +57,14 @@ public class GooglePlacesService {
     }
 
 
-    private String getOpeningHours(PlacesSearchResult result) {
+    private boolean getOpeningHours(PlacesSearchResult result) {
         if(result.openingHours != null && result.openingHours.weekdayText != null) {
-            // 예시: '월요일: 09:00-18:00" 형태로 반환해주는 것.
-            return String.join(", ", result.openingHours.weekdayText);
+//            // 예시: '월요일: 09:00-18:00" 형태로 반환해주는 것.
+//            return String.join(", ", result.openingHours.weekdayText);
+            boolean isOpenNow = result.openingHours.openNow;
+            return isOpenNow;
         }
-        return "운영 시간 정보 없음";
+        return false;
     }
 
 }

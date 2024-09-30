@@ -1,12 +1,10 @@
 package com.tailorTrip.service;
 
-import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
 import com.tailorTrip.Repository.CategoryRepository;
-import com.tailorTrip.domain.Category;
 import com.tailorTrip.domain.Place;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +13,10 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class GoogleMapsService {
+public class GooglePlacesService {
 
     @Value("${google.api.key}")
     private String apiKey;

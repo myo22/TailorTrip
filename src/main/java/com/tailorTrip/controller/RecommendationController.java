@@ -3,6 +3,9 @@ package com.tailorTrip.controller;
 import com.tailorTrip.domain.Place;
 import com.tailorTrip.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Log4j2
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
@@ -29,8 +33,13 @@ public class RecommendationController {
                             @RequestParam String interest,
                             Model model) {
 
-        List<List<Place>> recommendedRoutes = recommendationService.getRecommendsRoutes(purpose, pace, transportation, interest);
-        model.addAttribute("routes", recommendedRoutes);
+        log.info("User input - Purpose: {}, Pace: {}, Transportation: {}, Interest: {}", purpose, pace, transportation, interest);
+
+        List<Place> recommendedPlaces = recommendationService.filterAndRecommend(purpose, pace, transportation, interest);
+        model.addAttribute("places", recommendedPlaces);
+
+
+        log.info("Number of recommended places: {}", recommendedPlaces.size());
 
         return "recommendResult";
     }

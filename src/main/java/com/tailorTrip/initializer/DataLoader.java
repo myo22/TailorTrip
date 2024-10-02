@@ -19,6 +19,10 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        // 기존 데이터 삭제 (선택 사항)
+        placeRepository.deleteAll();
+
         // 예시: 서울의 카페, 맛집, 관광명소 데이터를 가져와 저장
         List<Place> cafes = googlePlacesService.fetchPlaces("Seoul", "cafe");
         List<Place> restaurants = googlePlacesService.fetchPlaces("Seoul", "restaurant");

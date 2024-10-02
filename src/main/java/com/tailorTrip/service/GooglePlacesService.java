@@ -32,6 +32,7 @@ public class GooglePlacesService {
         List<Place> places = new ArrayList<>();
 
         try {
+            // 특정 카테고리의 장소를 검색
             PlacesSearchResponse response = PlacesApi.textSearchQuery(context, type + " in " + location)
                     .await();
 
@@ -46,6 +47,8 @@ public class GooglePlacesService {
                         .openNow(getOpeningHours(result))
                         .address(result.formattedAddress)
                         .types(List.of(result.types))
+                        .walkable(type.equalsIgnoreCase("cafe") || type.equalsIgnoreCase("restaurant")) // 예시: 카페와 맛집은 걸어서 접근 가능
+                        .fastAccess(true) // 예시: 빠른 접근 가능 (차랑 이용 가능)
                         .build();
                 places.add(place);
             }

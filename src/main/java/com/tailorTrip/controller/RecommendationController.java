@@ -4,8 +4,6 @@ import com.tailorTrip.domain.Place;
 import com.tailorTrip.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +19,12 @@ public class RecommendationController {
 
     private final RecommendationService recommendationService;
 
-    @GetMapping("/recommend")
+    @GetMapping("/index")
     public String recommend() {
-        return "recommend";
+        return "index";
     }
 
-    @PostMapping("/recommend")
+    @PostMapping("/index")
     public String recommend(@RequestParam String purpose,
                             @RequestParam String pace,
                             @RequestParam String transportation,

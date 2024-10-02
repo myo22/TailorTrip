@@ -1,0 +1,341 @@
+/* container 높이 설정 */
+.container {
+  height: 100vh;
+  padding: 0 80px;  
+}
+.headtxt{
+  font-size: 1.5rem;
+}
+.map img{
+  border-radius: 15px;
+}
+/* 버튼 스타일 */
+button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+span{
+  color: #a8a8a8;
+}
+
+.planner-txt{
+  font-size: 1.225rem;
+  font-weight: 500;
+  color: #81D4FA;
+}
+
+/* 탑으로 올라가는 버튼 */
+.top-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rebeccapurple;
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.top-btn.on {
+  opacity: 1;
+}
+/* 탑으로 올라가는 버튼 */
+/* section1 */
+.section1{
+  background-image: url(../images/sec-1-background.gif);
+}
+.section1 h1{
+  font-family:'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: white;
+}
+.section1 p{
+
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: white;
+}
+.section1 .section1-welcome{
+  width: 480px;
+  height: 105px;
+}
+.section1 .robot{
+  width: 400px;
+  height: 400px;
+}
+.section1 .section1-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  height: 100%;
+}
+/* section2 */
+.map{
+  width: 400px;
+  height: 500px;
+}
+.section2 .section2-wrap-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.section2 button{
+  width: 100%;
+  background-color: #222;
+  color: white;
+  font-weight: 600;
+  border-radius: 15px;
+}
+
+.section2 .con{
+  width:  calc(20% - 12px);
+  height: 100px;
+  background-color: #c2c2c2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #222;
+  font-size: 1.5rem;
+  
+}
+.section2 .con.active{
+  background-color: #fff;
+  border: 1px solid #000;
+
+}
+.section2 .place-box{
+  flex-wrap: wrap;
+  display: flex;
+
+}
+.section2 .right-box{
+  width: 600px;
+  height: 600px;
+  border: 1px solid black;
+  padding: 12px;
+}
+/* sectio3 */
+.section3 .section3-wrap-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+.section3 .section3-box2{
+  border: 1px solid black;
+  width: 600px;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 12px;
+}
+.section3 .sec-3-button{
+  width: 100%;
+  background-color: #222;
+  color: white;
+  font-weight: 600;
+  border-radius: 15px;
+}
+.calendar {
+  width: 100%;
+  height: 550px;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.month {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.month button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.month h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 5px;
+}
+
+.days div {
+  padding: 25px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.days div:hover {
+  background-color: #ececec;
+}
+
+.days .today {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.days .selected {
+  background-color: #87CEFA;
+  color: white;
+}
+
+.days .range {
+  background-color: #ADD8E6;
+  color: white;
+}
+
+/* section4 */
+.section4 .section4-wrap-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+.section4 .headtxt{
+  margin-left: 6px;
+}
+.section4 button,
+.section5 button{
+  width: 100%;
+  background-color: #222;
+  color: white;
+  font-weight: 600;
+  border-radius: 15px;
+  
+}
+.section4 .image-box{
+  width: calc(50% );
+  height: 145px;
+  margin-right: 6px;
+  position: relative;
+  border: 1px solid black;
+  filter: grayscale(100%);
+  cursor: pointer;
+  border-radius: 15px;
+  margin-bottom: 8px;
+}
+.section4 .image-box img{
+  border-radius: 15px;
+}
+.section4 .box-txt{
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #222;
+}
+.section4 .img-box1.on,
+.section4 .img-box2.on,
+.section4 .img-box3.on,
+.section5 .sec-5-box.on{
+  filter: grayscale(0);
+}
+
+
+.section4 .right-box{
+  width: 600px;
+  height: 600px;
+  border: 1px solid black;
+  padding: 8px;
+}
+.section4 .box{
+  width: 100%;
+}
+.section4 .section4-con{
+  display: flex;
+  justify-content: center;
+
+  width: 100%;
+}
+
+/* --------------------------- */
+.section5 .section5-wrap-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.section5 .txt-box{
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #222;
+}
+.section5 .right-box{
+  width: 600px;
+  height: 580px;
+  border: 1px solid black;
+  padding: 8px;
+}
+.section5 .box2-top{
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.section5 .sec-5-box{
+  width: calc(50% - 10px);
+  height: 145px;
+  margin-right: 6px;
+  position: relative;
+  border: 1px solid black;
+  filter: grayscale(100%);
+  cursor: pointer;
+  border-radius: 15px;
+  margin-bottom: 8px;
+}
+.section5 .sec-5-box img{
+  border-radius: 15px;
+}
+.section5 .bottom-img-box{
+  display: flex;
+}
+
+
+
+
+
+
+

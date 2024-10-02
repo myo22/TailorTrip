@@ -27,7 +27,7 @@ public class RecommendationService {
         // 사용자의 관심사와 여행 속도에 맞춰 장소 필터링
         List<Place> filteredPlaces = placeRepository.findAll().stream()
                 .filter(place -> matchesInterest(place, interest))
-                .filter(place -> matchesPaceAndTransportation(place, pace, transportation))
+//                .filter(place -> matchesPaceAndTransportation(place, pace, transportation))
                 .collect(Collectors.toList());
 
         log.info("Filtered places count: " + filteredPlaces.size());
@@ -58,14 +58,14 @@ public class RecommendationService {
         return place.getTypes().stream().anyMatch(type -> type.equalsIgnoreCase(interest));
     }
 
-    private boolean matchesPaceAndTransportation(Place place, String pace, String transportation) {
-        if (transportation.equalsIgnoreCase("걸어서")) {
-            return place.isWalkable();
-        } else if (transportation.equalsIgnoreCase("차타고")) {
-            return place.isFastAccess();
-        }
-        return false;
-    }
+//    private boolean matchesPaceAndTransportation(Place place, String pace, String transportation) {
+//        if (transportation.equalsIgnoreCase("걸어서")) {
+//            return place.isWalkable();
+//        } else if (transportation.equalsIgnoreCase("차타고")) {
+//            return place.isFastAccess();
+//        }
+//        return false;
+//    }
 
 
 }

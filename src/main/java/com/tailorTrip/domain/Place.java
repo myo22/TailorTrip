@@ -25,8 +25,8 @@ public class Place {
     private boolean openNow; // 현재 영업중 여부
     private String address; // 주소
 
-    private boolean walkable; // 도보 가능 여부
-    private boolean fastAccess; // 빠른 접근 가능 여부
+//    private boolean walkable; // 도보 가능 여부
+//    private boolean fastAccess; // 빠른 접근 가능 여부
 
     @ElementCollection
     @CollectionTable(name = "place_types", joinColumns = @JoinColumn(name = "place_id"))

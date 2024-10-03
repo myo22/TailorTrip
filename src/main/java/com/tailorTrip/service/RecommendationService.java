@@ -2,6 +2,8 @@ package com.tailorTrip.service;
 
 import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.domain.Place;
+import com.tailorTrip.initializer.DataPreprocessor;
+import com.tailorTrip.model.RecommendationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
@@ -20,8 +22,9 @@ import java.util.stream.Collectors;
 public class RecommendationService {
 
     private final PlaceRepository placeRepository;
-
     private final DirectionsService directionsService;
+    private final RecommendationModel recommendationModel;
+    private final DataPreprocessor dataPreprocessor;
 
     public List<Place> filterAndRecommend(String purpose, String pace, String transportation, String interest) {
         // 사용자의 관심사와 여행 속도에 맞춰 장소 필터링

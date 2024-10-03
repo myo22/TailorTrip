@@ -6,12 +6,29 @@
 <body>
 <h1>추천된 여행 경로</h1>
 
-<ul>
-    <li th:each="place : ${places}">
-        <strong th:text="${place.name}"></strong> - <span th:text="${place.category}"></span>
-        <br/>
-        위치: <span th:text="${place.lat}"></span>, <span th:text="${place.lng}"></span>
-    </li>
-</ul>
+<div th:if="${itineraries.isEmpty()}">
+    <p>추천된 일정이 없습니다.</p>
+</div>
+
+<div th:each="itinerary : ${itineraries}">
+    <h2 th:text="${itinerary.name}"></h2>
+    <ul>
+        <li th:each="item : ${itinerary.items}">
+            <strong th:text="${item.timeSlot} + ' - ' + ${item.place.name}"></strong>
+            <br/>
+            카테고리: <span th:text="${item.place.category}"></span>
+            <br/>
+            위치: <span th:text="${item.place.lat}"></span>, <span th:text="${item.place.lng}"></span>
+            <br/>
+            평점: <span th:text="${item.place.rating}"></span> (총 평점 수: <span th:text="${item.place.userRatingsTotal}"></span>)
+            <br/>
+            <span th:text="${item.place.openNow ? '현재 영업 중' : '현재 영업 종료'}"></span>
+            <br/>
+            주소: <span th:text="${item.place.address}"></span>
+            <br/>
+        </li>
+    </ul>
+</div>
+
 </body>
 </html>

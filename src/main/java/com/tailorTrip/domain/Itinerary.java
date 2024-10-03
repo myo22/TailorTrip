@@ -3,6 +3,7 @@ package com.tailorTrip.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -16,12 +17,16 @@ public class Itinerary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name; // 일정 이름 (예: "서울 1일 일정")
+    private int duration; // 여행 기간 (예: 1박, 2박)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member; // 일정을 생성한 사용자
+    private Member member; // 추천 받는 회원
 
+    @Setter
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ItineraryItem> items; // 일정 항목들
+
+    private LocalDateTime createdAt; // 생성일
+
 }

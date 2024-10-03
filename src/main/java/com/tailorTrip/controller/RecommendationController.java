@@ -1,6 +1,9 @@
 package com.tailorTrip.controller;
 
+import com.tailorTrip.Repository.UserPreferencesRepository;
+import com.tailorTrip.domain.Itinerary;
 import com.tailorTrip.domain.Place;
+import com.tailorTrip.domain.UserPreferences;
 import com.tailorTrip.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,25 +24,39 @@ public class RecommendationController {
 
     private final RecommendationService recommendationService;
 
-    @GetMapping("/travel-planner")
-    public String recommend() {
-        return "travel/travel-planner";
+    private final UserPreferencesRepository userPreferencesRepository;
+
+    @GetMapping("/recommend")
+    public String getRecommendationPage() {
+        return "recommend";
     }
 
-    @PostMapping("/travel-planner")
-    public String recommend(@RequestParam String purpose,
-                            @RequestParam String pace,
-                            @RequestParam String transportation,
-                            @RequestParam String interest,
-                            Model model) {
+    @PostMapping("/recommend")
+    public String recommend(
+            @RequestParam String purpose,
+            @RequestParam String pace,
+            @RequestParam String transportation,
+            @RequestParam String interest,
+            @RequestParam String duration,
+            @RequestParam String budget,
+            Model model) {
 
-        log.info("User input - Purpose: {}, Pace: {}, Transportation: {}, Interest: {}", purpose, pace, transportation, interest);
+        UserPreferences prefs = UserPreferences.builder()
+                .purpose(purpose)
+                .pace(pace)
+                .transportation(transportation)
+                .interest(interest)
+                .duration(duration)
+                .budget(budget)
+                .build();
 
-        List<Place> recommendedPlaces = recommendationService.filterAndRecommend(purpose, pace, transportation, interest);
-        model.addAttribute("places", recommendedPlaces);
+        // 사용자 선호도 저장
+        userPreferencesRepository.save(prefs);
 
+        // 추천 일정 가져오기
+        List<Itinerary> recommendedItineraries = recommendationService.generateItineraries(prefs);
 
-        log.info("Number of recommended places: {}", recommendedPlaces.size());
+        model.addAttribute("itineraries", recommendedItineraries);
 
         return "recommendResult";
     }

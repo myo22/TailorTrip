@@ -8,23 +8,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Controller
+@RequestMapping("/travel")
 @RequiredArgsConstructor
 @Log4j2
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
 
-    @GetMapping("/index")
+    @GetMapping("/travel-planner")
     public String recommend() {
-        return "index";
+        return "travel/travel-planner";
     }
 
-    @PostMapping("/index")
+    @PostMapping("/travel-planner")
     public String recommend(@RequestParam String purpose,
                             @RequestParam String pace,
                             @RequestParam String transportation,

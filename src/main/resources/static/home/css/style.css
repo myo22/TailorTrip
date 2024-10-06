@@ -1,0 +1,662 @@
+.headtxt {
+  font-family: "Roboto", sans-serif;
+  font-size: 3.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.gray {
+  color: #A8A8A8;
+}
+
+/* ----------------font */
+/* ---------배너------------- */
+.banner .banner-background1 {
+  background-image: url(../images/banner1.jpg);
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  padding: 0 120px;
+  flex-direction: column;
+}
+
+.banner .banner-background2 {
+  background-image: url(../images/banner2.png);
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  padding: 0 120px;
+  flex-direction: column;
+}
+
+.banner .banner-background3 {
+  background-image: url(../images/banner3.png);
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  padding: 0 120px;
+  flex-direction: column;
+}
+
+.banner h1 {
+  margin-bottom: 36px;
+}
+
+.banner p {
+  font-size: 2.5rem;
+  color: white;
+}
+
+/* section1 */
+.section1 {
+  background-image: url(../images/sec-1-background.gif);
+}
+.section1 .land:hover 
+{
+  fill: aqua;
+}
+.section1 path{
+  border: 2px solid black;
+}
+.section1 #svg-text:hover .land{
+  fill: aqua;
+}
+.section1 a{
+  display: block;
+}
+.land {
+  stroke: #222; 
+  stroke-width: 1; 
+  fill: none; 
+}
+/* svg  */
+.section1 .seoul1 {
+  display: none;
+  z-index: 9999;
+  font-size: 0.5rem;
+}
+.seoul:hover .seoul1 {
+  display: block;
+  z-index: 9999;
+}
+.section1 .container {
+  padding: 80px 120px;
+}
+.section1 .opa{
+  display: none;
+}
+.section1 .sec-1-p {
+  margin: 36px 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: white;
+}
+.section1 .headtxt {
+  font-family: "Roboto", sans-serif;
+  font-size: 3.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.section1 .subpage {
+  width: 250px;
+  height: 80px;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  font-size: 1.75rem;
+  font-weight: 600;
+  background-color: white;
+}
+
+.section1 .wrap-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.section1 .section1-txt-box {
+
+  width: calc(100% - 650px);
+}
+
+.section1 .img-box {
+  width: 550px;
+  height: 800px;
+}
+.section1 .section1-modal{
+  background-color: #4FC3F7;
+}
+
+.section1 .land {
+  fill: #c2c2c2;
+}
+
+/* section2 */
+.section2 .container {
+  padding: 100px 120px;
+}
+
+.section2 .headtxt {
+  color: #222;
+  text-align: center;
+  margin-bottom: 100px;
+}
+
+.section2 .wrap-box {
+  display: flex;
+}
+
+.section2 .f_b-box {
+  width: calc(33.333% - 36px);
+  height: 550px;
+  margin-right: 36px;
+  border-radius: 15px;
+  position: relative;
+}
+
+.section2 .f_b-box div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.section2 .txt-box {
+  margin-top: 40px;
+  margin-left: 24px;
+  font-size: 2rem;
+  color: white;
+  font-weight: 700;
+  font-family: "Roboto", sans-serif;
+}
+
+.section2 .b-box h3 {
+  font-size: 2rem;
+  font-family: "Roboto", sans-serif;
+  color: #4FC3F7;
+  margin-bottom: 32px;
+}
+
+.section2 .b-box p {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.section2 .f-box {
+  transform: rotateY(0);
+  opacity: 1;
+}
+
+.section2 .b-box {
+  transform: rotateY(180deg);
+  opacity: 0;
+  padding: 40px 24px;
+}
+
+.f_b-box:hover .f-box {
+  transform: rotateY(180deg);
+  opacity: 0;
+}
+
+.f_b-box:hover .b-box {
+  transform: rotateY(0);
+  opacity: 1;
+  background-color: white;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.out-box div {
+  transition-duration: 0.3s;
+
+  border-radius: 15px;
+  overflow: hidden;
+  /* .out-box 객체에게 원형으로 변경되는 속성을 걸어줬지만 안쪽에 있는 div 박스들은 원형으로 변경되지 않아 뒤집히는 느낌이 어색함 -> 안쪽에 있는 div 객체도 원형으로 만들어줌 */
+}
+
+
+/* section3 */
+.section3 .container {
+  padding: 100px 120px;
+}
+
+.section3 .headtxt {
+  text-align: center;
+  color: #222;
+  margin-bottom: 60px;
+}
+
+.section3 p {
+  text-transform: uppercase;
+}
+
+.section3 .wrap-box {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.section3 .content {
+  width: calc(33.333% - 50px);
+  height: 550px;
+  margin-right: 50px;
+  margin-bottom: 100px;
+  cursor: pointer;
+}
+
+.section3 .content img {
+  border-radius: 15px;
+}
+
+.section3 .sec-3-kr {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+.section3 .sec-3-en {
+  font-family: "Oxanium", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* 모달창 */
+.section3 .modal {
+  display: none;
+  /* 기본적으로 숨김 */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 반투명 배경 */
+}
+
+.section3 .modal .sec-3-en {
+  color: #4FC3F7;
+}
+
+.section3 .modal-content {
+  background-color: white;
+  margin: 30px auto;
+  border: 1px solid #888;
+  width: 1000px;
+  height: 450px;
+  display: flex;
+  justify-content: center;
+}
+
+.section3 .close {
+  cursor: pointer;
+}
+
+.section3 .modal-box {
+  width: calc(100% - 500px);
+}
+
+.section3 .modal-txt-box {
+  padding: 70px;
+
+}
+
+.section3 .modal-img {
+  width: 500px;
+  height: 300px;
+  margin-top: 70px;
+  margin-right: 70px;
+}
+
+.section3 .modal-txt {
+  margin: 16px 0;
+}
+
+.section3 .dlfwjd {
+  border: 1px solid #222;
+  display: inline-block;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* 모달창 끝 */
+
+/* section4 */
+.section4 .container {
+  padding: 100px 120px;
+}
+
+.section4 .headtxt {
+  color: #222;
+  margin-bottom: 24px;
+}
+
+.section4 .swiper {
+  width: 100%;
+  height: 100%;
+}
+
+
+.section4 .box {
+  position: relative;
+  width: 10%;
+  height: 650px;
+  margin-right: 15px;
+
+  cursor: pointer;
+  transition: 0.5s;
+
+}
+
+.section4 .f-txt {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: 700;
+  position: absolute;
+  writing-mode: vertical-rl;
+  /* 텍스트를 세로로, 오른쪽에서 왼쪽으로 */
+  text-orientation: upright;
+  /* 글자 자체를 바로 세움 */
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  font-family: "Roboto", sans-serif;
+}
+
+.section4 .box.on .f-txt {
+  opacity: 0;
+}
+
+.section4 .box .txt-box {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+.section4 .sec-4-head {
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: white;
+  font-family: "Roboto", sans-serif;
+  margin-bottom: 8px;
+}
+
+.section4 .box img {
+  border-radius: 15px;
+}
+
+.section4 .box.on .txt-box {
+  opacity: 1;
+}
+
+.section4 .box.on {
+  width: 60%;
+}
+
+.section4 .sec-4-sub-txt {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+/* foooter */
+.footer .container {
+  padding: 40px 120px;
+}
+
+.footer .wrap-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
+
+}
+
+.footer p {
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.footer .logo {
+  width: 215px;
+  height: 45px;
+}
+
+.footer .top-box {
+  display: flex;
+  margin-top: 40px;
+}
+
+.footer .middle-box {
+  display: flex;
+  margin: 16px 0;
+}
+
+/* -----------------반응형--------------- */
+@media (max-width: 1600px) {
+
+  .banner .banner-background1,
+  .banner .banner-background2,
+  .banner .banner-background3 {
+    padding: 0 60px;
+  }
+
+  .section2 .container,
+  .section3 .container,
+  .section4 .container {
+    padding: 60px 60px;
+  }
+
+}
+
+@media (max-width: 1420px) {
+
+
+
+
+  .section2 .headtxt {
+    margin-bottom: 60px;
+  }
+
+  .section2 .f_b-box {
+    height: 450px;
+  }
+
+
+
+}
+
+@media (max-width: 1000px) {
+  .section1 .wrap-box {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section1 .section1-txt-box {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .section2 .txt-box {
+    margin-top: 8px;
+    margin-left: 8px;
+    font-size: 1.5rem;
+    font-weight: 500;
+
+  }
+
+  .section3 .wrap-box {
+    flex-wrap: nowrap;
+  }
+
+  .banner h1 {
+    margin-bottom: 8px;
+  }
+
+  .banner p {
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .headtxt {
+    font-size: 2.5rem;
+  }
+
+
+}
+
+@media (max-width: 760px) {
+
+  .banner .banner-background1,
+  .banner .banner-background2,
+  .banner .banner-background3 {
+    padding: 0 16px;
+
+  }
+
+
+  .section2 .container,
+  .section3 .container,
+  .section4 .container,
+  .section1 .container {
+    padding: 36px 16px;
+  }
+
+
+  .section2 .wrap-box {
+    flex-direction: column;
+  }
+
+  .section2 .headtxt,
+  .section3 .headtxt {
+
+    margin-bottom: 24px;
+  }
+
+  .section2 .f_b-box {
+    width: 100%;
+    height: 550px;
+    margin-bottom: 16px;
+    border-radius: 15px;
+    position: relative;
+    pointer-events: none;
+  }
+
+  .section1 .headtxt {
+
+    font-size: 2.5rem;
+    font-weight: 600;
+
+  }
+
+  .section1 .sec-1-p {
+    margin: 16px 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+
+  }
+
+  .section1 .img-box {
+    width: 100%;
+  }
+
+
+
+
+}
+
+@media (max-width: 550px) {
+  .headtxt {
+    font-size: 1.2rem;
+  }
+
+  .banner p {
+    font-size: 0.8125rem;
+
+  }
+
+  .banner .banner-background1,
+  .banner .banner-background2,
+  .banner .banner-background3 {
+    padding: 240px 16px;
+    height: auto;
+
+  }
+
+  .section1 .headtxt {
+    font-size: 1.2rem;
+  }
+
+  .section1 .sec-1-p {
+    font-size: 0.8125rem;
+  }
+
+  .section1 .img-box svg {
+    height: 800px;
+    width: 600px;
+  }
+
+  .section1 .subpage {
+    width: 100px;
+    height: 60px;
+    font-size: 1rem;
+    font-weight: 500;
+
+  }
+
+  .section3 .sec-3-kr {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .section3 .sec-3-en {
+
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .section4 .sec-4-head {
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .section4 .sec-4-sub-txt {
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+  .section2 .txt-box {
+    font-size: 1rem;
+  }
+  .footer p{
+    font-size: 0.8125rem;
+  }
+  .section4 .sec-4-head{
+    font-size: 1.2rem;
+  }
+
+
+}

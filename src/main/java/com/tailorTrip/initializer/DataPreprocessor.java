@@ -131,6 +131,7 @@ public class DataPreprocessor {
                 features[5] = 0;
         }
 
-        return Nd4j.create(features);
+//        여기서 1D 배열을 2D 배열로 변환
+        return Nd4j.create(new double[][]{features});
     }
 }

@@ -4,19 +4,16 @@
     <title>추천 결과</title>
 </head>
 <body>
-<h1>추천된 여행 경로</h1>
-
-<div th:if="${itineraries.isEmpty()}">
-    <p>추천된 일정이 없습니다.</p>
-</div>
+<h1>추천된 여행 일정</h1>
 
 <div th:each="itinerary : ${itineraries}">
-    <h2 th:text="${itinerary.name}"></h2>
+    <h2>일정 #<span th:text="${itinerary.id}"></span></h2>
     <ul>
         <li th:each="item : ${itinerary.items}">
-            <strong th:text="${item.timeSlot} + ' - ' + ${item.place.name}"></strong>
-            <br/>
-            카테고리: <span th:text="${item.place.category}"></span>
+            <strong th:text="${item.activityType}"></strong>:
+            <span th:text="${item.startTime}"></span> -
+            <span th:text="${item.endTime}"></span> -
+            <span th:text="${item.place.name}"></span> (<span th:text="${item.place.category}"></span>)
             <br/>
             위치: <span th:text="${item.place.lat}"></span>, <span th:text="${item.place.lng}"></span>
             <br/>
@@ -29,6 +26,5 @@
         </li>
     </ul>
 </div>
-
 </body>
 </html>

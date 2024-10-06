@@ -43,7 +43,7 @@ public class RecommendationService {
     private final DirectionsService directionsService;
 
     @Transactional
-    public List<Itinerary> getRecommendations(UserPreferences preferences, Member member) {
+    public List<Itinerary> getRecommendations(UserPreferences preferences) {
         // 1. 사용자 선호도 전처리
         INDArray input = dataPreprocessor.preprocessUserPreferences(preferences);
 
@@ -54,7 +54,7 @@ public class RecommendationService {
         List<Place> recommendedPlaces = fetchRecommendedPlaces(predictedClass, preferences);
 
         // 4. 여행 일정 생성
-        List<Itinerary> itineraries = createItineraries(recommendedPlaces, preferences, member);
+        List<Itinerary> itineraries = createItineraries(recommendedPlaces, preferences);
 
         // 5. 데이터베이스에 저장
         itineraryRepository.saveAll(itineraries);
@@ -89,7 +89,7 @@ public class RecommendationService {
         return places;
     }
 
-    private List<Itinerary> createItineraries(List<Place> places, UserPreferences preferences, Member member) {
+    private List<Itinerary> createItineraries(List<Place> places, UserPreferences preferences) {
         int duration = parseDuration(preferences.getDuration());
 
         List<Itinerary> itineraries = new ArrayList<>();
@@ -97,7 +97,6 @@ public class RecommendationService {
         // 예시: 3개의 추천 일정 생성
         for (int i = 0; i < 3; i++) {
             Itinerary itinerary = Itinerary.builder()
-                    .member(member)
                     .duration(duration)
                     .createdAt(LocalDateTime.now())
                     .build();
@@ -183,6 +182,10 @@ public class RecommendationService {
                     items.add(stay);
                 }
             }
+
+            // 이동 시간 고려하여 활동 순서 최적화 (필요 시)
+            // DirectionsService를 이용하여 장소 간 최적 경로 계산
+            // 여기에 추가 로직을 구현할 수 있습니다.
 
             itinerary.setItems(items);
             itineraries.add(itinerary);

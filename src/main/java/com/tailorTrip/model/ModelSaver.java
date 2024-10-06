@@ -2,11 +2,13 @@ package com.tailorTrip.model;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 @Component
 public class ModelSaver {
@@ -14,18 +16,29 @@ public class ModelSaver {
     @Value("${model.path}")
     private String modelPath;
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     public void saveModel(MultiLayerNetwork model) throws IOException {
-        File file = new File(modelPath);
+        // modelPath가 classpath일 때 Resource를 사용
+        Resource resource = resourceLoader.getResource(modelPath);
+        File file = resource.getFile(); // Resource에서 File 객체를 가져옴
+
         // 모델을 저장할 디렉토리가 존재하지 않으면 생성
         File parentDir = file.getParentFile();
-        if (!parentDir.exists()) {
-            parentDir.mkdirs();
+        if (parentDir != null && !parentDir.exists()) {
+            parentDir.mkdirs();  // 부모 디렉토리 생성
+        } else if (parentDir == null) {
+            throw new IOException("잘못된 파일 경로입니다: " + modelPath);
         }
+
         ModelSerializer.writeModel(model, file, true);
     }
 
     public MultiLayerNetwork loadModel() throws IOException {
-        File file = new File(modelPath);
+        Resource resource = resourceLoader.getResource(modelPath);
+        File file = resource.getFile(); // Resource에서 File 객체를 가져옴
+
         if (file.exists()) {
             return ModelSerializer.restoreMultiLayerNetwork(file);
         } else {

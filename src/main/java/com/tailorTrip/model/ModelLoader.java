@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 
 @Component
 public class ModelLoader implements CommandLineRunner {
@@ -23,15 +24,16 @@ public class ModelLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String modelPath = "model.zip";
-        File modelFile = new File(modelPath);
-        if (modelFile.exists()) {
-            MultiLayerNetwork loadedModel = modelSaver.loadModel(modelPath);
+        try {
+            MultiLayerNetwork loadedModel = modelSaver.loadModel();
             recommendationModel.setModel(loadedModel);
-        } else {
+            System.out.println("모델을 성공적으로 로드했습니다.");
+        } catch (IOException e) {
+            System.out.println("모델 파일이 존재하지 않거나 로드에 실패했습니다. 모델을 학습시킵니다.");
             DataSetIterator trainData = datasetCreator.createTrainingData();
             recommendationModel.trainModel(trainData);
-            modelSaver.saveModel(recommendationModel.getModel(), modelPath);
+            modelSaver.saveModel(recommendationModel.getModel());
+            System.out.println("모델을 학습시키고 저장했습니다.");
         }
     }
 }

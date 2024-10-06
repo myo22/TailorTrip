@@ -57,3 +57,6 @@ google:
 weather:
   api:
     key: 58ac08cc8af3bbe943855ca0e973fff9
+
+model:
+  path: ./models/model.zip

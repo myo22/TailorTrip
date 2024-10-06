@@ -1,6 +1,7 @@
 package com.tailorTrip.model;
 
 import com.tailorTrip.initializer.DatasetCreator;
+import lombok.RequiredArgsConstructor;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +12,14 @@ import java.io.File;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ModelLoader implements CommandLineRunner {
 
-    @Autowired
-    private RecommendationModel recommendationModel;
+    private final RecommendationModel recommendationModel;
 
-    @Autowired
-    private ModelSaver modelSaver;
+    private final ModelSaver modelSaver;
 
-    @Autowired
-    private DatasetCreator datasetCreator;
+    private final DatasetCreator datasetCreator;
 
     @Override
     public void run(String... args) throws Exception {

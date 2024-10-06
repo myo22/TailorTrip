@@ -33,6 +33,9 @@ public class Place {
     @Column(name = "type")
     private List<String> types; // 장소 유형 리스트 (예: "cafe", "restaurant")
 
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL)
+    private List<ItineraryItem> itineraryItems;
+
 //    private String phoneNumber; // 전화번호
 //    private String website; // 웹 사이트
 //    @ElementCollection

@@ -1,4 +1,4 @@
-package com.tailorTrip.initializer;
+package com.tailorTrip.ml;
 
 import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.Repository.UserPreferencesRepository;

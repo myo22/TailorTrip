@@ -1,4 +1,4 @@
-package com.tailorTrip.model;
+package com.tailorTrip.ml;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;

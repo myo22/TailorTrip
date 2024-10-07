@@ -1,4 +1,4 @@
-package com.tailorTrip.model;
+package com.tailorTrip.ml;
 
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;

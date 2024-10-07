@@ -1,20 +1,9 @@
-package com.tailorTrip.initializer;
+package com.tailorTrip.ml;
 
-import com.tailorTrip.Repository.MemberRepository;
-import com.tailorTrip.Repository.PlaceRepository;
-import com.tailorTrip.domain.Member;
-import com.tailorTrip.domain.Place;
 import com.tailorTrip.domain.UserPreferences;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class DataPreprocessor {

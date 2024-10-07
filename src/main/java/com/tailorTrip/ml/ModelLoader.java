@@ -1,6 +1,5 @@
-package com.tailorTrip.model;
+package com.tailorTrip.ml;
 
-import com.tailorTrip.initializer.DatasetCreator;
 import lombok.RequiredArgsConstructor;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 
 @Component

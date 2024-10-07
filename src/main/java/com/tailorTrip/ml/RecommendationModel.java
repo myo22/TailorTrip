@@ -29,16 +29,23 @@ public class RecommendationModel {
                 .seed(123)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .updater(new Adam(0.001))
+                .l2(1e-4) // L2 정규화
                 .list()
-                .layer(new DenseLayer.Builder().nIn(6).nOut(10)
+                .layer(new DenseLayer.Builder()
+                        .nIn(6) // 입력 피처 수 (사용자 입력도 피처)
+                        .nOut(128)
                         .activation(Activation.RELU)
                         .build())
-                .layer(new DenseLayer.Builder().nIn(10).nOut(10)
+                .layer(new DenseLayer.Builder()
+                        .nIn(128)
+                        .nOut(64)
                         .activation(Activation.RELU)
                         .build())
                 .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .activation(Activation.SOFTMAX)
-                        .nIn(10).nOut(3).build()) // 예: 3개의 추천 장소 클래스
+                        .nIn(64)
+                        .nOut(3) // 예: 카페, 맛집, 관광명소 (다중 클래스)
+                        .build())
                 .build();
 
         model = new MultiLayerNetwork(conf);

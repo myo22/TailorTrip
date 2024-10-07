@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class ModelTrainer implements CommandLineRunner {
 
     private final RecommendationModel recommendationModel;
-   private final DatasetCreator datasetCreator;
+    private final DatasetCreator datasetCreator;
     private final ModelSaver modelSaver;
 
     @Override
@@ -20,6 +20,7 @@ public class ModelTrainer implements CommandLineRunner {
 
         // 모델 학습
         recommendationModel.trainModel(trainData);
+        System.out.println("모델을 학습시켰습니다.");
 
         // 학습된 모델 저장 (ModelSaver가 application.yml에서 경로를 가져옴)
         modelSaver.saveModel(recommendationModel.getModel());

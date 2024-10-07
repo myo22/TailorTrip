@@ -41,10 +41,10 @@ public class RecommendationService {
 
     @Transactional
     public List<Itinerary> getRecommendations(UserPreferences preferences) {
-        // 1. 사용자 선호도 전처리
+        // 1. 사용자 선호도를 벡터로 전처리
         INDArray input = dataPreprocessor.preprocessUserPreferences(preferences);
 
-        // 2. 딥러닝 모델 예측
+        // 모델을 사용하여 예측 (여기서는 단일 클래스 예측)
         int predictedClass = recommendationModel.predict(input);
 
         // 3. 예측된 클래스를 기반으로 장소 필터링
@@ -86,9 +86,11 @@ public class RecommendationService {
         return places;
     }
 
+    // 시간대별로 활동 배치
     private List<Itinerary> createItineraries(List<Place> places, UserPreferences preferences) {
         int duration = parseDuration(preferences.getDuration());
 
+        // 시간대별로 활동 배치 List
         List<Itinerary> itineraries = new ArrayList<>();
 
         // 예시: 3개의 추천 일정 생성

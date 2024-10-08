@@ -6,57 +6,57 @@
 <body>
 <h1>여행 경로 추천</h1>
 <form action="/recommend" method="post">
+
   <label for="purpose">여행 목적:</label>
-  <select name="purpose" id="purpose" required>
-    <option value="레저">레저</option>
-    <option value="비즈니스">비즈니스</option>
-    <option value="탐험">탐험</option>
-    <option value="문화 체험">문화 체험</option>
+  <select name="purpose" id="purpose">
+    <option value="문화시설">문화시설</option>
+    <option value="공연/행사">공연/행사</option>
+    <option value="레포츠">레포츠</option>
+    <option value="쇼핑">쇼핑</option>
   </select>
   <br/>
 
-  <label for="pace">여행 스타일:</label>
-  <select name="pace" id="pace" required>
+  <label for="style">여행 스타일:</label>
+  <select name="style" id="style">
     <option value="느긋하게">느긋하게</option>
-    <option value="빠르게">빠르게</option>
-    <option value="모험적으로">모험적으로</option>
-    <option value="편안하게">편안하게</option>
+    <option value="보통">보통</option>
+    <option value="바쁘게">바쁘게</option>
   </select>
   <br/>
 
-  <label for="transportation">이동 수단:</label>
-  <select name="transportation" id="transportation" required>
-    <option value="도보">도보</option>
-    <option value="자전거">자전거</option>
-    <option value="자동차">자동차</option>
-    <option value="대중교통">대중교통</option>
+  <label for="interest">특정 관심사:</label>
+  <select name="interest" id="interest">
+    <option value="자연">자연</option>
+    <option value="역사">역사</option>
+    <option value="휴양">휴양</option>
+    <option value="체험">체험</option>
+    <option value="건축/조형물">건축/조형물</option>
   </select>
   <br/>
 
-  <label for="interest">관심사:</label>
-  <select name="interest" id="interest" required>
-    <option value="카페">카페</option>
-    <option value="맛집">맛집</option>
-    <option value="산책">산책</option>
-    <option value="관광 명소">관광 명소</option>
-    <option value="자연 경관">자연 경관</option>
-    <option value="박물관">박물관</option>
+  <label for="food">선호하는 음식:</label>
+  <select name="food" id="food" required>
+    <option value="한식">한식</option>
+    <option value="양식">양식</option>
+    <option value="중식">중식</option>
+    <option value="일식">일식</option>
   </select>
   <br/>
 
   <label for="duration">여행 기간:</label>
   <select name="duration" id="duration" required>
-    <option value="하루">하루</option>
-    <option value="주말">주말</option>
-    <option value="일주일">일주일</option>
+    <option value="1">하루</option>
+    <option value="2">주말</option>
+    <option value="7">일주일</option>
   </select>
   <br/>
 
-  <label for="budget">여행 예산:</label>
-  <select name="budget" id="budget" required>
-    <option value="저렴한">저렴한</option>
-    <option value="중간 가격대">중간 가격대</option>
-    <option value="고급">고급</option>
+  <label for="lodging">어떤 숙소:</label>
+  <select name="lodging" id="lodging" required>
+    <option value="호텔">호텔</option>
+    <option value="펜션">펜션</option>
+    <option value="모텔">모텔</option>
+    <option value="민박">민박</option>
   </select>
   <br/>
 

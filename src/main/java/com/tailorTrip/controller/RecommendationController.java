@@ -4,7 +4,10 @@ import com.tailorTrip.Repository.MemberRepository;
 import com.tailorTrip.Repository.UserPreferencesRepository;
 import com.tailorTrip.domain.Itinerary;
 import com.tailorTrip.domain.Member;
+import com.tailorTrip.domain.Place;
 import com.tailorTrip.domain.UserPreferences;
+import com.tailorTrip.dto.ItineraryItemDTO;
+import com.tailorTrip.service.ItineraryService;
 import com.tailorTrip.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,11 +25,9 @@ import java.util.List;
 @Log4j2
 public class RecommendationController {
 
-    private final RecommendationService recommendationService;
-
     private final UserPreferencesRepository userPreferencesRepository;
 
-    private final MemberRepository memberRepository;
+    private final ItineraryService itineraryService;
 
     @GetMapping("/recommend")
     public String getRecommendationPage() {
@@ -41,7 +42,6 @@ public class RecommendationController {
             @RequestParam String interest,
             @RequestParam String duration,
             @RequestParam String budget,
-//            Authentication authentication,
             Model model) {
 
         // 현재 로그인한 사용자 찾기
@@ -61,10 +61,20 @@ public class RecommendationController {
         // 사용자 선호도 저장
         userPreferencesRepository.save(prefs);
 
-        // 추천 일정 가져오기
-        List<Itinerary> recommendedItineraries = recommendationService.getRecommendations(prefs);
+        // 일정 생성
+        Itinerary itinerary = itineraryService.createItinerary(prefs);
 
-        model.addAttribute("itineraries", recommendedItineraries);
+
+        // 일정 항목을 장소 객체로 변환
+        List<ItineraryItemDTO> itineraryItems = itinerary.getItems().stream()
+                .map(item -> {
+                    Place place = itineraryService.getPlaceById(item.getPlaceId());
+                    return new ItineraryItemDTO(item.getTimeOfDay(), item.getActivityType(), place);
+                })
+                .collect(java.util.stream.Collectors.toList());
+
+        // 모델에 일정 추가
+        model.addAttribute("itinerary", itineraryItems);
 
         return "recommendResult";
     }

@@ -1,4 +1,4 @@
-package com.tailorTrip;
+package com.tailorTrip.Data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

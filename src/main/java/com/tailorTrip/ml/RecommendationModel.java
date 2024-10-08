@@ -15,6 +15,8 @@ import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.springframework.stereotype.Component;
 
+import static com.tailorTrip.ml.DataPreprocessor.CATEGORY_MAP;
+
 @Component
 public class RecommendationModel {
 
@@ -26,10 +28,9 @@ public class RecommendationModel {
 
     private void buildModel() {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(123)
+                .seed(123) // 랜덤 시드
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .updater(new Adam(0.001))
-                .l2(1e-4) // L2 정규화
                 .list()
                 .layer(new DenseLayer.Builder()
                         .nIn(6) // 입력 피처 수 (사용자 입력도 피처)
@@ -41,10 +42,10 @@ public class RecommendationModel {
                         .nOut(64)
                         .activation(Activation.RELU)
                         .build())
-                .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .activation(Activation.SOFTMAX)
+                .layer(new OutputLayer.Builder(LossFunctions.LossFunction.XENT)
+                        .activation(Activation.SIGMOID)
                         .nIn(64)
-                        .nOut(3) // 예: 카페, 맛집, 관광명소 (다중 클래스)
+                        .nOut(CATEGORY_MAP.size()) // 출력 노드 수는 카테고리 수
                         .build())
                 .build();
 
@@ -58,9 +59,8 @@ public class RecommendationModel {
         model.fit(trainingData);
     }
 
-    public int predict(INDArray input) {
-        INDArray output = model.output(input);
-        return Nd4j.argMax(output, 1).getInt(0);
+    public INDArray predict(INDArray input) {
+        return model.output(input, false);
     }
 
     public MultiLayerNetwork getModel() {

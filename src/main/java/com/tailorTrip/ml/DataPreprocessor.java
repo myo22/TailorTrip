@@ -14,7 +14,7 @@ import java.util.Set;
 public class DataPreprocessor {
 
     // 카테고리 매핑 (예: "A04" -> 0, "A0502" -> 1, ...)
-    static final Map<String, Integer> CATEGORY_MAP = new HashMap<>();
+    public static final Map<String, Integer> CATEGORY_MAP = new HashMap<>();
 
     static {
         // 모든 카테고리를 매핑

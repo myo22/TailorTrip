@@ -23,7 +23,7 @@ public class DataPreprocessor {
     static {
         // 대분류
         CATEGORY_MAP.put("A01", 0); // 자연
-        CATEGORY_MAP.put("A02", 1); // 인문(문화/예술/역사)
+        CATEGORY_MAP.put("A02", 1); // 인문(문화/예술/역사)k
         CATEGORY_MAP.put("A03", 2); // 레포츠
         CATEGORY_MAP.put("B02", 3); // 숙박
         CATEGORY_MAP.put("A04", 4); // 쇼핑
@@ -73,19 +73,19 @@ public class DataPreprocessor {
         double[] features = new double[4]; // 특성 벡터 크기 축소
 
         // 특정 관심사 인코딩 (대분류)
-        Integer purposeIndex = CATEGORY_MAP.get(prefs.getPurpose());
+        Integer purposeIndex = CATEGORY_MAP.get(prefs.getInterest());
         features[0] = purposeIndex != null ? purposeIndex : -1; // 카테고리 매핑이 없으면 -1
 
         // 특정 활동 스타일 인코딩 (중분류)
-        Integer paceIndex = SUBCATEGORY_MAP.get(prefs.getPace());
+        Integer paceIndex = SUBCATEGORY_MAP.get(prefs.getActivityType());
         features[1] = paceIndex != null ? paceIndex : -1; // 카테고리 매핑이 없으면 -1
 
         // 선호하는 음식 인코딩 (소분류)
-        Integer foodIndex = DETAIL_CATEGORY_MAP.get(prefs.getInterest());
+        Integer foodIndex = DETAIL_CATEGORY_MAP.get(prefs.getFoodPreference());
         features[2] = foodIndex != null ? foodIndex : -1; // 카테고리 매핑이 없으면 -1
 
         // 숙소 인코딩 (소분류)
-        Integer accommodationIndex = DETAIL_CATEGORY_MAP.get(prefs.getBudget());
+        Integer accommodationIndex = DETAIL_CATEGORY_MAP.get(prefs.getAccommodationPreference());
         features[3] = accommodationIndex != null ? accommodationIndex : -1; // 카테고리 매핑이 없으면 -1
 
 //        여기서 1D 배열을 2D 배열로 변환

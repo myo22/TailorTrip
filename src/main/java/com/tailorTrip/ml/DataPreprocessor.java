@@ -70,23 +70,23 @@ public class DataPreprocessor {
 
     // 사용자 선호도를 벡터로 변환
     public INDArray preprocessUserPreferences(UserPreferences prefs) {
-        double[] features = new double[6];
+        double[] features = new double[4]; // 특성 벡터 크기 축소
 
-        // 특정 관심사 인코딩
+        // 특정 관심사 인코딩 (대분류)
         Integer purposeIndex = CATEGORY_MAP.get(prefs.getPurpose());
         features[0] = purposeIndex != null ? purposeIndex : -1; // 카테고리 매핑이 없으면 -1
 
-        // 특정 활동 스타일 인코딩
+        // 특정 활동 스타일 인코딩 (중분류)
         Integer paceIndex = SUBCATEGORY_MAP.get(prefs.getPace());
         features[1] = paceIndex != null ? paceIndex : -1; // 카테고리 매핑이 없으면 -1
 
-        // 선호하는 음식 인코딩
+        // 선호하는 음식 인코딩 (소분류)
         Integer foodIndex = DETAIL_CATEGORY_MAP.get(prefs.getInterest());
-        features[3] = foodIndex != null ? foodIndex : -1; // 카테고리 매핑이 없으면 -1
+        features[2] = foodIndex != null ? foodIndex : -1; // 카테고리 매핑이 없으면 -1
 
-        // 숙소 인코딩
+        // 숙소 인코딩 (소분류)
         Integer accommodationIndex = DETAIL_CATEGORY_MAP.get(prefs.getBudget());
-        features[5] = accommodationIndex != null ? accommodationIndex : -1; // 카테고리 매핑이 없으면 -1
+        features[3] = accommodationIndex != null ? accommodationIndex : -1; // 카테고리 매핑이 없으면 -1
 
 //        여기서 1D 배열을 2D 배열로 변환
         return Nd4j.create(new double[][]{features});

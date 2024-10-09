@@ -36,35 +36,62 @@ public class RecommendationService {
         // 모델을 사용하여 예측 (멀티레이블)
         INDArray output = recommendationModel.predict(input);
 
-        // 예측된 확률이 일정 임계값을 넘는 카테고리 선택
-        double threshold = 0.5;
-        Set<Integer> selectedCategories = new HashSet<>();
-        for (int i = 0; i < output.length(); i++) {
-            if (output.getDouble(i) > threshold) {
-                selectedCategories.add(i);
-            }
-        }
 
-
-        // 선택된 카테고리에 해당하는 장소 필터링
+        // 각 카테고리에 대한 확률을 기반으로 추천 장소 선택
         List<Place> allPlaces = placeRepository.findAll();
-        List<Place> recommendedPlaces = allPlaces.stream()
-                .filter(place -> {
-                    int cat1 = CATEGORY_MAP.getOrDefault(place.getCat1(), -1);
-                    int cat2 = CATEGORY_MAP.getOrDefault(place.getCat2(), -1);
-                    int cat3 = CATEGORY_MAP.getOrDefault(place.getCat3(), -1);
-                    return selectedCategories.contains(cat1) ||
-                            selectedCategories.contains(cat2) ||
-                            selectedCategories.contains(cat3);
+
+        // 각 장소에 대해 점수 계산
+        List<PlaceScore> placeScores = allPlaces.stream()
+                .map(place -> {
+                    INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
+                    double score = cosineSimilarity(output, placeLabel);
+                    return new PlaceScore(place, score);
                 })
                 .collect(Collectors.toList());
 
-        // 추천 장소 중 별점 높은 순으로 정렬
-        recommendedPlaces.sort(Comparator.comparingDouble(Place::getRating).reversed()
-                .thenComparingInt(Place::getUserRatingsTotal).reversed());
+        // 점수 순으로 정렬하여 상위 N개 선택
+        List<Place> topPlaces = placeScores.stream()
+                .sorted(Comparator.comparingDouble(PlaceScore::getScore).reversed())
+                .limit(100) // 상위 100개 장소 선택
+                .map(PlaceScore::getPlace)
+                .collect(Collectors.toList());
 
-        return recommendedPlaces;
+        // 지리적 근접성 고려하여 필터링
+        List<Place> filteredPlaces = filterByGeographicalProximity(topPlaces, preferences);
 
+        return filteredPlaces;
+
+    }
+
+    private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {
+        double dotProduct = vectorA.dot(vectorB).getDouble(0);
+        double normA = vectorA.norm2Number().doubleValue();
+        double normB = vectorB.norm2Number().doubleValue();
+        return dotProduct / (normA * normB);
+    }
+
+    private List<Place> filterByGeographicalProximity(List<Place> places, UserPreferences preferences) {
+        // 사용자 위치를 기반으로 지리적 근접성 필터링 (예: 중앙 좌표 또는 사용자 입력 좌표)
+        // 여기서는 임의의 중심 좌표를 가정 (예: 서울 시내)
+        double userLat = 37.5665; // 예시 위도
+        double userLng = 126.9780; // 예시 경도
+
+        return places.stream()
+                .sorted(Comparator.comparingDouble(place -> distance(userLat, userLng, place.getMapy(), place.getMapx())))
+                .limit(10) // 가까운 상위 10개 장소 선택
+                .collect(Collectors.toList());
+    }
+
+    // 두 지점 간의 거리 계산 (Haversine 공식 사용)
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // 지구 반지름 (km)
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // 거리 (km)
     }
 
 }

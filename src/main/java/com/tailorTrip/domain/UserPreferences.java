@@ -20,12 +20,13 @@ public class UserPreferences {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String purpose; // 여행 목적 (레저, 비즈니스 등)
-    private String pace; // 여행 스타일 (느긋하게, 빠르게 등)
-    private String transportation; // 이동 수단 (도보, 자전거, 자동차, 대중교통)
-    private String interest; // 관심사 (카페, 맛집, 산책 등)
-    private String duration; // 여행 기간 (하루, 주말, 일주일)
-    private String budget; // 여행 예산 (저렴한, 중간, 고급)
-
+    private String region;
+    private String interest; // 관심사 (역사, 자연, 휴양 등)
+    private String activityType; // 여행 활동 (레저, 쇼핑, 문화시설 등)
+    private boolean petFriendly;
+    private String foodPreference; // 선호 음식 (한식, 중식, 일식, 양식)
+    private String travelPace; // 여행 스타일 (느긋하게, 빠르게 등)
+    private String accommodationPreference; // 숙소 (민박, 펜션 등)
+    private int tripDuration; // 여행 기간
 
 }

@@ -1,18 +1,13 @@
 package com.tailorTrip.controller;
 
-import com.tailorTrip.Repository.MemberRepository;
 import com.tailorTrip.Repository.UserPreferencesRepository;
-import com.tailorTrip.domain.Itinerary;
-import com.tailorTrip.domain.Member;
+import com.tailorTrip.dto.Itinerary;
 import com.tailorTrip.domain.Place;
 import com.tailorTrip.domain.UserPreferences;
-import com.tailorTrip.dto.ItineraryItemDTO;
 import com.tailorTrip.service.ItineraryService;
-import com.tailorTrip.service.RecommendationService;
 import com.tailorTrip.service.RegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

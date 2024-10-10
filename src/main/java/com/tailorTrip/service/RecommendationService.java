@@ -71,9 +71,9 @@ public class RecommendationService {
         return addr1.contains(selectedRegion);
     }
 
-
     private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {
-        double dotProduct = vectorA.dot(vectorB).getDouble(0);
+        INDArray dotProductMatrix = vectorA.mmul(vectorB.transpose());
+        double dotProduct = dotProductMatrix.getDouble(0);
         double normA = vectorA.norm2Number().doubleValue();
         double normB = vectorB.norm2Number().doubleValue();
         return dotProduct / (normA * normB);
@@ -101,6 +101,25 @@ public class RecommendationService {
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c; // 거리 (km)
+    }
+
+    // 장소와 점수를 담는 클래스
+    private static class PlaceScore {
+        private Place place;
+        private double score;
+
+        public PlaceScore(Place place, double score) {
+            this.place = place;
+            this.score = score;
+        }
+
+        public Place getPlace() {
+            return place;
+        }
+
+        public double getScore() {
+            return score;
+        }
     }
 
 }

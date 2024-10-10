@@ -9,6 +9,7 @@ import com.tailorTrip.domain.UserPreferences;
 import com.tailorTrip.dto.ItineraryItemDTO;
 import com.tailorTrip.service.ItineraryService;
 import com.tailorTrip.service.RecommendationService;
+import com.tailorTrip.service.RegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,8 @@ public class RecommendationController {
 
     private final ItineraryService itineraryService;
 
+    private final RegionService regionService;
+
     @GetMapping("/recommend")
     public String getRecommendationPage() {
         return "recommend";
@@ -36,26 +39,39 @@ public class RecommendationController {
 
     @PostMapping("/recommend")
     public String recommend(
-            @RequestParam String purpose,
-            @RequestParam String pace,
-            @RequestParam String transportation,
+            @RequestParam String region,
             @RequestParam String interest,
-            @RequestParam String duration,
-            @RequestParam String budget,
+            @RequestParam String activityType,
+            @RequestParam boolean petFriendly,
+            @RequestParam String foodPreference,
+            @RequestParam String travelPace,
+            @RequestParam String accommodationPreference,
+            @RequestParam int tripDuration,
             Model model) {
 
         // 현재 로그인한 사용자 찾기
 //        String username = authentication.getName();
 //        Member member = memberRepository.findById(username).orElseThrow(() -> new RuntimeException("User not found"));
 
+
+        // 지역에 따른 중심 좌표 가져오기
+        double[] coordinates = regionService.getCoordinates(region);
+        double userLat = coordinates[0];
+        double userLng = coordinates[1];
+
+
         // 사용자 선호도 객체 생성
         UserPreferences prefs = UserPreferences.builder()
-                .purpose(purpose)
-                .pace(pace)
-                .transportation(transportation)
+                .region(region)
                 .interest(interest)
-                .duration(duration)
-                .budget(budget)
+                .activityType(activityType)
+                .petFriendly(petFriendly)
+                .foodPreference(foodPreference)
+                .travelPace(travelPace)
+                .accommodationPreference(accommodationPreference)
+                .tripDuration(tripDuration)
+                .userLat(userLat)
+                .userLng(userLng)
                 .build();
 
         // 사용자 선호도 저장

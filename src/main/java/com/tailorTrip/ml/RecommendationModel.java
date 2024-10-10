@@ -1,29 +1,30 @@
 package com.tailorTrip.ml;
 
+import jakarta.annotation.PostConstruct;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
-import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
-import org.nd4j.linalg.factory.Nd4j;
+
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.springframework.stereotype.Component;
-
-import static com.tailorTrip.ml.DataPreprocessor.CATEGORY_MAP;
 
 @Component
 public class RecommendationModel {
 
     private MultiLayerNetwork model;
 
-    private void initializeModel(int inputSize, int outputSize) {
+    @PostConstruct
+    private void initializeModel() {
+        int inputSize = 4; // DataPreprocessor에서 정의한 특성 벡터 크기
+        int outputSize = DataPreprocessor.CATEGORY_MAP.size(); // 카테고리 수
+
         NeuralNetConfiguration.ListBuilder builder = new NeuralNetConfiguration.Builder()
                 .seed(123)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)

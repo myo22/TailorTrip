@@ -4,6 +4,8 @@ import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.domain.*;
 import com.tailorTrip.ml.DataPreprocessor;
 import com.tailorTrip.ml.RecommendationModel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -31,10 +33,8 @@ public class RecommendationService {
 
     public List<Place> getRecommendations(UserPreferences preferences) {
 
-        // 지역별로 필터링된 장소들
-        List<Place> regionalPlaces = placeRepository.findAll().stream()
-                .filter(place -> isWithinRegion(place.getAddr1(), preferences.getRegion()))
-                .collect(Collectors.toList());
+        // 데이터베이스 쿼리를 통해 지역별로 필터링된 장소들 가져오기
+        List<Place> regionalPlaces = placeRepository.findByAddr1Containing(preferences.getRegion());
 
 
         // 1. 사용자 선호도를 벡터로 전처리
@@ -103,23 +103,11 @@ public class RecommendationService {
         return R * c; // 거리 (km)
     }
 
-    // 장소와 점수를 담는 클래스
+    @Getter
+    @AllArgsConstructor
     private static class PlaceScore {
         private Place place;
         private double score;
-
-        public PlaceScore(Place place, double score) {
-            this.place = place;
-            this.score = score;
-        }
-
-        public Place getPlace() {
-            return place;
-        }
-
-        public double getScore() {
-            return score;
-        }
     }
 
 }

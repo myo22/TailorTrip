@@ -28,5 +28,6 @@ public class UserPreferences {
     private String travelPace; // 여행 스타일 (느긋하게, 빠르게 등)
     private String accommodationPreference; // 숙소 (민박, 펜션 등)
     private int tripDuration; // 여행 기간
-
+    private double userLat;       // 사용자 위도
+    private double userLng;       // 사용자 경도
 }

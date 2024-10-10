@@ -30,6 +30,13 @@ public class RecommendationService {
 
 
     public List<Place> getRecommendations(UserPreferences preferences) {
+
+        // 지역별로 필터링된 장소들
+        List<Place> regionalPlaces = placeRepository.findAll().stream()
+                .filter(place -> isWithinRegion(place.getAddr1(), preferences.getRegion()))
+                .collect(Collectors.toList());
+
+
         // 1. 사용자 선호도를 벡터로 전처리
         INDArray input = dataPreprocessor.preprocessUserPreferences(preferences);
 
@@ -37,11 +44,8 @@ public class RecommendationService {
         INDArray output = recommendationModel.predict(input);
 
 
-        // 각 카테고리에 대한 확률을 기반으로 추천 장소 선택
-        List<Place> allPlaces = placeRepository.findAll();
-
         // 각 장소에 대해 점수 계산
-        List<PlaceScore> placeScores = allPlaces.stream()
+        List<PlaceScore> placeScores = regionalPlaces.stream()
                 .map(place -> {
                     INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
                     double score = cosineSimilarity(output, placeLabel);
@@ -63,6 +67,11 @@ public class RecommendationService {
 
     }
 
+    private boolean isWithinRegion(String addr1, String selectedRegion) {
+        return addr1.contains(selectedRegion);
+    }
+
+
     private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {
         double dotProduct = vectorA.dot(vectorB).getDouble(0);
         double normA = vectorA.norm2Number().doubleValue();
@@ -73,8 +82,8 @@ public class RecommendationService {
     private List<Place> filterByGeographicalProximity(List<Place> places, UserPreferences preferences) {
         // 사용자 위치를 기반으로 지리적 근접성 필터링 (예: 중앙 좌표 또는 사용자 입력 좌표)
         // 여기서는 임의의 중심 좌표를 가정 (예: 서울 시내)
-        double userLat = 37.5665; // 예시 위도
-        double userLng = 126.9780; // 예시 경도
+        double userLat = preferences.getUserLat();
+        double userLng = preferences.getUserLng();
 
         return places.stream()
                 .sorted(Comparator.comparingDouble(place -> distance(userLat, userLng, place.getMapy(), place.getMapx())))

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,98 +29,68 @@ public class ItineraryService {
 
         List<ItineraryItem> items  = new ArrayList<>();
 
-        // 여행 스타일에 따른 활동 조정
-        boolean isRelaxed = preferences.getPace().equals("느긋하게");
+        // 여행 기간에 따른 일정 일수 설정
+        int days = preferences.getTripDuration();
 
-        // 숙박 일수
-        int duration = preferences.getDuration();
+        for (int day = 1; day <= days; day++) {
+            // 하루 일정에 포함될 장소 수
+            int placesPerDay = 3;
 
-        // 하루 코스 예시
-        if (duration >= 1) {
-            // 아침 식사
-            Place breakfastPlace = selectPlace(recommendedPlaces, "cafe");
-            if (breakfastPlace != null) {
-                items.add(ItineraryItem.builder()
-                        .timeOfDay("아침")
-                        .activityType("식사")
-                        .placeId(breakfastPlace.getId())
-                        .build());
+            // 여행 스타일에 따른 장소 수 조정
+            if (preferences.getTravelPace().equals("느긋하게")) {
+                placesPerDay -= 1; // 오전 활동 1개 빼기
+            } else if (preferences.getTravelPace().equals("바쁘게")) {
+                placesPerDay += 1; // 저녁 활동 1개 추가
             }
 
-            // 오전 활동 (관광지)
-            Place morningActivity = selectPlace(recommendedPlaces, "tourist attraction");
-            if (morningActivity != null) {
-                items.add(ItineraryItem.builder()
-                        .timeOfDay("오전")
-                        .activityType("관광")
-                        .placeId(morningActivity.getId())
-                        .build());
-            }
+            // 하루에 추천할 장소 선택
+            List<Place> dailyPlaces = recommendedPlaces.stream()
+                    .skip((day - 1) * placesPerDay)
+                    .limit(placesPerDay)
+                    .collect(Collectors.toList());
 
-            // 점심 식사
-            Place lunchPlace = selectPlace(recommendedPlaces, "restaurant");
-            if (lunchPlace != null) {
-                items.add(ItineraryItem.builder()
-                        .timeOfDay("점심")
-                        .activityType("식사")
-                        .placeId(lunchPlace.getId())
-                        .build());
-            }
-
-            // 오후 활동 (쇼핑 또는 산책)
-            Place afternoonActivity = isRelaxed ? selectPlace(recommendedPlaces, "shopping") : selectPlace(recommendedPlaces, "walking");
-            if (afternoonActivity != null) {
-                items.add(ItineraryItem.builder()
-                        .timeOfDay("오후")
-                        .activityType(isRelaxed ? "쇼핑" : "산책")
-                        .placeId(afternoonActivity.getId())
-                        .build());
-            }
-
-            // 저녁 식사
-            Place dinnerPlace = selectPlace(recommendedPlaces, "restaurant");
-            if (dinnerPlace != null) {
-                items.add(ItineraryItem.builder()
-                        .timeOfDay("저녁")
-                        .activityType("식사")
-                        .placeId(dinnerPlace.getId())
-                        .build());
-            }
-
-            // 숙소 (1박 이상인 경우)
-            if (duration > 1) {
-                Place accommodation = selectPlace(recommendedPlaces, "hotel");
-                if (accommodation != null) {
-                    items.add(ItineraryItem.builder()
-                            .timeOfDay("숙소")
-                            .activityType("숙박")
-                            .placeId(accommodation.getId())
-                            .build());
-                }
+            for (Place place : dailyPlaces) {
+                ItineraryItem item = ItineraryItem.builder()
+                        .timeOfDay(determineTimeOfDay())
+                        .activityType(determineActivityType(place))
+                        .placeId(place.getId())
+                        .build();
+                items.add(item);
             }
         }
 
         Itinerary itinerary = Itinerary.builder()
                 .items(items)
-                .duration(duration)
+                .duration(days)
                 .build();
 
         return itineraryRepository.save(itinerary);
     }
 
-
-    private Place selectPlace(List<Place> places, String category) {
-        return places.stream()
-                .filter(place -> place.getCat1().equalsIgnoreCase(category) ||
-                        place.getCat2().equalsIgnoreCase(category) ||
-                        place.getCat3().equalsIgnoreCase(category))
-                .sorted(Comparator.comparingDouble(Place::getRating).reversed()
-                        .thenComparingInt(Place::getUserRatingsTotal).reversed())
-                .findFirst()
-                .orElse(null);
+    private String determineTimeOfDay() {
+        // 간단한 예시로 아침, 점심, 저녁 중 하나를 랜덤으로 선택
+        String[] times = {"아침", "점심", "저녁"};
+        int idx = new Random().nextInt(times.length);
+        return times[idx];
     }
 
-    public Place getPlaceById(Long placeId) {
-        return placeRepository.findById(placeId).orElse(null);
+    private String determineActivityType(Place place) {
+        // 장소의 카테고리에 따라 활동 유형 결정
+        switch (place.getCat1()) {
+            case "A01":
+                return "관광";
+            case "A02":
+                return "문화 체험";
+            case "A03":
+                return "레포츠";
+            case "B02":
+                return "숙소";
+            case "A04":
+                return "쇼핑";
+            case "A05":
+                return "식사";
+            default:
+                return "관광";
+        }
     }
 }

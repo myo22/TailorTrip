@@ -13,10 +13,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tailorTrip.ml.DataPreprocessor.CATEGORY_MAP;
@@ -165,16 +162,13 @@ public class DatasetCreator {
         return positivePlaces;
     }
 
-    // 부정적인 샘플을 위한 장소 필터링
     private List<Place> getNegativePlaces(List<Place> allPlaces, List<Place> positivePlaces, int count) {
-        List<Place> negativePlaces = new ArrayList<>();
-        // 긍정적인 장소에서 제외하고 랜덤하게 부정적인 장소 선택
-        for (Place place : allPlaces) {
-            if (!positivePlaces.contains(place) && negativePlaces.size() < count) {
-                negativePlaces.add(place);
-            }
-        }
-        return negativePlaces;
+        List<Place> negativePlaces = allPlaces.stream()
+                .filter(place -> !positivePlaces.contains(place))
+                .collect(Collectors.toList());
+
+        Collections.shuffle(negativePlaces);
+        return negativePlaces.stream().limit(count).collect(Collectors.toList());
     }
 
 }

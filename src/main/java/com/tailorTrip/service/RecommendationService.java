@@ -60,15 +60,12 @@ public class RecommendationService {
                 .map(PlaceScore::getPlace)
                 .collect(Collectors.toList());
 
-        // 지리적 근접성 고려하여 필터링
-        List<Place> filteredPlaces = filterByGeographicalProximity(topPlaces, preferences);
+//        // 지리적 근접성 고려하여 필터링
+//        List<Place> filteredPlaces = filterByGeographicalProximity(topPlaces, preferences);
+//
+//        return filteredPlaces;
+        return topPlaces; // 상위 100개 장소 반환
 
-        return filteredPlaces;
-
-    }
-
-    private boolean isWithinRegion(String addr1, String selectedRegion) {
-        return addr1.contains(selectedRegion);
     }
 
     private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {
@@ -79,29 +76,29 @@ public class RecommendationService {
         return dotProduct / (normA * normB);
     }
 
-    private List<Place> filterByGeographicalProximity(List<Place> places, UserPreferences preferences) {
-        // 사용자 위치를 기반으로 지리적 근접성 필터링 (예: 중앙 좌표 또는 사용자 입력 좌표)
-        // 여기서는 임의의 중심 좌표를 가정 (예: 서울 시내)
-        double userLat = preferences.getUserLat();
-        double userLng = preferences.getUserLng();
-
-        return places.stream()
-                .sorted(Comparator.comparingDouble(place -> distance(userLat, userLng, place.getMapy(), place.getMapx())))
-                .limit(10) // 가까운 상위 10개 장소 선택
-                .collect(Collectors.toList());
-    }
-
-    // 두 지점 간의 거리 계산 (Haversine 공식 사용)
-    private double distance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // 지구 반지름 (km)
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // 거리 (km)
-    }
+//    private List<Place> filterByGeographicalProximity(List<Place> places, UserPreferences preferences) {
+//        // 사용자 위치를 기반으로 지리적 근접성 필터링 (예: 중앙 좌표 또는 사용자 입력 좌표)
+//        // 여기서는 임의의 중심 좌표를 가정 (예: 서울 시내)
+//        double userLat = preferences.getUserLat();
+//        double userLng = preferences.getUserLng();
+//
+//        return places.stream()
+//                .sorted(Comparator.comparingDouble(place -> distance(userLat, userLng, place.getMapy(), place.getMapx())))
+//                .limit(10) // 가까운 상위 10개 장소 선택
+//                .collect(Collectors.toList());
+//    }
+//
+//    // 두 지점 간의 거리 계산 (Haversine 공식 사용)
+//    private double distance(double lat1, double lon1, double lat2, double lon2) {
+//        final int R = 6371; // 지구 반지름 (km)
+//        double latDistance = Math.toRadians(lat2 - lat1);
+//        double lonDistance = Math.toRadians(lon2 - lon1);
+//        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+//                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+//                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//        return R * c; // 거리 (km)
+//    }
 
     @Getter
     @AllArgsConstructor

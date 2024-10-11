@@ -23,7 +23,7 @@ public class DataPreprocessor {
     static {
         // 대분류
         CATEGORY_MAP.put("A01", 0); // 자연
-        CATEGORY_MAP.put("A02", 1); // 인문(문화/예술/역사)k
+        CATEGORY_MAP.put("A02", 1); // 인문(문화/예술/역사)
         CATEGORY_MAP.put("A03", 2); // 레포츠
         CATEGORY_MAP.put("B02", 3); // 숙박
         CATEGORY_MAP.put("A04", 4); // 쇼핑

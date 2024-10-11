@@ -7,8 +7,7 @@ import com.tailorTrip.dto.ItineraryItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,50 +20,68 @@ public class ItineraryService {
         int duration = preferences.getTripDuration(); // 여행 기간
         List<Place> recommendedPlaces = recommendationService.getRecommendations(preferences); // 100개의 장소들
 
+        // 장소를 카테고리별로 분류
+        Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
+
+        // 숙소는 별도로 관리
+        List<Place> accommodations = categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>());
+
+        // 식사 및 활동 장소
+        List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
+        List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
 
         List<ItineraryDay> itineraryDays = new ArrayList<>();
         int totalDays = duration;
 
-        int index = 0;
-        Place lastPlace = null; // 이전에 배정된 장소
+        // 숙소 선택 (최대 1개)
+        Place selectedAccommodation = selectAccommodation(accommodations, preferences);
 
 
         for (int day = 1; day <= totalDays; day++) {
             List<ItineraryItem> items = new ArrayList<>();
 
             // 하루에 필요한 장소 수 설정
-            int placesPerDay = 5; // 아침, 오전 활동, 점심, 오후 활동, 저녁 (기본 5개 중 중복 제거)
+            int mealsPerDay = 3; // 아침, 점심, 저녁
+            int activitiesPerDay = 2; // 오전, 오후 활동
 
             if (preferences.getTravelPace().equals("느긋하게")) {
-                placesPerDay -= 2; // 느긋하게: 3곳
+                mealsPerDay -= 1; // 점심, 저녁
+                activitiesPerDay -= 1; // 느긋하게: 오후 활동
             } else if (preferences.getTravelPace().equals("바쁘게")) {
-                placesPerDay += 1; // 바쁘게: 6곳
+                activitiesPerDay += 1; // 바쁘게: 오전, 오후, 저녁 활동
             }
 
-            List<Place> dayPlaces = selectOptimalPlaces(recommendedPlaces, placesPerDay, lastPlace);
-
-            for (int i = 0; i < dayPlaces.size(); i++) {
-                Place place = dayPlaces.get(i);
-
-                String timeOfDay = determineTimeOfDay(i);
-                String activityType = determineActivityType(place);
-
+            // 식사 장소 할당
+            List<Place> dayMeals = selectPlaces(meals, mealsPerDay);
+            for (int i = 0; i < dayMeals.size(); i++) {
+                Place place = dayMeals.get(i);
+                String timeOfDay = determineMealTimeOfDay(i);
                 ItineraryItem item = ItineraryItem.builder()
                         .timeOfDay(timeOfDay)
                         .place(place)
-                        .activityType(activityType)
+                        .activityType("식사")
                         .build();
-
                 items.add(item);
-                lastPlace = place; // 다음 장소 선택 시 기준으로 사용
             }
 
-            // 숙소 배정 (1박 이상의 일정)
-            if (day < totalDays) {
-                Place accommodation = selectAccommodation(recommendedPlaces, preferences);
+            // 활동 장소 할당
+            List<Place> dayActivities = selectPlaces(activities, activitiesPerDay);
+            for (int i = 0; i < dayActivities.size(); i++) {
+                Place place = dayActivities.get(i);
+                String timeOfDay = determineActivityTimeOfDay(i);
+                ItineraryItem item = ItineraryItem.builder()
+                        .timeOfDay(timeOfDay)
+                        .place(place)
+                        .activityType("활동")
+                        .build();
+                items.add(item);
+            }
+
+            // 숙소 배정 (마지막 날 제외)
+            if (selectedAccommodation != null && day == totalDays) {
                 ItineraryItem accommodationItem = ItineraryItem.builder()
                         .timeOfDay("숙소")
-                        .place(accommodation)
+                        .place(selectedAccommodation)
                         .activityType("숙박")
                         .build();
                 items.add(accommodationItem);
@@ -84,107 +101,90 @@ public class ItineraryService {
                 .build();
     }
 
-    private List<Place> selectOptimalPlaces(List<Place> recommendedPlaces, int placesPerDay, Place lastPlace) {
-        List<Place> selectedPlaces = new ArrayList<>();
-        List<Place> availablePlaces = new ArrayList<>(recommendedPlaces);
-
-        // 첫 장소 선택
-        if (lastPlace == null && !availablePlaces.isEmpty()) {
-            Place firstPlace = availablePlaces.remove(0);
-            selectedPlaces.add(firstPlace);
-        } else if (lastPlace != null) {
-            // 마지막 장소에서 가장 가까운 장소 선택
-            Place nearestPlace = findNearestPlace(lastPlace, availablePlaces);
-            if (nearestPlace != null) {
-                selectedPlaces.add(nearestPlace);
-                availablePlaces.remove(nearestPlace);
-            }
+    private Map<CategoryType, List<Place>> categorizePlaces(List<Place> places) {
+        Map<CategoryType, List<Place>> categorized = new HashMap<>();
+        for (Place place : places) {
+            CategoryType type = determineCategoryType(place);
+            categorized.computeIfAbsent(type, k -> new ArrayList<>()).add(place);
         }
-
-        // 나머지 장소 선택
-        for (int i = 1; i < placesPerDay; i++) {
-            if (availablePlaces.isEmpty()) break;
-
-            Place last = selectedPlaces.get(selectedPlaces.size() - 1);
-            Place nextPlace = findNearestPlace(last, availablePlaces);
-            if (nextPlace != null) {
-                selectedPlaces.add(nextPlace);
-                availablePlaces.remove(nextPlace);
-            }
-        }
-
-        return selectedPlaces;
+        return categorized;
     }
 
-    private Place findNearestPlace(Place current, List<Place> availablePlaces) {
-        Place nearest = null;
-        double minDistance = Double.MAX_VALUE;
-
-        for (Place place : availablePlaces) {
-            double distance = calculateDistance(current.getMapy(), current.getMapx(), place.getMapy(), place.getMapx());
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearest = place;
-            }
-        }
-
-        return nearest;
-    }
-
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // 지구 반지름 (km)
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // 거리 (km)
-    }
-
-    private String determineTimeOfDay(int placeIndex) {
-        switch (placeIndex) {
-            case 0:
-                return "아침";
-            case 1:
-                return "오전 활동";
-            case 2:
-                return "점심";
-            case 3:
-                return "오후 활동";
-            case 4:
-                return "저녁";
-            default:
-                return "오후 활동";
-        }
-    }
-
-    private String determineActivityType(Place place) {
-        // 장소의 카테고리에 따라 활동 유형 결정
+    private CategoryType determineCategoryType(Place place) {
         switch (place.getCat1()) {
-            case "A01":
-                return "자연 관광";
-            case "A02":
-                return "문화/역사 탐방";
-            case "A03":
-                return "레포츠";
-            case "B02":
-                return "숙박";
-            case "A04":
-                return "쇼핑";
             case "A05":
-                return "식사";
+                return CategoryType.MEAL;
+            case "B02":
+                return CategoryType.ACCOMMODATION;
             default:
-                return "관광";
+                return CategoryType.ACTIVITY;
         }
     }
 
-    private Place selectAccommodation(List<Place> recommendedPlaces, UserPreferences preferences) {
-        // 숙소는 소분류 카테고리 B02로 필터링
-        return recommendedPlaces.stream()
-                .filter(place -> place.getCat1().equals("B02"))
-                .findFirst()
-                .orElse(null);
+    private List<Place> selectPlaces(List<Place> availablePlaces, int count) {
+        List<Place> selected = new ArrayList<>();
+        Iterator<Place> iterator = availablePlaces.iterator();
+        while (iterator.hasNext() && selected.size() < count) {
+            selected.add(iterator.next());
+            iterator.remove();
+        }
+        return selected;
     }
 
+    // 아래와 같이 추가적인 필터링 단계를 거치는 것은 모델의 추천 정확성 보장, 데이터 일관성 및 품질 확보, 사용자 선호도의 세부 조정 등이 있다.
+    private Place selectAccommodation(List<Place> accommodations, UserPreferences preferences) {
+        if (accommodations.isEmpty()) return null;
+        // 숙소는 선호 숙소 유형에 맞추어 선택
+        return accommodations.stream()
+                .filter(place -> place.getCat3().equals(preferences.getAccommodationPreference()))
+                .findFirst()
+                .orElse(accommodations.get(0));
+    }
+
+    private String determineMealTimeOfDay(int index) {
+        switch (index) {
+            case 0:
+                return "저녁";
+            case 1:
+                return "점심";
+            case 2:
+                return "아침";
+            default:
+                return "식사";
+        }
+    }
+
+    private String determineActivityTimeOfDay(int index) {
+        switch (index) {
+            case 0:
+                return "오전 활동";
+            case 1:
+                return "오후 활동";
+            case 2:
+                return "저녁 활동";
+            case 3:
+                return "밤 활동";
+            default:
+                return "활동";
+        }
+    }
+
+//    이 코드는 미래 확장성을 고려한 것이고, 활동 유형별로 다른 처리가 필요해진다면 다시 사용하면 된다.
+//    private String determineActivityType(Place place) {
+//        // 장소의 카테고리에 따라 활동 유형 결정
+//        switch (place.getCat1()) {
+//            case "A01":
+//                return "자연 관광";
+//            case "A02":
+//                return "문화/역사 탐방";
+//            case "A03":
+//                return "레포츠";
+//            default:
+//                return "관광";
+//        }
+//    }
+
+    private enum CategoryType {
+        MEAL, ACTIVITY, ACCOMMODATION
+    }
 }

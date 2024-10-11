@@ -30,12 +30,15 @@ public class ItineraryService {
         List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
         List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
 
-        List<ItineraryDay> itineraryDays = new ArrayList<>();
-        int totalDays = duration;
-
         // 숙소 선택 (최대 1개)
         Place selectedAccommodation = selectAccommodation(accommodations, preferences);
 
+        // 초기 위치: 숙소가 있다면 숙소 위치, 아니면 첫 번째 장소의 위치
+        double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapy() : (meals.isEmpty() ? 0.0 : meals.get(0).getMapy());
+        double currentLng = selectedAccommodation != null ? selectedAccommodation.getMapx() : (meals.isEmpty() ? 0.0 : meals.get(0).getMapx());
+
+        List<ItineraryDay> itineraryDays = new ArrayList<>();
+        int totalDays = duration;
 
         for (int day = 1; day <= totalDays; day++) {
             List<ItineraryItem> items = new ArrayList<>();
@@ -52,32 +55,42 @@ public class ItineraryService {
             }
 
             // 식사 장소 할당
-            List<Place> dayMeals = selectPlaces(meals, mealsPerDay);
-            for (int i = 0; i < dayMeals.size(); i++) {
-                Place place = dayMeals.get(i);
-                String timeOfDay = determineMealTimeOfDay(i);
-                ItineraryItem item = ItineraryItem.builder()
-                        .timeOfDay(timeOfDay)
-                        .place(place)
-                        .activityType("식사")
-                        .build();
-                items.add(item);
+            for (int i = 0; i < mealsPerDay; i++) {
+                Place meal = findClosestPlace(currentLat, currentLng, meals);
+                if (meal != null) {
+                    String timeOfDay = determineMealTimeOfDay(i);
+                    ItineraryItem item = ItineraryItem.builder()
+                            .timeOfDay(timeOfDay)
+                            .place(meal)
+                            .activityType("식사")
+                            .build();
+                    items.add(item);
+                    currentLat = meal.getMapy();
+                    currentLng = meal.getMapx();
+                    meals.remove(meal); // 선택된 장소는 리스트에서 제거
+                }
             }
+
 
             // 활동 장소 할당
-            List<Place> dayActivities = selectPlaces(activities, activitiesPerDay);
-            for (int i = 0; i < dayActivities.size(); i++) {
-                Place place = dayActivities.get(i);
-                String timeOfDay = determineActivityTimeOfDay(i);
-                ItineraryItem item = ItineraryItem.builder()
-                        .timeOfDay(timeOfDay)
-                        .place(place)
-                        .activityType("활동")
-                        .build();
-                items.add(item);
+            for (int i = 0; i < activitiesPerDay; i++) {
+                Place activity = findClosestPlace(currentLat, currentLng, activities);
+                if (activity != null) {
+                    String timeOfDay = determineActivityTimeOfDay(i);
+                    ItineraryItem item = ItineraryItem.builder()
+                            .timeOfDay(timeOfDay)
+                            .place(activity)
+                            .activityType("활동")
+                            .build();
+                    items.add(item);
+                    currentLat = activity.getMapy();
+                    currentLng = activity.getMapx();
+                    activities.remove(activity); // 선택된 장소는 리스트에서 제거
+                }
             }
 
-            // 숙소 배정 (마지막 날 제외)
+
+            // 숙소 배정 (마지막 날)
             if (selectedAccommodation != null && day == totalDays) {
                 ItineraryItem accommodationItem = ItineraryItem.builder()
                         .timeOfDay("숙소")
@@ -85,6 +98,9 @@ public class ItineraryService {
                         .activityType("숙박")
                         .build();
                 items.add(accommodationItem);
+                // 숙소 위치로 현재 위치 업데이트 (필요 시)
+                currentLat = selectedAccommodation.getMapy();
+                currentLng = selectedAccommodation.getMapx();
             }
 
             ItineraryDay itineraryDay = ItineraryDay.builder()
@@ -119,6 +135,34 @@ public class ItineraryService {
             default:
                 return CategoryType.ACTIVITY;
         }
+    }
+
+    // 현재 위치와 가장 가까운 장소를 찾는 메서드
+    private Place findClosestPlace(double currentLat, double currentLng, List<Place> availablePlaces) {
+        Place closest = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Place place : availablePlaces) {
+            double distance = calculateDistance(currentLat, currentLng, place.getMapy(), place.getMapx());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest = place;
+            }
+        }
+
+        return closest;
+    }
+
+    // 두 지점 간의 거리 계산 (Haversine 공식 사용)
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // 지구 반지름 (km)
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // 거리 (km)
     }
 
     private List<Place> selectPlaces(List<Place> availablePlaces, int count) {

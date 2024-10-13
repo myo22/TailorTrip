@@ -35,5 +35,46 @@ public class Place {
     private int contentTypeId;
 
     private double rating; // 평점 추가
+    private int userRatingsTotal; // 평점 수
+    private int priceLevel; // 가격 수준
+    private String openingHours; // 오픈 시간 (JSON 형식 또는 문자열)
+    private String website; // 웹사이트 URL
+    private String types; // 카테고리 유형 (콤마로 구분된 문자열)
+    private String photoReference; // 사진 참조 ID
 
+    public void updateRating(double rating) {
+        this.rating = rating;
+    }
+
+
+    public void updateRatingTotal(int userRatingsTotal) {
+        this.userRatingsTotal = userRatingsTotal;
+    }
+
+
+    public void updatePriceLevel(int priceLevel) {
+        this.priceLevel = priceLevel;
+    }
+
+
+    public void updateOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
+    }
+
+
+    public void updateWebsite(String website) {
+        this.website = website;
+    }
+
+
+    public void updateTypes(String types) {
+        this.types = types;
+    }
+
+
+    public void updatePhotoReference(String photoReference) {
+        this.photoReference = photoReference;
+    }
 }
+
+

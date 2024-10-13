@@ -34,4 +34,6 @@ public class Place {
     private int sigungucode;
     private int contentTypeId;
 
+    private double rating; // 평점 추가
+
 }

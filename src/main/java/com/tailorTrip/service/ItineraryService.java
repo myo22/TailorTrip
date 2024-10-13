@@ -31,7 +31,7 @@ public class ItineraryService {
         List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
 
         // 숙소 선택 (최대 1개)
-        Place selectedAccommodation = selectAccommodation(accommodations, preferences);
+        Place selectedAccommodation = selectAccommodation(accommodations, preferences, 1, duration);
 
         // 초기 위치: 숙소가 있다면 숙소 위치, 아니면 첫 번째 장소의 위치
         double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapy() : (meals.isEmpty() ? 0.0 : meals.get(0).getMapy());
@@ -176,13 +176,22 @@ public class ItineraryService {
     }
 
     // 아래와 같이 추가적인 필터링 단계를 거치는 것은 모델의 추천 정확성 보장, 데이터 일관성 및 품질 확보, 사용자 선호도의 세부 조정 등이 있다.
-    private Place selectAccommodation(List<Place> accommodations, UserPreferences preferences) {
+    private Place selectAccommodation(List<Place> accommodations, UserPreferences preferences, int day, int totalDays) {
         if (accommodations.isEmpty()) return null;
-        // 숙소는 선호 숙소 유형에 맞추어 선택
-        return accommodations.stream()
-                .filter(place -> place.getCat3().equals(preferences.getAccommodationPreference()))
-                .findFirst()
-                .orElse(accommodations.get(0));
+
+        // 숙소 교대 간격 설정 (예: 3일마다 교대)
+        int accommodationChangeInterval = 3;
+        if (day % accommodationChangeInterval == 0) {
+            return accommodations.stream()
+                    .filter(place -> place.getCat3().equals(preferences.getAccommodationPreference()))
+                    .findFirst()
+                    .orElse(accommodations.stream()
+                            .sorted(Comparator.comparingDouble(Place::getRating).reversed())
+                            .findFirst()
+                            .orElse(accommodations.get(0)));
+        }
+
+        return null; // 교대할 숙소가 아니면 null 반환
     }
 
     private String determineMealTimeOfDay(int index) {

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PlaceRatingUpdater {
+public class PlaceInfoUpdater {
 
     private final PlaceRepository placeRepository;
     private final GooglePlacesService googlePlacesService;

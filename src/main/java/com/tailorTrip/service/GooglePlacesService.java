@@ -32,11 +32,8 @@ public class GooglePlacesService {
 
     public Place enrichPlaceWithDetails(Place place) {
         try {
-            String query = place.getTitle() + " " + place.getAddr1();
-            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
-
-            String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
-                    + encodedQuery + "&key=" + apiKey;
+            String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
+                    + place.getMapy() + "," + place.getMapx() + "&radius=50&key=" + apiKey;
 
             String response = restTemplate.getForObject(url, String.class);
 

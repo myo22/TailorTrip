@@ -133,7 +133,7 @@ public class ItineraryService {
             case "B02":
                 return CategoryType.ACCOMMODATION;
             default:
-                return CategoryType.ACTIVITY;
+                return CategoryType.ACTIVITY; // 기본적으로 활동으로 분류
         }
     }
 

@@ -45,28 +45,33 @@ public class RecommendationService {
         INDArray output = recommendationModel.predict(input);
 
 
-        // 각 장소에 대해 점수 계산
-        List<PlaceScore> placeScores = regionalPlaces.stream()
-                .map(place -> {
-                    INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
-                    double score = cosineSimilarity(output, placeLabel);
-                    return new PlaceScore(place, score);
-                })
-                .collect(Collectors.toList());
+        // 장소별 점수 계산
+        Map<String, List<PlaceScore>> categorizedPlaces = new HashMap<>();
+        for (Place place : regionalPlaces) {
+            INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
+            double score = cosineSimilarity(output, placeLabel);
 
-        // 점수 순으로 정렬하여 상위 N개 선택
-        List<Place> topPlaces = placeScores.stream()
-                .sorted(Comparator.comparingDouble(PlaceScore::getScore).reversed())
-                .limit(100) // 상위 100개 장소 선택
-                .map(PlaceScore::getPlace)
-                .collect(Collectors.toList());
+            // 카테고리별로 장소 추가
+            categorizedPlaces.computeIfAbsent(place.getCat1(), k -> new ArrayList<>()).add(new PlaceScore(place, score));
+        }
 
-//        // 지리적 근접성 고려하여 필터링
-//        List<Place> filteredPlaces = filterByGeographicalProximity(topPlaces, preferences);
-//
-//        return filteredPlaces;
-        return topPlaces; // 상위 100개 장소 반환
+        List<Place> topPlaces = new ArrayList<>();
 
+        // 각 카테고리에서 상위 100개 장소 선택
+        for (Map.Entry<String, List<PlaceScore>> entry : categorizedPlaces.entrySet()) {
+            List<PlaceScore> scoredPlaces = entry.getValue();
+
+            // 점수로 정렬하여 상위 100개 선택
+            List<PlaceScore> topScoredPlaces = scoredPlaces.stream()
+                    .sorted(Comparator.comparingDouble(PlaceScore::getScore).reversed())
+                    .limit(100) // 각 카테고리에서 100개 선택
+                    .collect(Collectors.toList());
+
+            // 최종 장소 리스트에 추가
+            topPlaces.addAll(topScoredPlaces.stream().map(PlaceScore::getPlace).collect(Collectors.toList()));
+        }
+
+        return topPlaces; // 최종 장소 리스트 반환
     }
 
     private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {

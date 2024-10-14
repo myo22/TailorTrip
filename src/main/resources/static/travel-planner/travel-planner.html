@@ -9,7 +9,8 @@
     <!-- 풀페이지.js 연결 -->
     <script src="./js/fullpage.js"></script>
     <!--  js 연결 -->
-    <script src="./js/script.js"></script>
+    <script src="./js/script.js" defer></script>
+    <script src="./js/submitData.js" defer></script>
 
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/reset.css">
@@ -17,25 +18,24 @@
 </head>
 
 <body>
-
     <div id="wrap">
-        <div class="section section1" id="section1">
+        <section class="section section1" id="section1">
             <div class="container">
                 <div class="section1-wrap">
-                    <div class="section1-welcome">
-                        <img src="./images/pngegg (1).png" alt="">
+                    <div class="left-box">
+                        <h1>기존에 경험하지 못한<br>새로운 플래너</h1>
+                        <h3>고민하던 여행 계획을 중부 플래너로 몇분만에 계획해 보세요!</h3>
+                        <button onclick="scrollToNextSection('section2')">중부 플래너 시작하기</button>
                     </div>
-                    <h1>중부 플래너에<br>오신 것을 환영합니다!</h1>
-                    <p>당신의 완벽한 여행을 위한 맞춤형 플랜을 지금 바로 시작해보세요!</p>
-                    <div class="robot">
-                        <img src="./images/chatbot.png" alt="">
+                    <div class="right-box1">
+                        <div>
+                            <img src="./images/travel-5360_512.gif" alt="">
+                        </div>
                     </div>
-                    <button onclick="scrollToNextSection('section2')">다음</button>
                 </div>
-
             </div>
-        </div>
-        <div class="section section2" id="section2">
+        </section>
+        <section class="section section2" id="section2">
             <div class="container">
                 <div class="section2-wrap-box">
                     <div class="section2-box1">
@@ -45,44 +45,45 @@
                             <img src="./images/7665235.jpg" alt="">
                         </div>
                     </div>
-                    <div class="section2-box1 right-box">
+                    <div class="right-box">
                         <h3 class="planner-txt">중부 플래너</h3>
                         <h1>여행을 떠나고 싶은 지역을<br><span>선택해 주세요</span></h1>
                         <div class="place-box">
-                            <div class="con">서울</div>
-                            <div class="con">대구</div>
-                            <div class="con">부산</div>
-                            <div class="con">인천</div>
-                            <div class="con">광주</div>
-                            <div class="con">대전</div>
-                            <div class="con">울산</div>
-                            <div class="con">세종</div>
-                            <div class="con">강원</div>
-                            <div class="con">충북</div>
-                            <div class="con">충남</div>
-                            <div class="con">전북</div>
-                            <div class="con">전남</div>
-                            <div class="con">경북</div>
-                            <div class="con">경남</div>
-                            <div class="con">제주</div>
+                            <div class="con" data-region="서울">서울</div>
+                            <div class="con" data-region="대구">대구</div>
+                            <div class="con" data-region="부산">부산</div>
+                            <div class="con" data-region="인천">인천</div>
+                            <div class="con" data-region="광주">광주</div>
+                            <div class="con" data-region="대전">대전</div>
+                            <div class="con" data-region="울산">울산</div>
+                            <div class="con" data-region="세종">세종</div>
+                            <div class="con" data-region="강원">강원</div>
+                            <div class="con" data-region="충북">충북</div>
+                            <div class="con" data-region="충남">충남</div>
+                            <div class="con" data-region="전북">전북</div>
+                            <div class="con" data-region="전남">전남</div>
+                            <div class="con" data-region="경북">경북</div>
+                            <div class="con" data-region="경남">경남</div>
+                            <div class="con" data-region="제주">제주</div>
                         </div>
-                        <button onclick="scrollToNextSection('section3')">다음</button>
+                        <button id="submit-btn">다음</button>
                     </div>
                 </div>
-
             </div>
-        </div>
-        <div class="section section3" id="section3">
+        </section>
+
+        <section class="section section3" id="section3">
             <div class="container">
                 <div class="section3-wrap-box">
                     <div class="section3-box1">
                         <h3 class="planner-txt">중부 플래너</h3>
                         <h1>여행 기간을<br><span>선택해 주세요!</span></h1>
                         <div class="map">
-                            <img src="./images/7665235.jpg" alt="">
+                            <img src="./images/woman-8587090_640.png" alt="">
                         </div>
                     </div>
                     <div class="section3-box2">
+
                         <div class="calendar">
                             <div class="month">
                                 <button id="prev">&lt;</button>
@@ -100,141 +101,257 @@
                             </div>
                             <div class="days" id="days"></div>
                         </div>
-                        <button class="sec-3-button" onclick="scrollToNextSection('section4')">다음</button>
+                        <button class="sec-3-button" id="submit-btn1">다음</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="section section4" id="section4">
+        </section>
+
+
+
+        <section class="section section4" id="section4">
             <div class="container">
                 <div class="section4-wrap-box">
                     <div class="section4-box1">
                         <h3 class="planner-txt">중부 플래너</h3>
                         <h1>여행 취향을<br><span>알려주세요!</span></h1>
                         <div class="map">
-                            <img src="./images/7665235.jpg" alt="">
+                            <img src="./images/family-7293705_640.png" alt="">
                         </div>
                     </div>
                     <div class="section4-box2 right-box">
                         <div class="box">
-                            <h1 class="headtxt">Q1.여행 목적,</h1>
+                            <h1 class="headtxt">Q1.특정 관심사를 선호하시나요(최대2)</h1>
                             <div class="section4-con">
                                 <div class="image-box img-box1">
-                                    <img src="./images/section3-purpose1.jpg" alt="">
+                                    <img src="./images/history.jpg" alt="">
                                     <div class="box-txt">
-                                        <p>여가 목적으로 가요</p>
+                                        <p>역사</p>
                                     </div>
                                 </div>
                                 <div class="image-box img-box1">
-                                    <img src="./images/section3-purpose2.jpg" alt="">
+                                    <img src="./images/nature.jpg" alt="">
                                     <div class="box-txt">
-                                        <p>비즈니스 목적으로 가요</p>
+                                        <p>자연</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <h1 class="headtxt">Q2.여행을 다닐 때,</h1>
                             <div class="section4-con">
-                                <div class="image-box img-box2">
-                                    <img src="./images/section3-lazy.jpg" alt="">
+                                <div class="image-box img-box1">
+                                    <img src="./images/le.jpg" alt="">
                                     <div class="box-txt">
-                                        <p>느긋하게 다녀요</p>
+                                        <p>휴양</p>
                                     </div>
                                 </div>
-                                <div class="image-box img-box2">
-                                    <img src="./images/section3-2-2.jpg" alt="">
+                                <div class="image-box img-box1">
+                                    <img src="./images/experience.jpg" alt="">
                                     <div class="box-txt">
-                                        <p>부지런히 다녀요</p>
+                                        <p>체험</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <h1 class="headtxt">Q3.이동수단,</h1>
                             <div class="section4-con">
-                                <div class="image-box img-box3">
-                                    <img src="./images/section3-3-1.jpg" alt="">
+                                <div class="image-box img-box1">
+                                    <img src="./images/structure.jpg" alt="">
                                     <div class="box-txt">
-                                        <p>걸어서 가요</p>
-                                    </div>
-                                </div>
-                                <div class="image-box img-box3">
-                                    <img src="./images/section3-2.jpg" alt="">
-                                    <div class="box-txt">
-                                        <p>자동차 타고 가요</p>
+                                        <p>건축/조형물</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <button onclick="scrollToNextSection('section5')">다음</button>
+                        <button id="submit-interests-btn" class="sec-4-button">다음</button>
                     </div>
                 </div>
-
             </div>
-        </div>
-        <div class="section section5" id="section5">
+        </section>
+        <!-- ㅇㄴㅁㅁㅇㅁㄴㅇㅁㅇㅁㄴㅇ -->
+        <section class="section section5" id="section5">
             <div class="container">
                 <div class="section5-wrap-box">
                     <div class="section4-box1">
                         <h3 class="planner-txt">중부 플래너</h3>
                         <h1>여행 취향을<br><span>알려주세요!</span></h1>
                         <div class="map">
-                            <img src="./images/7665235.jpg" alt="">
+                            <img src="./images/road-trip-4399206_640.png" alt="">
                         </div>
                     </div>
                     <div class="section5-box2 right-box">
-                        <h1 class="headtxt">Q4.관심 활동,</h1>
+                        <h1 class="headtxt">Q2.특정 활동을 선호하시나요(최대2개)</h1>
                         <div class="box2-top">
                             <div class="sec-5-box">
-                                <img src="./images/section4-1-1.png" alt="">
+                                <img src="./images/ski.jpg" alt="">
                                 <div class="txt-box">
-                                    <p>카페</p>
+                                    <p>레포츠</p>
                                 </div>
                             </div>
                             <div class="sec-5-box">
-                                <img src="./images/section4-1-2.jpg" alt="">
+                                <img src="./images/concert.jpg" alt="">
                                 <div class="txt-box">
-                                    <p>산책</p>
+                                    <p>공연/행사</p>
                                 </div>
                             </div>
                             <div class="sec-5-box">
-                                <img src="./images/section4-2-1.jpg" alt="">
+                                <img src="./images/shopping.jpg" alt="">
                                 <div class="txt-box">
-                                    <p>관광</p>
+                                    <p>쇼핑</p>
                                 </div>
                             </div>
                             <div class="sec-5-box">
-                                <img src="./images/section4-2-2.jpg" alt="">
+                                <img src="./images/musium.jpg" alt="">
                                 <div class="txt-box">
-                                    <p>맛집탐방</p>
+                                    <p>문화시설</p>
                                 </div>
                             </div>
                         </div>
                         <div class="box2-bottom">
-                            <h1 class="headtxt">Q1.추가할꺼 추가</h1>
+                            <h1 class="headtxt">Q3.동물 동반 하시나요?</h1>
                             <div class="bottom-img-box">
-                                <div class="sec-5-box">
-                                    <img src="./images/section4-1-1.png" alt="">
+                                <div class="img-box2">
+                                    <img src="./images/dog.png" alt="">
+                                    <div class="txt-box">
+                                        <p>애견동반해요</p>
+                                    </div>
                                 </div>
-                                <div class="sec-5-box">
-                                    <img src="./images/section4-1-2.jpg" alt="">
+                                <div class="img-box2">
+                                    <img src="./images/family-6081095_640.jpg" alt="">
+                                    <div class="txt-box">
+                                        <p>애견동반안해요</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <button>완료</button>
-
+                        <button id="submit-activities-btn" class="sec-5-button">다음</button>
                     </div>
 
-                </div>
+                    <!-- right box -->
 
+                </div>
             </div>
-        </div>
+            <!-- section5 container 끝 -->
+        </section>
+        <!-- section5 끝 -->
+        <section class="section section6" id="section6">
+            <div class="container">
+                <div class="wrap-box">
+                    <div class="section4-box1">
+                        <h3 class="planner-txt">중부 플래너</h3>
+                        <h1>여행 취향을<br><span>알려주세요!</span></h1>
+                        <div class="map">
+                            <img src="./images/woman-8070373_640.jpg" alt="">
+                        </div>
+                    </div>
+                    <div class="right-box">
+                        <h1 class="headtxt">Q4.선호하는 음식 종류는 무엇인가요?(최대2개)</h1>
+                        <div class="top-box">
+                            <div class="sec-6-box1">
+                                <img src="./images/kofood.png" alt="">
+                                <div class="txt-box">
+                                    <p>한식</p>
+                                </div>
+                            </div>
+                            <div class="sec-6-box1">
+                                <img src="./images/chifood.png" alt="">
+                                <div class="txt-box">
+                                    <p>중식</p>
+                                </div>
+                            </div>
+                            <div class="sec-6-box1">
+                                <img src="./images/jafood.png" alt="">
+                                <div class="txt-box">
+                                    <p>일식</p>
+                                </div>
+                            </div>
+                            <div class="sec-6-box1">
+                                <img src="./images/wefood.png" alt="">
+                                <div class="txt-box">
+                                    <p>양식</p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="bottom-box">
+                            <h1 class="headtxt">Q5.어떤 여행 스타일을 선호하시나요? ,</h1>
+                            <div class="sec-6-box2">
+                                <img src="./images/lazyy.png" alt="">
+                                <div class="txt-box">
+                                    <p>느긋하게</p>
+                                </div>
+                            </div>
+                            <div class="sec-6-box2">
+                                <img src="./images/walking-7617043_640.png" alt="">
+                                <div class="txt-box">
+                                    <p>보통</p>
+                                </div>
+                            </div>
+                            <div class="sec-6-box2">
+                                <img src="./images/notime.png" alt="">
+                                <div class="txt-box">
+                                    <p>바쁘게</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="submit-food-and-travel-style-btn">다음</button>
+
+                    </div>
+                    <!-- right-box 끝 -->
+                </div>
+            </div>
+            <!-- section6 container 끝 -->
+        </section>
+        <!-- section6 끝 -->
+        <!-- section7 -->
+        <section class="section section7" id="section7">
+            <div class="container">
+                <div class="wrap-box">
+                    <div class="section4-box1">
+                        <h3 class="planner-txt">중부 플래너</h3>
+                        <h1>여행 취향을<br><span>알려주세요!</span></h1>
+                        <div class="map">
+                            <img src="./images/car-5513143_640.png" alt="">
+                        </div>
+                    </div>
+                    <div class="right-box">
+                        <h1 class="headtxt">Q6.어떤 숙소를 선호하시나요?</h1>
+                        <div class="top-box">
+                            <div class="sec-7-box" data-accommodation="펜션">
+                                <img src="./images/pen.png" alt="">
+                                <div class="txt-box">
+                                    <p>펜션</p>
+                                </div>
+                            </div>
+                            <div class="sec-7-box" data-accommodation="모텔">
+                                <img src="./images/mo.png" alt="">
+                                <div class="txt-box">
+                                    <p>모텔</p>
+                                </div>
+                            </div>
+                            <div class="sec-7-box" data-accommodation="민박">
+                                <img src="./images/min.png" alt="">
+                                <div class="txt-box">
+                                    <p>민박</p>
+                                </div>
+                            </div>
+                            <div class="sec-7-box" data-accommodation="호텔">
+                                <img src="./images/hotel.png" alt="">
+                                <div class="txt-box">
+                                    <p>호텔</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a id="submit-accommodation-btn" class="sec-7-button" href="#nextSection"
+                            onclick="submitAccommodationData(event)">완료</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <div class="footer">5</div>
 
         <!-- 상단이동버튼 -->
-        <div class="top-btn"></div>
+        <div class="top-btn">
+            <img src="./images/top-btn.png" alt="">
+        </div>
     </div>
 
 

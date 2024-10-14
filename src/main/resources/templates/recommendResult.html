@@ -35,9 +35,9 @@
                         평점: <span th:text="${item.place.rating}"></span> (총 평점 수: <span th:text="${item.place.userRatingsTotal}"></span>)
                     </span>
                     <br/>
-                    <span th:if="${item.place.openNow != null}">
-                        <span th:text="${item.place.openNow ? '현재 영업 중' : '현재 영업 종료'}"></span>
-                    </span>
+<!--                    <span th:if="${item.place.openNow != null}">-->
+<!--                        <span th:text="${item.place.openNow ? '현재 영업 중' : '현재 영업 종료'}"></span>-->
+<!--                    </span>-->
                     <br/>
                     주소: <span th:text="${item.place.addr1}"></span>, <span th:text="${item.place.addr2}"></span>
                     <br/><br/>

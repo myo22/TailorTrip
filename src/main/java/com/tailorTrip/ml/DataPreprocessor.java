@@ -118,4 +118,10 @@ public class DataPreprocessor {
         // 1D 배열을 2D 배열로 변환 (1행, N열)
         return Nd4j.create(new float[][]{labels});
     }
+
+    // 39차원 제로 레이블 생성
+    public INDArray createZeroLabel() {
+        int totalCategories = CATEGORY_MAP.size() + SUBCATEGORY_MAP.size() + DETAIL_CATEGORY_MAP.size(); // 6 + 18 + 15 = 39
+        return Nd4j.zeros(new int[]{1, totalCategories});
+    }
 }

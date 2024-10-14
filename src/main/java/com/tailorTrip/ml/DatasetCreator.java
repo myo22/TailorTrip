@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static com.tailorTrip.ml.DataPreprocessor.CATEGORY_MAP;
 
+
 @Component
 @RequiredArgsConstructor
 public class DatasetCreator {
@@ -29,17 +30,16 @@ public class DatasetCreator {
     public DataSetIterator createTrainingData() {
         List<DataSet> dataSets = new ArrayList<>();
 
-        List<UserPreferences> Preferences = userPreferencesRepository.findAll();
+        List<UserPreferences> preferences = userPreferencesRepository.findAll();
         List<Place> places = placeRepository.findAll();
 
-        for(UserPreferences pref: Preferences) {
+        for (UserPreferences pref : preferences) {
             // 사용자 선호도를 벡터로 변환
             INDArray input = dataPreprocessor.preprocessUserPreferences(pref);
 
             // 사용자의 중분류, 소분류 기준으로 장소 카테고리 설정
             List<String> userCategories = getUserCategories(pref); // 중분류 기준으로
             List<String> userSpecificCategories = getUserSpecificCategories(pref); // 소분류 기준으로
-
 
             // 긍정적인 샘플 추가
             List<Place> positivePlaces = getPositivePlaces(places, userCategories, userSpecificCategories);
@@ -52,11 +52,10 @@ public class DatasetCreator {
             // 부정적인 샘플 추가 (관련 없는 장소 중 일부 선택)
             List<Place> negativePlaces = getNegativePlaces(places, positivePlaces, 10); // 각 사용자당 10개의 부정 샘플
             for (Place place : negativePlaces) {
-                INDArray labels = Nd4j.zeros(dataPreprocessor.CATEGORY_MAP.size());
+                INDArray labels = dataPreprocessor.createZeroLabel(); // 39차원 제로 레이블
                 DataSet ds = new DataSet(input, labels);
                 dataSets.add(ds);
             }
-
         }
 
         return new ListDataSetIterator<>(dataSets, 32); // 배치 사이즈 설정
@@ -68,6 +67,7 @@ public class DatasetCreator {
             // pref가 null인 경우 처리
             System.out.println("UserPreferences 객체가 null입니다.");
             // 빈 리스트를 반환하거나 적절한 예외 처리
+            return Collections.emptyList();
         }
 
         List<String> userCategories = new ArrayList<>();
@@ -121,7 +121,7 @@ public class DatasetCreator {
             case "호텔":
                 specificCategories.add("B02010100"); // 관광호텔
                 specificCategories.add("B02010500"); // 콘도미니엄
-                specificCategories.add("B02011300"); // 사비스드레지던스
+                specificCategories.add("B02011300"); // 서비스드레지던스
                 break;
             case "모텔":
                 specificCategories.add("B02010900"); // 모텔
@@ -160,22 +160,18 @@ public class DatasetCreator {
 
     // 긍정적인 샘플을 위한 장소 필터링
     private List<Place> getPositivePlaces(List<Place> places, List<String> userCategories, List<String> userSpecificCategories) {
-        List<Place> positivePlaces = new ArrayList<>();
-        for (Place place : places) {
-            if (userCategories.contains(place.getCat2()) || userSpecificCategories.contains(place.getCat3())) {
-                positivePlaces.add(place);
-            }
-        }
-        return positivePlaces;
-    }
-
-    private List<Place> getNegativePlaces(List<Place> allPlaces, List<Place> positivePlaces, int count) {
-        List<Place> negativePlaces = allPlaces.stream()
-                .filter(place -> !positivePlaces.contains(place))
+        return places.stream()
+                .filter(place -> userCategories.contains(place.getCat2()) || userSpecificCategories.contains(place.getCat3()))
                 .collect(Collectors.toList());
-
-        Collections.shuffle(negativePlaces);
-        return negativePlaces.stream().limit(count).collect(Collectors.toList());
     }
 
+    // 부정적인 샘플을 위한 장소 필터링
+    private List<Place> getNegativePlaces(List<Place> allPlaces, List<Place> positivePlaces, int count) {
+        return allPlaces.stream()
+                .filter(place -> !positivePlaces.contains(place))
+                .collect(Collectors.toList())
+                .stream()
+                .limit(count)
+                .collect(Collectors.toList());
+    }
 }

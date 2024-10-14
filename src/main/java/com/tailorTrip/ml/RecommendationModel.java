@@ -15,13 +15,14 @@ import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class RecommendationModel {
 
     private MultiLayerNetwork model;
 
     @PostConstruct
-    private void initializeModel() {
+    public void initializeModel() {
         int inputSize = 4; // DataPreprocessor에서 정의한 특성 벡터 크기
         int hiddenLayer1Size = 128;
         int hiddenLayer2Size = 64;
@@ -50,7 +51,7 @@ public class RecommendationModel {
                 .build());
 
         // 출력층 (Binary Cross-Entropy 손실 함수와 Sigmoid 활성화)
-        builder.layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.XENT)
+        builder.layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.XENT) // Binary Cross-Entropy
                 .activation(Activation.SIGMOID)
                 .nIn(hiddenLayer2Size)
                 .nOut(outputSize)

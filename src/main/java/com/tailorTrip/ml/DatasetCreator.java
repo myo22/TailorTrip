@@ -63,6 +63,13 @@ public class DatasetCreator {
     }
 
     private List<String> getUserCategories(UserPreferences pref) {
+
+        if (pref == null) {
+            // pref가 null인 경우 처리
+            System.out.println("UserPreferences 객체가 null입니다.");
+            // 빈 리스트를 반환하거나 적절한 예외 처리
+        }
+
         List<String> userCategories = new ArrayList<>();
         switch (pref.getInterest()) {
             case "자연":

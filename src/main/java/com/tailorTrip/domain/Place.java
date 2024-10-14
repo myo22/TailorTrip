@@ -23,20 +23,20 @@ public class Place {
     private double mapx; // 경도
     private double mapy; // 위도
     private String tel;
-    private int contentid;
+    private Integer contentid;
     private String cat1; // 대분류 (자연, 인문, 레포츠 등)
     private String cat2; // 중분류 (자연관광지, 역사관광지, 휴양관광지 등)
     private String cat3; // 소분류 (산, 중식, 한식, 백화점 등)
     private String acmpyTypeCd;
     private String firstimage;
     private String firstimage2;
-    private int areacode;
-    private int sigungucode;
-    private int contentTypeId;
+    private Integer areacode;
+    private Integer sigungucode;
+    private Integer contentTypeId;
 
-    private double rating; // 평점 추가
-    private int userRatingsTotal; // 평점 수
-    private int priceLevel; // 가격 수준
+    private Double rating; // 평점 추가
+    private Integer userRatingsTotal; // 평점 수
+    private Integer priceLevel; // 가격 수준
     private String openingHours; // 오픈 시간 (JSON 형식 또는 문자열)
     private String website; // 웹사이트 URL
     private String types; // 카테고리 유형 (콤마로 구분된 문자열)

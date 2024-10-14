@@ -28,8 +28,8 @@
   </select>
   <br/>
 
-  <label for="purpose">여행 목적:</label>
-  <select name="purpose" id="purpose">
+  <label for="activityType">여행 목적:</label>
+  <select name="activityType" id="activityType">
     <option value="문화시설">문화시설</option>
     <option value="공연/행사">공연/행사</option>
     <option value="레포츠">레포츠</option>
@@ -37,8 +37,8 @@
   </select>
   <br/>
 
-  <label for="style">여행 스타일:</label>
-  <select name="style" id="style">
+  <label for="travelPace">여행 스타일:</label>
+  <select name="travelPace" id="travelPace">
     <option value="느긋하게">느긋하게</option>
     <option value="보통">보통</option>
     <option value="바쁘게">바쁘게</option>
@@ -55,8 +55,8 @@
   </select>
   <br/>
 
-  <label for="food">선호하는 음식:</label>
-  <select name="food" id="food" required>
+  <label for="foodPreference">선호하는 음식:</label>
+  <select name="foodPreference" id="foodPreference" required>
     <option value="한식">한식</option>
     <option value="양식">양식</option>
     <option value="중식">중식</option>
@@ -64,21 +64,29 @@
   </select>
   <br/>
 
-  <label for="duration">여행 기간:</label>
-  <select name="duration" id="duration" required>
+  <label for="tripDuration">여행 기간:</label>
+  <select name="tripDuration" id="tripDuration" required>
     <option value="1">하루</option>
     <option value="2">주말</option>
     <option value="7">일주일</option>
   </select>
   <br/>
 
-  <label for="lodging">어떤 숙소:</label>
-  <select name="lodging" id="lodging" required>
+  <label for="accommodationPreference">어떤 숙소:</label>
+  <select name="accommodationPreference" id="accommodationPreference" required>
     <option value="호텔">호텔</option>
     <option value="펜션">펜션</option>
     <option value="모텔">모텔</option>
     <option value="민박">민박</option>
   </select>
+  <br/>
+
+  <!-- 펫 동반 여부 필드 -->
+  <label>펫 동반 여부:</label>
+  <input type="radio" id="petYes" name="petFriendly" value="yes" required>
+  <label for="petYes">예</label>
+  <input type="radio" id="petNo" name="petFriendly" value="no" required>
+  <label for="petNo">아니요</label>
   <br/>
 
   <button type="submit">추천받기</button>

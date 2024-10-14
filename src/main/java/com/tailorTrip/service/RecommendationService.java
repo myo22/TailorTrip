@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.ops.transforms.Transforms;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,12 +70,18 @@ public class RecommendationService {
     }
 
     private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {
-        INDArray dotProductMatrix = vectorA.mmul(vectorB.transpose());
-        double dotProduct = dotProductMatrix.getDouble(0);
-        double normA = vectorA.norm2Number().doubleValue();
-        double normB = vectorB.norm2Number().doubleValue();
-        return dotProduct / (normA * normB);
+        // 두 벡터가 2D인지 확인하고, 아니라면 reshape
+        if (vectorA.rank() < 2) {
+            vectorA = vectorA.reshape(1, vectorA.length());
+        }
+        if (vectorB.rank() < 2) {
+            vectorB = vectorB.reshape(1, vectorB.length());
+        }
+
+        // 코사인 유사도 계산 (Transforms.cosineSim 사용)
+        return Transforms.cosineSim(vectorA, vectorB);
     }
+
 
 //    private List<Place> filterByGeographicalProximity(List<Place> places, UserPreferences preferences) {
 //        // 사용자 위치를 기반으로 지리적 근접성 필터링 (예: 중앙 좌표 또는 사용자 입력 좌표)

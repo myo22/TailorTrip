@@ -70,7 +70,7 @@ public class DataPreprocessor {
 
     // 사용자 선호도를 벡터로 변환
     public INDArray preprocessUserPreferences(UserPreferences prefs) {
-        double[] features = new double[4]; // 특성 벡터 크기 축소
+        float[] features = new float[4]; // 특성 벡터 크기 축소
 
         // 특정 관심사 인코딩 (대분류)
         Integer purposeIndex = CATEGORY_MAP.get(prefs.getInterest());
@@ -89,24 +89,33 @@ public class DataPreprocessor {
         features[3] = accommodationIndex != null ? accommodationIndex : -1; // 카테고리 매핑이 없으면 -1
 
 //        여기서 1D 배열을 2D 배열로 변환
-        return Nd4j.create(new double[][]{features});
+        return Nd4j.create(new float[][]{features});
     }
 
-    // 장소 카테고리를 멀티레이블 원-핫 인코딩으로 변환
     public INDArray preprocessPlaceCategories(String cat1, String cat2, String cat3) {
-        double[] labels = new double[CATEGORY_MAP.size()];
-        Set<String> categories = new HashSet<>();
-        categories.add(cat1);
-        categories.add(cat2);
-        categories.add(cat3);
+        // 각 카테고리별로 원-핫 인코딩을 별도로 수행하고, 합침
+        int totalCategories = CATEGORY_MAP.size() + SUBCATEGORY_MAP.size() + DETAIL_CATEGORY_MAP.size();
+        float[] labels = new float[totalCategories];
 
-        for (String cat : categories) {
-            Integer index = CATEGORY_MAP.get(cat);
-            if (index != null) {
-                labels[index] = 1.0;
-            }
+        // 대분류
+        Integer cat1Index = CATEGORY_MAP.get(cat1);
+        if (cat1Index != null) {
+            labels[cat1Index] = 1.0f;
         }
 
-        return Nd4j.create(labels);
+        // 중분류
+        Integer cat2Index = SUBCATEGORY_MAP.get(cat2);
+        if (cat2Index != null) {
+            labels[CATEGORY_MAP.size() + cat2Index] = 1.0f;
+        }
+
+        // 소분류
+        Integer cat3Index = DETAIL_CATEGORY_MAP.get(cat3);
+        if (cat3Index != null) {
+            labels[CATEGORY_MAP.size() + SUBCATEGORY_MAP.size() + cat3Index] = 1.0f;
+        }
+
+        // 1D 배열을 2D 배열로 변환 (1행, N열)
+        return Nd4j.create(new float[][]{labels});
     }
 }

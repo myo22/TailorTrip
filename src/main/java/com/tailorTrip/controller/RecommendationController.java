@@ -5,6 +5,7 @@ import com.tailorTrip.dto.Itinerary;
 import com.tailorTrip.domain.Place;
 import com.tailorTrip.domain.UserPreferences;
 import com.tailorTrip.service.ItineraryService;
+import com.tailorTrip.service.RecommendationService;
 import com.tailorTrip.service.RegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +23,7 @@ import java.util.List;
 public class RecommendationController {
 
     private final UserPreferencesRepository userPreferencesRepository;
+
 
     private final ItineraryService itineraryService;
 
@@ -72,20 +74,10 @@ public class RecommendationController {
         // 사용자 선호도 저장
         userPreferencesRepository.save(prefs);
 
-        // 일정 생성
         Itinerary itinerary = itineraryService.createItinerary(prefs);
 
-
-        // 일정 항목을 장소 객체로 변환
-        List<ItineraryItemDTO> itineraryItems = itinerary.getItems().stream()
-                .map(item -> {
-                    Place place = itineraryService.getPlaceById(item.getPlaceId());
-                    return new ItineraryItemDTO(item.getTimeOfDay(), item.getActivityType(), place);
-                })
-                .collect(java.util.stream.Collectors.toList());
-
         // 모델에 일정 추가
-        model.addAttribute("itinerary", itineraryItems);
+        model.addAttribute("itinerary", itinerary);
 
         return "recommendResult";
     }

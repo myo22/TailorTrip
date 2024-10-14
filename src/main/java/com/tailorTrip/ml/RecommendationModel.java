@@ -23,7 +23,9 @@ public class RecommendationModel {
     @PostConstruct
     private void initializeModel() {
         int inputSize = 4; // DataPreprocessor에서 정의한 특성 벡터 크기
-        int outputSize = DataPreprocessor.CATEGORY_MAP.size(); // 카테고리 수
+        int hiddenLayer1Size = 128;
+        int hiddenLayer2Size = 64;
+        int outputSize = DataPreprocessor.CATEGORY_MAP.size() + DataPreprocessor.SUBCATEGORY_MAP.size() + DataPreprocessor.DETAIL_CATEGORY_MAP.size(); // 6 + 18 + 15 = 39
 
         NeuralNetConfiguration.ListBuilder builder = new NeuralNetConfiguration.Builder()
                 .seed(123)
@@ -34,23 +36,23 @@ public class RecommendationModel {
         // 첫 번째 은닉층
         builder.layer(0, new DenseLayer.Builder()
                 .nIn(inputSize)
-                .nOut(128)
+                .nOut(hiddenLayer1Size)
                 .activation(Activation.RELU)
                 .weightInit(WeightInit.XAVIER)
                 .build());
 
         // 두 번째 은닉층
         builder.layer(1, new DenseLayer.Builder()
-                .nIn(128)
-                .nOut(64)
+                .nIn(hiddenLayer1Size)
+                .nOut(hiddenLayer2Size)
                 .activation(Activation.RELU)
                 .weightInit(WeightInit.XAVIER)
                 .build());
 
-        // 출력층
-        builder.layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.MCXENT)
-                .activation(Activation.SOFTMAX)
-                .nIn(64)
+        // 출력층 (Binary Cross-Entropy 손실 함수와 Sigmoid 활성화)
+        builder.layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.XENT)
+                .activation(Activation.SIGMOID)
+                .nIn(hiddenLayer2Size)
                 .nOut(outputSize)
                 .build());
 

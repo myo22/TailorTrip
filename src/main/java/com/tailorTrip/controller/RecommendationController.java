@@ -6,6 +6,7 @@ import com.tailorTrip.domain.UserPreferences;
 import com.tailorTrip.dto.UserPreferencesDTO;
 import com.tailorTrip.service.ItineraryServiceImpl;
 import com.tailorTrip.service.RegionService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +36,16 @@ public class RecommendationController {
 
     private final RegionService regionService;
 
-    private UserPreferencesDTO userPreferencesDTO = new UserPreferencesDTO();
+    // 초기 사용자 선호도 DTO를 세션에 저장하는 메서드
+    private UserPreferencesDTO getUserPreferencesDTO(HttpSession session) {
+        UserPreferencesDTO dto = (UserPreferencesDTO) session.getAttribute("userPreferences");
+        if (dto == null) {
+            dto = new UserPreferencesDTO();
+            session.setAttribute("userPreferences", dto);
+        }
+        return dto;
+    }
+
 
     @GetMapping("/home")
     public String showHomePage() {
@@ -42,16 +53,20 @@ public class RecommendationController {
     }
 
     @PostMapping("/submit-region")
-    public ResponseEntity<String> submitRegion(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Map<String, String>> submitRegion(@RequestBody Map<String, String> payload,  HttpSession session) {
         String region = payload.get("region");
-        System.out.println(region);
-        userPreferencesDTO.setRegion(region);
+        UserPreferencesDTO dto = getUserPreferencesDTO(session);
+        dto.setRegion(region);
 
-        return ResponseEntity.ok("Region saved successfully");
+        // JSON 형식의 응답 생성
+        Map<String, String> response = new HashMap<>();
+        response.put("region", region); // 추가된 부분
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/submit-dates")
-    public ResponseEntity<String> submitDates(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> submitDates(@RequestBody Map<String, String> payload,  HttpSession session) {
         String startDateStr = payload.get("startDate");
         String endDateStr = payload.get("endDate");
 
@@ -66,62 +81,75 @@ public class RecommendationController {
         long tripDuration = ChronoUnit.DAYS.between(startDate, endDate);
 
         // DTO에 여행 기간 저장
-        userPreferencesDTO.setTripDuration((int) tripDuration); // 필요한 경우 int로 변환
+        UserPreferencesDTO dto = getUserPreferencesDTO(session);
+        dto.setTripDuration((int) tripDuration);
 
         return ResponseEntity.ok("Dates received: " + startDateStr + " to " + endDateStr + ", Duration: " + tripDuration + " days");
     }
 
     @PostMapping("/submit-interests")
-    public ResponseEntity<String> submitInterests(@RequestBody List<String> interests) {
-        userPreferencesDTO.setInterests(interests.get(0));
-        return ResponseEntity.ok("Interests saved successfully");
+    public ResponseEntity<String> submitInterests(@RequestBody Map<String, Object> payload,  HttpSession session) {
+        List<String> interests = (List<String>) payload.get("interests");
+        UserPreferencesDTO dto = getUserPreferencesDTO(session);
+        dto.setInterests(interests.get(0));
+
+        return ResponseEntity.ok(interests.get(0));
     }
 
     @PostMapping("/submit-activities")
-    public ResponseEntity<String> submitActivities(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<String> submitActivities(@RequestBody Map<String, Object> payload,  HttpSession session) {
         List<String> activities = (List<String>) payload.get("activities");
         String petPreferenceStr = (String) payload.get("petPreference");
 
         // 문자열을 boolean으로 변환
         boolean petPreference = "yes".equalsIgnoreCase(petPreferenceStr); // "yes"면 true, 아니면 false로 변환
 
-        userPreferencesDTO.setActivities(activities.get(0));
-        userPreferencesDTO.setPetFriendly(petPreference);
+        UserPreferencesDTO dto = getUserPreferencesDTO(session);
+        dto.setActivities(activities.get(0));
+        dto.setPetFriendly(petPreference);
+
         return ResponseEntity.ok("Activities received: " + activities + ", Pet Preference: " + petPreference);
     }
 
     @PostMapping("/submit-food-and-travel-style")
-    public ResponseEntity<String> submitFoodAndTravelStyle(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<String> submitFoodAndTravelStyle(@RequestBody Map<String, Object> payload, HttpSession session) {
         List<String> foodPreferences = (List<String>) payload.get("foodPreferences");
         String travelStyle = (String) payload.get("travelStyle");
-        userPreferencesDTO.setFoodPreferences(foodPreferences.get(0));
-        userPreferencesDTO.setTravelPace(travelStyle);
+
+        UserPreferencesDTO dto = getUserPreferencesDTO(session);
+        dto.setFoodPreferences(foodPreferences.get(0));
+        dto.setTravelPace(travelStyle);
         return ResponseEntity.ok("Food Preferences received: " + foodPreferences + ", Travel Style: " + travelStyle);
     }
 
     @PostMapping("/submit-accommodation")
-    public ResponseEntity<String> submitAccommodation(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> submitAccommodation(@RequestBody Map<String, String> payload, HttpSession session) {
         String accommodation = payload.get("accommodation");
-        userPreferencesDTO.setAccommodationPreference(accommodation);
+        UserPreferencesDTO dto = getUserPreferencesDTO(session);
+        dto.setAccommodationPreference(accommodation);
         return ResponseEntity.ok("Accommodation received: " + accommodation);
     }
 
     @PostMapping("/submit-all")
-    public String submitAllPreferences(Model model) {
+    public String submitAllPreferences(Model model, HttpSession session) {
+
+        UserPreferencesDTO dto = getUserPreferencesDTO(session);
 
         // 지역에 따른 중심 좌표 가져오기
-        double[] coordinates = regionService.getCoordinates(userPreferencesDTO.getRegion());
+        double[] coordinates = regionService.getCoordinates(dto.getRegion());
         double userLat = coordinates[0];
         double userLng = coordinates[1];
 
+        // UserPreferences 객체 생성
         UserPreferences prefs = UserPreferences.builder()
-                .region(userPreferencesDTO.getRegion())
-                .interest(userPreferencesDTO.getInterests())
-                .activityType(userPreferencesDTO.getActivities())
-                .petFriendly(userPreferencesDTO.isPetFriendly())
-                .foodPreference(userPreferencesDTO.getFoodPreferences())
-                .travelPace(userPreferencesDTO.getTravelPace())
-                .accommodationPreference(userPreferencesDTO.getAccommodationPreference())
+                .region(dto.getRegion())
+                .tripDuration(dto.getTripDuration())
+                .interest(String.join(", ", dto.getInterests()))
+                .activityType(String.join(", ", dto.getActivities()))
+                .petFriendly(dto.isPetFriendly())
+                .foodPreference(String.join(", ", dto.getFoodPreferences()))
+                .travelPace(dto.getTravelPace())
+                .accommodationPreference(dto.getAccommodationPreference())
                 .userLat(userLat)
                 .userLng(userLng)
                 .build();

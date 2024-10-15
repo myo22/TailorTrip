@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tailorTrip.domain.Place;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
     private final ObjectMapper objectMapper;
 
     @Override
+    @Cacheable(value = "placeRatings", key = "#place.id")
     public Place enrichPlaceWithDetails(Place place) {
         try {
             // Place Details API 사용을 위해 Place ID가 필요합니다.
@@ -86,7 +91,15 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
         return place;
     }
 
-    // 추가적으로 사진 URL을 가져오는 메서드
+    @Override
+    @Async
+    @CachePut(value = "placeRatings", key = "#place.id")
+    public CompletableFuture<Place> enrichPlaceWithDetailsAsync(Place place) {
+        Place enrichedPlace = enrichPlaceWithDetails(place);
+        return CompletableFuture.completedFuture(enrichedPlace);
+    }
+
+    @Override
     public String fetchPhotoUrl(String photoReference, int maxWidth) {
         try {
             String url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth="

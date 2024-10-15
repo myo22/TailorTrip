@@ -26,7 +26,7 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
     private final ObjectMapper objectMapper;
 
     @Override
-    @Cacheable(value = "placeRatings", key = "#place.id")
+    @Cacheable(value = "placeDetails", key = "#place.id")
     public Place enrichPlaceWithDetails(Place place) {
         try {
             // Place Details API 사용을 위해 Place ID가 필요합니다.
@@ -93,7 +93,7 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
 
     @Override
     @Async
-    @CachePut(value = "placeRatings", key = "#place.id")
+    @CachePut(value = "placeDetails", key = "#place.id")
     public CompletableFuture<Place> enrichPlaceWithDetailsAsync(Place place) {
         Place enrichedPlace = enrichPlaceWithDetails(place);
         return CompletableFuture.completedFuture(enrichedPlace);

@@ -12,7 +12,7 @@ import java.util.List;
 public class PlaceInfoUpdater {
 
     private final PlaceRepository placeRepository;
-    private final GooglePlacesService googlePlacesService;
+    private final GooglePlacesServiceImpl googlePlacesService;
 
     public void updatePlaceDetails() {
         List<Place> places = placeRepository.findAll();

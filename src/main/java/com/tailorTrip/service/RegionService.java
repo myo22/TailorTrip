@@ -21,7 +21,9 @@ public class RegionService
         REGION_COORDINATES.put("세종", new double[]{36.4800, 127.2892});
         REGION_COORDINATES.put("강원", new double[]{37.8228, 128.1555});
         REGION_COORDINATES.put("충북", new double[]{36.6356, 127.4913});
+        REGION_COORDINATES.put("충남", new double[]{36.6355, 126.6520});
         REGION_COORDINATES.put("전남", new double[]{34.8671, 126.9911});
+        REGION_COORDINATES.put("전북", new double[]{35.7193, 127.1574});
         REGION_COORDINATES.put("경북", new double[]{36.0726, 128.6075});
         REGION_COORDINATES.put("경남", new double[]{35.1796, 128.0955});
         REGION_COORDINATES.put("제주", new double[]{33.4996, 126.5312});

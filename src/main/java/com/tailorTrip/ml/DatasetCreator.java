@@ -117,43 +117,48 @@ public class DatasetCreator {
     // 소분류 기준 구체적 활동 (숙소, 음식 등)
     private List<String> getUserSpecificCategories(UserPreferences pref) {
         List<String> specificCategories = new ArrayList<>();
-        switch (pref.getAccommodationPreference()) {
-            case "호텔":
-                specificCategories.add("B02010100"); // 관광호텔
-                specificCategories.add("B02010500"); // 콘도미니엄
-                specificCategories.add("B02011300"); // 서비스드레지던스
-                break;
-            case "모텔":
-                specificCategories.add("B02010900"); // 모텔
-                break;
-            case "펜션":
-                specificCategories.add("B02010700"); // 펜션
-                break;
-            case "민박":
-                specificCategories.add("B02011000"); // 민박
-                specificCategories.add("B02010600"); // 유스호스텔
-                specificCategories.add("B02011100"); // 게스트하우스
-                specificCategories.add("B02011200"); // 홈스테이
-                specificCategories.add("B02011600"); // 한옥
-                break;
-            default:
-                break;
-        }
-        switch (pref.getFoodPreference()) {
-            case "한식":
-                specificCategories.add("A05020100"); // 한식
-                break;
-            case "양식":
-                specificCategories.add("A05020200"); // 양식
-                break;
-            case "중식":
-                specificCategories.add("A05020400"); // 중식
-                break;
-            case "일식":
-                specificCategories.add("A05020300"); // 일식
-                break;
-            default:
-                break;
+        if (pref != null) {
+            switch (pref.getAccommodationPreference()) {
+                case "호텔":
+                    specificCategories.add("B02010100"); // 관광호텔
+                    specificCategories.add("B02010500"); // 콘도미니엄
+                    specificCategories.add("B02011300"); // 서비스드레지던스
+                    break;
+                case "모텔":
+                    specificCategories.add("B02010900"); // 모텔
+                    break;
+                case "펜션":
+                    specificCategories.add("B02010700"); // 펜션
+                    break;
+                case "민박":
+                    specificCategories.add("B02011000"); // 민박
+                    specificCategories.add("B02010600"); // 유스호스텔
+                    specificCategories.add("B02011100"); // 게스트하우스
+                    specificCategories.add("B02011200"); // 홈스테이
+                    specificCategories.add("B02011600"); // 한옥
+                    break;
+                default:
+                    break;
+            }
+            switch (pref.getFoodPreference()) {
+                case "한식":
+                    specificCategories.add("A05020100"); // 한식
+                    break;
+                case "양식":
+                    specificCategories.add("A05020200"); // 양식
+                    break;
+                case "중식":
+                    specificCategories.add("A05020400"); // 중식
+                    break;
+                case "일식":
+                    specificCategories.add("A05020300"); // 일식
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            // pref가 null일 때 처리할 로직 (예: 로그 출력, 기본 값 설정 등)
+            System.out.println("Accommodation preference is null.");
         }
         return specificCategories;
     }

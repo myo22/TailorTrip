@@ -15,12 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,14 +33,14 @@ public class RecommendationController {
 
 
 
-    @GetMapping("/home")
-    public String showHomePage() {
-        return "home/home"; // home.html이 static 폴더 아래에 있음
+    @GetMapping("/")
+    public String redirectToHome() {
+        return "redirect:/home/home.html"; // static 폴더 아래의 home.html로 리디렉션
     }
 
 
     @PostMapping("/submit-preferences")
-    public Map<String, String > submitAllPreferences(@RequestBody UserPreferencesDTO prefsDTO, Model model) {
+    public ResponseEntity<Itinerary> submitAllPreferences(@RequestBody UserPreferencesDTO prefsDTO, HttpSession session) {
 
         // 지역에 따른 중심 좌표 가져오기
         double[] coordinates = regionService.getCoordinates(prefsDTO.getRegion());
@@ -57,11 +52,11 @@ public class RecommendationController {
                 .region(prefsDTO.getRegion())
                 .tripDuration(prefsDTO.getTripDuration())
                 .interest(prefsDTO.getInterests().get(0))
-                .activityType(String.join(prefsDTO.getActivities().get(0)))
-                .petFriendly(prefsDTO.isPetFriendly())
+                .activityType(prefsDTO.getActivities().get(0))
+                .petFriendly(prefsDTO.isPetPreference())
                 .foodPreference(prefsDTO.getFoodPreferences().get(0))
-                .travelPace(prefsDTO.getTravelPace())
-                .accommodationPreference(prefsDTO.getAccommodationPreference())
+                .travelPace(prefsDTO.getTravelStyle())
+                .accommodationPreference(prefsDTO.getAccommodation())
                 .userLat(userLat)
                 .userLng(userLng)
                 .build();
@@ -72,13 +67,27 @@ public class RecommendationController {
         // 일정 생성
         Itinerary itinerary = itineraryService.createItinerary(prefs);
 
-        // 모델에 일정 추가
-        model.addAttribute("itinerary", itinerary);
-        model.addAttribute("message", "선호도가 성공적으로 저장되었고, 일정이 생성되었습니다."); // 메시지도 모델에 추가
+        // 세션에 Itinerary 저장
+        session.setAttribute("itinerary", itinerary);
 
-        Map<String, String> map = new HashMap<>();
-        map.put("success", prefsDTO.getRegion());
 
-        return map;
+        return ResponseEntity.ok(itinerary); // 또는 다른 응답 객체를 반환
+    }
+
+    @GetMapping("/recommendResult")
+    public String showRecommendResultPage(Model model, HttpSession session) {
+        Itinerary itinerary = (Itinerary) session.getAttribute("itinerary");
+
+        if (itinerary != null) {
+            model.addAttribute("itinerary", itinerary);
+            System.out.println(itinerary.getDays());
+            System.out.println(itinerary.getDuration());
+            System.out.println(itinerary.getClass());
+
+        } else {
+            // Itinerary가 없는 경우에 대한 처리 (예: 에러 페이지로 리디렉션)
+            return "redirect:/home"; // 홈 페이지로 리디렉션
+        }
+        return "recommendResult"; // recommendResult.html 반환
     }
 }

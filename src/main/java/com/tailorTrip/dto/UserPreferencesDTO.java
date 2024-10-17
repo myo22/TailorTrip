@@ -7,10 +7,10 @@ import java.util.List;
 @Data
 public class UserPreferencesDTO {
     private String region;
-    private String interests;
-    private String activities;
+    private List<String> interests;
+    private List<String> activities;
     private boolean petFriendly;
-    private String foodPreferences;
+    private List<String> foodPreferences;
     private String travelPace;
     private String accommodationPreference;
     private int tripDuration;

@@ -71,7 +71,7 @@ public class RecommendationServiceImpl implements RecommendationService {
             // 점수로 정렬하여 상위 100개 선택
             List<PlaceScore> topScoredPlaces = scoredPlaces.stream()
                     .sorted(Comparator.comparingDouble(PlaceScore::getScore).reversed())
-                    .limit(100) // 애완동물 동반 장소가 포함된 경우 나머지 장소로 100개 맞추기
+                    .limit(100)
                     .collect(Collectors.toList());
 
 

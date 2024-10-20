@@ -42,15 +42,18 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         // 장소별 점수 계산
         Map<String, List<PlaceScore>> categorizedPlaces = new HashMap<>();
-        List<Place> petFriendlyPlaces = new ArrayList<>(); // 애완동물 동반 가능한 장소 리스트
+        boolean petFriendlyIncluded = false; // 애완동물 동반 장소가 포함되었는지 확인하는 플래그
 
         for (Place place : regionalPlaces) {
             INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
             double score = cosineSimilarity(output, placeLabel);
 
-            // 애완동물 동반 여부 체크
+            // 애완동물 동반 여부에 따른 점수 조정
             if (preferences.isPetFriendly() && place.getAcmpyTypeCd().contains("동반가능")) {
-                petFriendlyPlaces.add(place); // 애완동물 동반 가능한 장소 리스트에 추가
+                score += 10; // 애완동물 동반 장소 점수 증가
+                petFriendlyIncluded = true; // 애완동물 동반 장소 포함
+            } else if (preferences.isPetFriendly()) {
+                score -= 5; // 비애완동물 장소 점수 감소
             }
 
             // 카테고리별로 장소 추가
@@ -58,20 +61,11 @@ public class RecommendationServiceImpl implements RecommendationService {
                     .add(new PlaceScore(place, score));
         }
 
-        Set<Place> topPlaces = new HashSet<>(); // 중복 제거를 위해 Set 사용
+        List<Place> topPlaces = new ArrayList<>();
 
         // 각 카테고리에서 상위 100개 장소 선택
         for (Map.Entry<String, List<PlaceScore>> entry : categorizedPlaces.entrySet()) {
             List<PlaceScore> scoredPlaces = entry.getValue();
-
-            // 애완동물 동반 장소가 있는 경우, 먼저 해당 장소 추가
-            if (preferences.isPetFriendly()) {
-                for (Place petPlace : petFriendlyPlaces) {
-                    if (petPlace.getCat1().equals(entry.getKey())) {
-                        topPlaces.add(petPlace); // 중복 없이 추가
-                    }
-                }
-            }
 
             // 점수로 정렬하여 상위 100개 선택
             List<PlaceScore> topScoredPlaces = scoredPlaces.stream()
@@ -84,7 +78,21 @@ public class RecommendationServiceImpl implements RecommendationService {
             topPlaces.addAll(topScoredPlaces.stream().map(PlaceScore::getPlace).collect(Collectors.toList()));
         }
 
-        return new ArrayList<>(topPlaces); // Set을 List로 변환하여 반환
+        // 애완동물 동반 장소가 포함되지 않았다면 강제로 추가
+        if (!petFriendlyIncluded && topPlaces.size() < 100) {
+            List<Place> petFriendlyPlaces = regionalPlaces.stream()
+                    .filter(place -> place.getAcmpyTypeCd().contains("동반가능"))
+                    .collect(Collectors.toList());
+
+            // 애완동물 동반 장소를 추천 리스트에 추가
+            for (Place petPlace : petFriendlyPlaces) {
+                if (topPlaces.size() >= 100) break;
+                topPlaces.add(petPlace);
+            }
+        }
+
+
+        return topPlaces; // 최종 장소 리스트 반환
     }
 
     private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {

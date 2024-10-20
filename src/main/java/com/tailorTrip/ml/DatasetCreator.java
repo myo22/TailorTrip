@@ -117,8 +117,20 @@ public class DatasetCreator {
     // 소분류 기준 구체적 활동 (숙소, 음식 등)
     private List<String> getUserSpecificCategories(UserPreferences pref) {
         List<String> specificCategories = new ArrayList<>();
-        if (pref != null) {
-            switch (pref.getAccommodationPreference()) {
+        if (pref == null) {
+            System.out.println("UserPreferences is null.");
+            return specificCategories; // early return
+        }
+
+        addAccommodationCategories(pref.getAccommodationPreference(), specificCategories);
+        addFoodCategories(pref.getFoodPreference(), specificCategories);
+
+        return specificCategories;
+    }
+
+    private void addAccommodationCategories(String accommodationPref, List<String> specificCategories) {
+        if (accommodationPref != null) {
+            switch (accommodationPref) {
                 case "호텔":
                     specificCategories.add("B02010100"); // 관광호텔
                     specificCategories.add("B02010500"); // 콘도미니엄
@@ -140,7 +152,14 @@ public class DatasetCreator {
                 default:
                     break;
             }
-            switch (pref.getFoodPreference()) {
+        } else {
+            System.out.println("Accommodation preference is null.");
+        }
+    }
+
+    private void addFoodCategories(String foodPref, List<String> specificCategories) {
+        if (foodPref != null) {
+            switch (foodPref) {
                 case "한식":
                     specificCategories.add("A05020100"); // 한식
                     break;
@@ -157,10 +176,8 @@ public class DatasetCreator {
                     break;
             }
         } else {
-            // pref가 null일 때 처리할 로직 (예: 로그 출력, 기본 값 설정 등)
-            System.out.println("Accommodation preference is null.");
+            System.out.println("Food preference is null.");
         }
-        return specificCategories;
     }
 
     // 긍정적인 샘플을 위한 장소 필터링

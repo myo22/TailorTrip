@@ -68,7 +68,8 @@ public class ItineraryServiceImpl implements ItineraryService {
             for (int i = 0; i < dayMeals.size(); i++) {
                 Place meal = dayMeals.get(i);
                 // 평점 및 상세 정보가 없는 경우 Google Place API를 통해 요청
-                if (meal.getRating() == null || meal.getUserRatingsTotal() == 0) {
+                if (meal.getRating() <= 0 || meal.getUserRatingsTotal() == 0) {
+                    System.out.println("이제 서비스 보낸다");
                     CompletableFuture<Void> future = googlePlacesService.enrichPlaceWithDetailsAsync(meal)
                             .thenAccept(enrichedPlace -> {
                                 if (enrichedPlace.getRating() != null && enrichedPlace.getUserRatingsTotal() > 0) {
@@ -102,7 +103,8 @@ public class ItineraryServiceImpl implements ItineraryService {
             for (int i = 0; i < dayActivities.size(); i++) {
                 Place activity = dayActivities.get(i);
                 // 평점 및 상세 정보가 없는 경우 Google Place API를 통해 요청
-                if (activity.getRating() == null || activity.getUserRatingsTotal() == 0) {
+                if (activity.getRating() <= 0 || activity.getUserRatingsTotal() == 0) {
+                    System.out.println("이제 서비스 보낸다");
                     CompletableFuture<Void> future = googlePlacesService.enrichPlaceWithDetailsAsync(activity)
                             .thenAccept(enrichedPlace -> {
                                 if (enrichedPlace.getRating() != null && enrichedPlace.getUserRatingsTotal() > 0) {

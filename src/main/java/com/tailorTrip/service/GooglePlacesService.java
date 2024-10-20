@@ -8,5 +8,4 @@ public interface GooglePlacesService {
 
     public Place enrichPlaceWithDetails(Place place);
     CompletableFuture<Place> enrichPlaceWithDetailsAsync(Place place);
-    String fetchPhotoUrl(String photoReference, int maxWidth);
 }

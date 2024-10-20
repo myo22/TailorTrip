@@ -29,14 +29,13 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
     @Cacheable(value = "placeDetails", key = "#place.id")
     public Place enrichPlaceWithDetails(Place place) {
         try {
-            // Place Details API 사용을 위해 Place ID가 필요합니다.
-            // 현재 Place 엔티티에 Place ID가 없다면, Nearby Search로 Place ID를 먼저 가져와야 합니다.
-            String query = place.getTitle() + " " + place.getAddr1();
-            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
+            // 위도와 경도
+            double latitude = place.getMapy();
+            double longitude = place.getMapx();
 
             // Nearby Search API를 통해 Place ID 가져오기
-            String nearbySearchUrl = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
-                    + encodedQuery + "&key=" + apiKey;
+            String nearbySearchUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
+                    + latitude + "," + longitude + "&radius=1500&key=" + apiKey;
 
             String nearbyResponse = restTemplate.getForObject(nearbySearchUrl, String.class);
             JsonNode nearbyRoot = objectMapper.readTree(nearbyResponse);
@@ -75,12 +74,6 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
                         String website = detailsResult.path("website").asText(null);
                         place.updateWebsite(website);
 
-                        // 사진 참조 ID
-                        JsonNode photos = detailsResult.path("photos");
-                        if (photos.isArray() && photos.size() > 0) {
-                            String photoReference = photos.get(0).path("photo_reference").asText(null);
-                            place.updatePhotoReference(photoReference);
-                        }
                     }
                 }
             }
@@ -97,19 +90,5 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
     public CompletableFuture<Place> enrichPlaceWithDetailsAsync(Place place) {
         Place enrichedPlace = enrichPlaceWithDetails(place);
         return CompletableFuture.completedFuture(enrichedPlace);
-    }
-
-    @Override
-    public String fetchPhotoUrl(String photoReference, int maxWidth) {
-        try {
-            String url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth="
-                    + maxWidth + "&photoreference=" + photoReference + "&key=" + apiKey;
-
-            // 실제로 이미지는 리다이렉트되므로, URL을 직접 저장하거나 다운로드할 수 있음
-            return url;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

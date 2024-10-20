@@ -39,7 +39,6 @@ public class Place {
     private Integer priceLevel; // 가격 수준
     private String openingHours; // 오픈 시간 (JSON 형식 또는 문자열)
     private String website; // 웹사이트 URL
-    private String photoReference; // 사진 참조 ID
 
     public void updateRating(double rating) {
         this.rating = rating;
@@ -65,10 +64,6 @@ public class Place {
         this.website = website;
     }
 
-
-    public void updatePhotoReference(String photoReference) {
-        this.photoReference = photoReference;
-    }
 }
 
 

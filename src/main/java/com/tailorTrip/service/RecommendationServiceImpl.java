@@ -49,11 +49,14 @@ public class RecommendationServiceImpl implements RecommendationService {
             double score = cosineSimilarity(output, placeLabel);
 
             // 애완동물 동반 여부에 따른 점수 조정
-            if (preferences.isPetFriendly() && place.getAcmpyTypeCd().contains("동반가능")) {
-                score += 10; // 애완동물 동반 장소 점수 증가
-                petFriendlyIncluded = true; // 애완동물 동반 장소 포함
-            } else if (preferences.isPetFriendly()) {
-                score -= 5; // 비애완동물 장소 점수 감소
+            if (preferences.isPetFriendly()) {
+                String acmpyTypeCd = place.getAcmpyTypeCd();
+                if (acmpyTypeCd != null && acmpyTypeCd.contains("동반가능")) {
+                    score += 10; // 애완동물 동반 장소 점수 증가
+                    petFriendlyIncluded = true; // 애완동물 동반 장소 포함
+                } else {
+                    score -= 5; // 비애완동물 장소 점수 감소
+                }
             }
 
             // 카테고리별로 장소 추가

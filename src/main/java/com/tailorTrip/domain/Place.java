@@ -39,7 +39,6 @@ public class Place {
     private Integer priceLevel; // 가격 수준
     private String openingHours; // 오픈 시간 (JSON 형식 또는 문자열)
     private String website; // 웹사이트 URL
-    private String types; // 카테고리 유형 (콤마로 구분된 문자열)
     private String photoReference; // 사진 참조 ID
 
     public void updateRating(double rating) {
@@ -64,11 +63,6 @@ public class Place {
 
     public void updateWebsite(String website) {
         this.website = website;
-    }
-
-
-    public void updateTypes(String types) {
-        this.types = types;
     }
 
 

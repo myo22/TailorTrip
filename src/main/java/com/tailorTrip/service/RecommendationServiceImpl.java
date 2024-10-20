@@ -27,7 +27,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final DataPreprocessor dataPreprocessor;
 
     @Override
-    public List<Place> getRecommendations(UserPreferences preferences) {
+    public Set<Place> getRecommendations(UserPreferences preferences) {
 
         // 데이터베이스 쿼리를 통해 지역별로 필터링된 장소들 가져오기
         List<Place> regionalPlaces = placeRepository.findByAddr1Containing(preferences.getRegion());
@@ -42,25 +42,40 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         // 장소별 점수 계산
         Map<String, List<PlaceScore>> categorizedPlaces = new HashMap<>();
+        List<Place> petFriendlyPlaces = new ArrayList<>(); // 애완동물 동반 가능한 장소 리스트
         for (Place place : regionalPlaces) {
             INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
             double score = cosineSimilarity(output, placeLabel);
 
+            // 애완동물 동반 여부 체크
+            if (preferences.isPetFriendly() && place.getAcmpyTypeCd().contains("동반가능")) {
+                petFriendlyPlaces.add(place); // 애완동물 동반 가능한 장소 리스트에 추가
+            }
+
             // 카테고리별로 장소 추가
-            categorizedPlaces.computeIfAbsent(place.getCat1(), k -> new ArrayList<>()).add(new PlaceScore(place, score));
+            categorizedPlaces.computeIfAbsent(place.getCat1(), k -> new ArrayList<>())
+                    .add(new PlaceScore(place, score));
         }
 
-        List<Place> topPlaces = new ArrayList<>();
+        Set<Place> topPlaces = new HashSet<>(); // 중복 제거를 위해 Set 사용
 
         // 각 카테고리에서 상위 100개 장소 선택
         for (Map.Entry<String, List<PlaceScore>> entry : categorizedPlaces.entrySet()) {
             List<PlaceScore> scoredPlaces = entry.getValue();
 
+            // 애완동물 동반 장소가 있는 경우, 먼저 해당 장소 추가
+            if (preferences.isPetFriendly()) {
+                topPlaces.addAll(petFriendlyPlaces.stream()
+                        .filter(p -> p.getCat1().equals(entry.getKey()))
+                        .collect(Collectors.toList()));
+            }
+
             // 점수로 정렬하여 상위 100개 선택
             List<PlaceScore> topScoredPlaces = scoredPlaces.stream()
                     .sorted(Comparator.comparingDouble(PlaceScore::getScore).reversed())
-                    .limit(100) // 각 카테고리에서 100개 선택
+                    .limit(100 - topPlaces.size()) // 애완동물 동반 장소가 포함된 경우 나머지 장소로 100개 맞추기
                     .collect(Collectors.toList());
+
 
             // 최종 장소 리스트에 추가
             topPlaces.addAll(topScoredPlaces.stream().map(PlaceScore::getPlace).collect(Collectors.toList()));

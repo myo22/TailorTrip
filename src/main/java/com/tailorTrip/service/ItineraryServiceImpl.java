@@ -25,7 +25,7 @@ public class ItineraryServiceImpl implements ItineraryService {
     @Override
     public Itinerary createItinerary(UserPreferences preferences) {
         int duration = preferences.getTripDuration(); // 여행 기간
-        Set<Place> recommendedPlaces = recommendationService.getRecommendations(preferences); // 100개의 장소들
+        List<Place> recommendedPlaces = recommendationService.getRecommendations(preferences); // 100개의 장소들
 
         // 장소를 카테고리별로 분류
         Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
@@ -163,7 +163,7 @@ public class ItineraryServiceImpl implements ItineraryService {
                 .build();
     }
 
-    private Map<CategoryType, List<Place>> categorizePlaces(Set<Place> places) {
+    private Map<CategoryType, List<Place>> categorizePlaces(List<Place> places) {
         Map<CategoryType, List<Place>> categorized = new HashMap<>();
         for (Place place : places) {
             CategoryType type = determineCategoryType(place);

@@ -41,8 +41,8 @@ public class ItineraryServiceImpl implements ItineraryService {
         Place selectedAccommodation = selectAccommodation(accommodations, preferences, duration);
 
         // 초기 위치: 숙소가 있다면 숙소 위치, 아니면 첫 번째 장소의 위치
-        double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapy() : (meals.isEmpty() ? 0.0 : meals.get(0).getMapy());
-        double currentLng = selectedAccommodation != null ? selectedAccommodation.getMapx() : (meals.isEmpty() ? 0.0 : meals.get(0).getMapx());
+        double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapy() : 0.0;
+        double currentLng = selectedAccommodation != null ? selectedAccommodation.getMapx() : 0.0;
 
         List<ItineraryDay> itineraryDays = new ArrayList<>();
         int totalDays = duration;
@@ -61,102 +61,55 @@ public class ItineraryServiceImpl implements ItineraryService {
                 activitiesPerDay += 1; // 바쁘게: 오전, 오후, 저녁 활동
             }
 
-            // 식사 장소 할당 (카테고리별 균형)
-            List<Place> dayMeals = selectBalancedPlaces(meals, mealsPerDay, CategoryType.MEAL);
-            List<CompletableFuture<Void>> mealFutures = new ArrayList<>();
+            // 식사 장소 할당 (가까운 곳으로 선택)
+            for (int i = 0; i < mealsPerDay && !meals.isEmpty(); i++) {
+                Place closestMeal = findClosestPlace(currentLat, currentLng, meals);
+                if (closestMeal != null) {
+                    items.add(ItineraryItem.builder()
+                            .timeOfDay(determineMealTimeOfDay(i))
+                            .place(closestMeal)
+                            .activityType("식사")
+                            .build());
 
-            for (int i = 0; i < dayMeals.size(); i++) {
-                Place meal = dayMeals.get(i);
-                // 평점 및 상세 정보가 없는 경우 Google Place API를 통해 요청
-                if (meal.getRating() <= 0 || meal.getUserRatingsTotal() == 0) {
-                    System.out.println("이제 서비스 보낸다");
-                    CompletableFuture<Void> future = googlePlacesService.enrichPlaceWithDetailsAsync(meal)
-                            .thenAccept(enrichedPlace -> {
-                                if (enrichedPlace.getRating() != null && enrichedPlace.getUserRatingsTotal() > 0) {
-                                    placeRepository.save(enrichedPlace); // 평점 및 상세 정보 저장
-                                }
-                            })
-                            .exceptionally(ex -> {
-                                // 에러 로그 추가
-                                log.info("Failed to enrich place details for Place ID: {}", meal.getId(), ex);
-                                return null;
-                            });
-                    mealFutures.add(future);
+                    // 현재 위치 업데이트
+                    currentLat = closestMeal.getMapy();
+                    currentLng = closestMeal.getMapx();
+
+                    meals.remove(closestMeal); // 선택된 장소 제거
                 }
-
-                String timeOfDay = determineMealTimeOfDay(i);
-                ItineraryItem item = ItineraryItem.builder()
-                        .timeOfDay(timeOfDay)
-                        .place(meal)
-                        .activityType("식사")
-                        .build();
-                items.add(item);
-                currentLat = meal.getMapy();
-                currentLng = meal.getMapx();
-                meals.remove(meal); // 선택된 장소는 리스트에서 제거
             }
 
-            // 활동 장소 할당 (카테고리별 균형)
-            List<Place> dayActivities = selectBalancedPlaces(activities, activitiesPerDay, CategoryType.ACTIVITY);
-            List<CompletableFuture<Void>> activityFutures = new ArrayList<>();
+            // 활동 장소 할당 (가까운 곳으로 선택)
+            for (int i = 0; i < activitiesPerDay && !activities.isEmpty(); i++) {
+                Place closestActivity = findClosestPlace(currentLat, currentLng, activities);
+                if (closestActivity != null) {
+                    items.add(ItineraryItem.builder()
+                            .timeOfDay(determineActivityTimeOfDay(i))
+                            .place(closestActivity)
+                            .activityType(determineActivityType(closestActivity))
+                            .build());
 
-            for (int i = 0; i < dayActivities.size(); i++) {
-                Place activity = dayActivities.get(i);
-                // 평점 및 상세 정보가 없는 경우 Google Place API를 통해 요청
-                if (activity.getRating() <= 0 || activity.getUserRatingsTotal() == 0) {
-                    System.out.println("이제 서비스 보낸다");
-                    CompletableFuture<Void> future = googlePlacesService.enrichPlaceWithDetailsAsync(activity)
-                            .thenAccept(enrichedPlace -> {
-                                if (enrichedPlace.getRating() != null && enrichedPlace.getUserRatingsTotal() > 0) {
-                                    placeRepository.save(enrichedPlace); // 평점 및 상세 정보 저장
-                                }
-                            })
-                            .exceptionally(ex -> {
-                                // 에러 로그 추가
-                                log.info("Failed to enrich place details for Place ID: {}", activity.getId(), ex);
-                                return null;
-                            });
-                    activityFutures.add(future);
+                    // 현재 위치 업데이트
+                    currentLat = closestActivity.getMapy();
+                    currentLng = closestActivity.getMapx();
+
+                    activities.remove(closestActivity); // 선택된 장소 제거
                 }
-
-                String timeOfDay = determineActivityTimeOfDay(i);
-                ItineraryItem item = ItineraryItem.builder()
-                        .timeOfDay(timeOfDay)
-                        .place(activity)
-                        .activityType(determineActivityType(activity))
-                        .build();
-                items.add(item);
-                currentLat = activity.getMapy();
-                currentLng = activity.getMapx();
-                activities.remove(activity); // 선택된 장소는 리스트에서 제거
             }
 
-            // 모든 비동기 작업이 완료될 때까지 대기
-            List<CompletableFuture<?>> allFutures = new ArrayList<>();
-            allFutures.addAll(mealFutures);
-            allFutures.addAll(activityFutures);
-
-            CompletableFuture.allOf(allFutures.toArray(new CompletableFuture[0])).join();
-
-            // 숙소 배정 (마지막 날)
+            // 마지막 날에 숙소 배정
             if (selectedAccommodation != null && day == totalDays) {
-                ItineraryItem accommodationItem = ItineraryItem.builder()
+                items.add(ItineraryItem.builder()
                         .timeOfDay("숙소")
                         .place(selectedAccommodation)
                         .activityType("숙박")
-                        .build();
-                items.add(accommodationItem);
-                // 숙소 위치로 현재 위치 업데이트 (필요 시)
-                currentLat = selectedAccommodation.getMapy();
-                currentLng = selectedAccommodation.getMapx();
+                        .build());
             }
 
-            ItineraryDay itineraryDay = ItineraryDay.builder()
+            itineraryDays.add(ItineraryDay.builder()
                     .dayNumber(day)
                     .items(items)
-                    .build();
-
-            itineraryDays.add(itineraryDay);
+                    .build());
         }
 
         return Itinerary.builder()
@@ -183,36 +136,6 @@ public class ItineraryServiceImpl implements ItineraryService {
             default:
                 return CategoryType.ACTIVITY; // 기본적으로 활동으로 분류
         }
-    }
-
-    /**
-     * 카테고리별로 균형 있게 장소를 선택합니다.
-     *
-     * @param availablePlaces 선택 가능한 장소 목록
-     * @param count           선택할 장소 수
-     * @param categoryType    카테고리 유형
-     * @return 선택된 장소 목록
-     */
-    private List<Place> selectBalancedPlaces(List<Place> availablePlaces, int count, CategoryType categoryType) {
-        List<Place> selected = new ArrayList<>();
-        if (availablePlaces.isEmpty()) return selected;
-
-        // 카테고리별로 필터링
-        List<Place> filteredPlaces = availablePlaces.stream()
-                .filter(place -> determineCategoryType(place) == categoryType)
-                .sorted(Comparator
-                        .comparingDouble(Place::getRating).reversed()
-                )
-                .collect(Collectors.toList());
-
-        Iterator<Place> iterator = filteredPlaces.iterator();
-        while (iterator.hasNext() && selected.size() < count) {
-            Place place = iterator.next();
-            selected.add(place);
-            availablePlaces.remove(place); // 전체 리스트에서도 제거하여 중복 방지
-        }
-
-        return selected;
     }
 
     /**

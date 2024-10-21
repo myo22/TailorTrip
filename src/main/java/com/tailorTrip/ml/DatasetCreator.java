@@ -71,45 +71,57 @@ public class DatasetCreator {
         }
 
         List<String> userCategories = new ArrayList<>();
-        switch (pref.getInterest()) {
-            case "자연":
-                userCategories.add("A0101"); // 자연관광지
-                break;
-            case "역사":
-                userCategories.add("A0201"); // 역사관광지
-                break;
-            case "휴양":
-                userCategories.add("A0202"); // 휴양관광지
-                break;
-            case "체험":
-                userCategories.add("A0203"); // 체험관광지
-                break;
-            case "건축/조형물":
-                userCategories.add("A0205"); // 건축/조형물
-                userCategories.add("A0204"); // 산업관광지
-                break;
-            default:
-                break;
+
+        // 관심사 리스트를 반복문으로 처리
+        if (pref.getInterest() != null) {
+            for (String interest : pref.getInterest()) {
+                switch (interest) {
+                    case "자연":
+                        userCategories.add("A0101"); // 자연관광지
+                        break;
+                    case "역사":
+                        userCategories.add("A0201"); // 역사관광지
+                        break;
+                    case "휴양":
+                        userCategories.add("A0202"); // 휴양관광지
+                        break;
+                    case "체험":
+                        userCategories.add("A0203"); // 체험관광지
+                        break;
+                    case "건축/조형물":
+                        userCategories.add("A0205"); // 건축/조형물
+                        userCategories.add("A0204"); // 산업관광지
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
-        switch (pref.getActivityType()) {
-            case "레포츠":
-                userCategories.add("A0301");        // 레포츠 소개
-                userCategories.add("A0302");        // 육상 레포츠
-                userCategories.add("A0303");        // 수상 레포츠
-                userCategories.add("A0304");        // 항공 레포츠
-                userCategories.add("A0305");        // 복합 레포츠
-                break;
-            case "공연/행사":
-                userCategories.add("A0208");        // 공연/행사
-                break;
-            case "쇼핑":
-                userCategories.add("A0401");        // 쇼핑
-                break;
-            case "문화시설":
-                userCategories.add("A0206");        // 문화시설
-                break;
-            default:
-                break;
+
+        // 활동 스타일 리스트를 반복문으로 처리
+        if (pref.getActivityType() != null) {
+            for (String activityType : pref.getActivityType()) {
+                switch (activityType) {
+                    case "레포츠":
+                        userCategories.add("A0301"); // 레포츠 소개
+                        userCategories.add("A0302"); // 육상 레포츠
+                        userCategories.add("A0303"); // 수상 레포츠
+                        userCategories.add("A0304"); // 항공 레포츠
+                        userCategories.add("A0305"); // 복합 레포츠
+                        break;
+                    case "공연/행사":
+                        userCategories.add("A0208"); // 공연/행사
+                        break;
+                    case "쇼핑":
+                        userCategories.add("A0401"); // 쇼핑
+                        break;
+                    case "문화시설":
+                        userCategories.add("A0206"); // 문화시설
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         return userCategories;
     }
@@ -123,7 +135,12 @@ public class DatasetCreator {
         }
 
         addAccommodationCategories(pref.getAccommodationPreference(), specificCategories);
-        addFoodCategories(pref.getFoodPreference(), specificCategories);
+        // 음식 선호 리스트를 처리
+        if (pref.getFoodPreference() != null) {
+            for (String foodPref : pref.getFoodPreference()) {
+                addFoodCategories(foodPref, specificCategories);
+            }
+        }
 
         return specificCategories;
     }

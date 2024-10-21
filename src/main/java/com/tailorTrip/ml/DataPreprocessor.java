@@ -73,16 +73,46 @@ public class DataPreprocessor {
         float[] features = new float[4]; // 특성 벡터 크기 축소
 
         // 특정 관심사 인코딩 (대분류)
-        Integer purposeIndex = CATEGORY_MAP.get(prefs.getInterest());
-        features[0] = purposeIndex != null ? purposeIndex : -1; // 카테고리 매핑이 없으면 -1
+        if (prefs.getInterest() != null) {
+            Set<Integer> purposeIndexes = new HashSet<>();
+            for (String interest : prefs.getInterest()) {
+                Integer purposeIndex = CATEGORY_MAP.get(interest);
+                if (purposeIndex != null) {
+                    purposeIndexes.add(purposeIndex);
+                }
+            }
+            features[0] = purposeIndexes.isEmpty() ? -1 : (float) purposeIndexes.size(); // 카테고리 매핑이 없으면 -1
+        } else {
+            features[0] = -1; // 관심사가 없는 경우
+        }
 
         // 특정 활동 스타일 인코딩 (중분류)
-        Integer paceIndex = SUBCATEGORY_MAP.get(prefs.getActivityType());
-        features[1] = paceIndex != null ? paceIndex : -1; // 카테고리 매핑이 없으면 -1
+        if (prefs.getActivityType() != null) {
+            Set<Integer> paceIndexes = new HashSet<>();
+            for (String activityType : prefs.getActivityType()) {
+                Integer paceIndex = SUBCATEGORY_MAP.get(activityType);
+                if (paceIndex != null) {
+                    paceIndexes.add(paceIndex);
+                }
+            }
+            features[1] = paceIndexes.isEmpty() ? -1 : (float) paceIndexes.size(); // 카테고리 매핑이 없으면 -1
+        } else {
+            features[1] = -1; // 활동 스타일이 없는 경우
+        }
 
         // 선호하는 음식 인코딩 (소분류)
-        Integer foodIndex = DETAIL_CATEGORY_MAP.get(prefs.getFoodPreference());
-        features[2] = foodIndex != null ? foodIndex : -1; // 카테고리 매핑이 없으면 -1
+        if (prefs.getFoodPreference() != null) {
+            Set<Integer> foodIndexes = new HashSet<>();
+            for (String food : prefs.getFoodPreference()) {
+                Integer foodIndex = DETAIL_CATEGORY_MAP.get(food);
+                if (foodIndex != null) {
+                    foodIndexes.add(foodIndex);
+                }
+            }
+            features[2] = foodIndexes.isEmpty() ? -1 : (float) foodIndexes.size(); // 카테고리 매핑이 없으면 -1
+        } else {
+            features[2] = -1; // 선호 음식이 없는 경우
+        }
 
         // 숙소 인코딩 (소분류)
         Integer accommodationIndex = DETAIL_CATEGORY_MAP.get(prefs.getAccommodationPreference());

@@ -4,6 +4,7 @@ import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.Repository.UserPreferencesRepository;
 import com.tailorTrip.domain.Place;
 import com.tailorTrip.domain.UserPreferences;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -27,6 +28,7 @@ public class DatasetCreator {
     private final PlaceRepository placeRepository;
     private final DataPreprocessor dataPreprocessor;
 
+    @Transactional
     public DataSetIterator createTrainingData() {
         List<DataSet> dataSets = new ArrayList<>();
 

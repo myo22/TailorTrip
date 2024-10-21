@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 public class ItineraryServiceImpl implements ItineraryService {
 
     private final RecommendationService recommendationService;
-    private final GooglePlacesService googlePlacesService; // 인터페이스로 변경
-    private final PlaceRepository placeRepository;
 
     @Override
     public Itinerary createItinerary(UserPreferences preferences) {

@@ -122,29 +122,6 @@ public class DataPreprocessor {
         return Nd4j.create(new float[][]{normalize(features)});
     }
 
-    // 정규화 메서드
-    private float[] normalize(float[] array) {
-        float min = Float.MAX_VALUE;
-        float max = Float.MIN_VALUE;
-
-        // 최소값 및 최대값 계산
-        for (float value : array) {
-            if (value != -1) { // -1은 정규화하지 않음
-                if (value < min) min = value;
-                if (value > max) max = value;
-            }
-        }
-
-        // 정규화 수행
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != -1) { // -1은 그대로 유지
-                array[i] = (array[i] - min) / (max - min);
-            }
-        }
-
-        return array;
-    }
-
     public INDArray preprocessPlaceCategories(String cat1, String cat2, String cat3) {
         // 각 카테고리별로 원-핫 인코딩을 별도로 수행하고, 합침
         int totalCategories = CATEGORY_MAP.size() + SUBCATEGORY_MAP.size() + DETAIL_CATEGORY_MAP.size();
@@ -169,7 +146,30 @@ public class DataPreprocessor {
         }
 
         // 1D 배열을 2D 배열로 변환 (1행, N열)
-        return Nd4j.create(new float[][]{labels});
+        return Nd4j.create(new float[][]{normalize(labels)});
+    }
+
+    // 정규화 메서드
+    private float[] normalize(float[] array) {
+        float min = Float.MAX_VALUE;
+        float max = Float.MIN_VALUE;
+
+        // 최소값 및 최대값 계산
+        for (float value : array) {
+            if (value != -1) { // -1은 정규화하지 않음
+                if (value < min) min = value;
+                if (value > max) max = value;
+            }
+        }
+
+        // 정규화 수행
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != -1) { // -1은 그대로 유지
+                array[i] = (array[i] - min) / (max - min);
+            }
+        }
+
+        return array;
     }
 
     // 39차원 제로 레이블 생성

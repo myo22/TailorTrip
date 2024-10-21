@@ -42,6 +42,12 @@ public class ItineraryServiceImpl implements ItineraryService {
         double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapy() : 0.0;
         double currentLng = selectedAccommodation != null ? selectedAccommodation.getMapx() : 0.0;
 
+        // MST 생성
+        List<Place> allPlaces = new ArrayList<>(meals);
+        allPlaces.addAll(activities);
+        allPlaces.add(selectedAccommodation);
+        List<Place> mstPath = generateMSTPath(allPlaces);
+
         List<ItineraryDay> itineraryDays = new ArrayList<>();
         int totalDays = duration;
 
@@ -50,48 +56,31 @@ public class ItineraryServiceImpl implements ItineraryService {
 
             // 하루에 필요한 장소 수 설정
             int mealsPerDay = 3; // 아침, 점심, 저녁
-            int activitiesPerDay = 2; // 오전, 오후 활동
+            int activitiesPerDay = 3; // 오전 1개, 오후 활동 2개
 
             if (preferences.getTravelPace().equalsIgnoreCase("느긋하게")) {
                 mealsPerDay -= 1; // 점심, 저녁
-                activitiesPerDay -= 1; // 느긋하게: 오후 활동
             } else if (preferences.getTravelPace().equalsIgnoreCase("바쁘게")) {
-                activitiesPerDay += 1; // 바쁘게: 오전, 오후, 저녁 활동
+                activitiesPerDay += 1; // 바쁘게: 오전, 오후 2개, 저녁 활동
             }
 
-            // 식사 장소 할당 (가까운 곳으로 선택)
-            for (int i = 0; i < mealsPerDay && !meals.isEmpty(); i++) {
-                Place closestMeal = findClosestPlace(currentLat, currentLng, meals);
-                if (closestMeal != null) {
+            // MST 경로에서 장소 선택
+            for (Place place : mstPath) {
+                if (items.size() >= (mealsPerDay + activitiesPerDay)) break;
+
+                // 식사 또는 활동으로 분류하여 일정 아이템 추가
+                if (meals.contains(place) && items.stream().filter(item -> item.getActivityType().equals("식사")).count() < mealsPerDay) {
                     items.add(ItineraryItem.builder()
-                            .timeOfDay(determineMealTimeOfDay(i))
-                            .place(closestMeal)
+                            .timeOfDay("식사")
+                            .place(place)
                             .activityType("식사")
                             .build());
-
-                    // 현재 위치 업데이트
-                    currentLat = closestMeal.getMapy();
-                    currentLng = closestMeal.getMapx();
-
-                    meals.remove(closestMeal); // 선택된 장소 제거
-                }
-            }
-
-            // 활동 장소 할당 (가까운 곳으로 선택)
-            for (int i = 0; i < activitiesPerDay && !activities.isEmpty(); i++) {
-                Place closestActivity = findClosestPlace(currentLat, currentLng, activities);
-                if (closestActivity != null) {
+                } else if (activities.contains(place) && items.stream().filter(item -> item.getActivityType().equals("활동")).count() < activitiesPerDay) {
                     items.add(ItineraryItem.builder()
-                            .timeOfDay(determineActivityTimeOfDay(i))
-                            .place(closestActivity)
-                            .activityType(determineActivityType(closestActivity))
+                            .timeOfDay("활동")
+                            .place(place)
+                            .activityType("활동")
                             .build());
-
-                    // 현재 위치 업데이트
-                    currentLat = closestActivity.getMapy();
-                    currentLng = closestActivity.getMapx();
-
-                    activities.remove(closestActivity); // 선택된 장소 제거
                 }
             }
 
@@ -114,6 +103,47 @@ public class ItineraryServiceImpl implements ItineraryService {
                 .duration(duration)
                 .days(itineraryDays)
                 .build();
+    }
+
+    private List<Place> generateMSTPath(List<Place> places) {
+        // Prim 알고리즘을 사용하여 MST 경로 생성
+        List<Place> mstPath = new ArrayList<>();
+        Set<Place> visited = new HashSet<>();
+        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(Comparator.comparingDouble(edge -> edge.weight));
+
+        // 시작점: 첫 번째 장소
+        Place start = places.get(0);
+        visited.add(start);
+        mstPath.add(start);
+
+        // 인접한 장소들 추가
+        for (Place place : places) {
+            if (place != start) {
+                double distance = calculateDistance(start.getMapy(), start.getMapx(), place.getMapy(), place.getMapx());
+                priorityQueue.offer(new Edge(start, place, distance));
+            }
+        }
+
+        while (!priorityQueue.isEmpty() && visited.size() < places.size()) {
+            Edge edge = priorityQueue.poll();
+            Place nextPlace = edge.to;
+
+            // 방문하지 않은 장소인 경우
+            if (!visited.contains(nextPlace)) {
+                visited.add(nextPlace);
+                mstPath.add(nextPlace);
+
+                // 새로운 장소에 대한 인접한 장소들 추가
+                for (Place place : places) {
+                    if (!visited.contains(place)) {
+                        double distance = calculateDistance(nextPlace.getMapy(), nextPlace.getMapx(), place.getMapy(), place.getMapx());
+                        priorityQueue.offer(new Edge(nextPlace, place, distance));
+                    }
+                }
+            }
+        }
+
+        return mstPath;
     }
 
     private Map<CategoryType, List<Place>> categorizePlaces(List<Place> places) {
@@ -170,29 +200,6 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     /**
-     * 현재 위치와 가장 가까운 장소를 찾는 메서드
-     *
-     * @param currentLat      현재 위도
-     * @param currentLng      현재 경도
-     * @param availablePlaces 선택 가능한 장소 목록
-     * @return 가장 가까운 장소
-     */
-    private Place findClosestPlace(double currentLat, double currentLng, List<Place> availablePlaces) {
-        Place closest = null;
-        double minDistance = Double.MAX_VALUE;
-
-        for (Place place : availablePlaces) {
-            double distance = calculateDistance(currentLat, currentLng, place.getMapy(), place.getMapx());
-            if (distance < minDistance) {
-                minDistance = distance;
-                closest = place;
-            }
-        }
-
-        return closest;
-    }
-
-    /**
      * 두 지점 간의 거리 계산 (Haversine 공식 사용)
      *
      * @param lat1 위도1
@@ -229,12 +236,10 @@ public class ItineraryServiceImpl implements ItineraryService {
         switch (index) {
             case 0:
                 return "오전 활동";
-            case 1:
+            case 1, 2:
                 return "오후 활동";
-            case 2:
-                return "저녁 활동";
             case 3:
-                return "밤 활동";
+                return "저녁 활동";
             default:
                 return "활동";
         }
@@ -251,6 +256,18 @@ public class ItineraryServiceImpl implements ItineraryService {
                 return "레포츠";
             default:
                 return "관광";
+        }
+    }
+
+    private static class Edge {
+        Place from;
+        Place to;
+        double weight;
+
+        Edge(Place from, Place to, double weight) {
+            this.from = from;
+            this.to = to;
+            this.weight = weight;
         }
     }
 

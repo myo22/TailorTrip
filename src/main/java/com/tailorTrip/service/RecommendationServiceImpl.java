@@ -45,7 +45,9 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         for (Place place : regionalPlaces) {
             INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
-            double score = cosineSimilarity(output, placeLabel);
+
+            // 복합 유사도 계산
+            double score = combinedSimilarity(output, placeLabel);
 
             // 애완동물 동반 여부에 따른 점수 조정
             if (preferences.isPetFriendly()) {
@@ -81,6 +83,26 @@ public class RecommendationServiceImpl implements RecommendationService {
 
 
         return topPlaces; // 최종 장소 리스트 반환
+    }
+
+    // 복합 유사도 계산 메서드
+    private double combinedSimilarity(INDArray userVector, INDArray placeVector) {
+        double cosineSim = cosineSimilarity(userVector, placeVector);
+        double euclideanDist = euclideanDistance(userVector, placeVector);
+
+        // 예시 가중치 설정 (조정 가능)
+        double weightCosine = 0.7;
+        double weightEuclidean = 0.3;
+
+        // 복합 유사도 계산
+        double combinedSim = weightCosine * cosineSim + weightEuclidean * (1.0 / (1.0 + euclideanDist));
+
+        return combinedSim;
+    }
+
+    private double euclideanDistance(INDArray vectorA, INDArray vectorB) {
+        // 두 벡터의 유클리드 거리 계산
+        return Math.sqrt(Transforms.pow(vectorA.sub(vectorB), 2).sum(1).getDouble(0));
     }
 
     private double cosineSimilarity(INDArray vectorA, INDArray vectorB) {

@@ -119,7 +119,30 @@ public class DataPreprocessor {
         features[3] = accommodationIndex != null ? accommodationIndex : -1; // 카테고리 매핑이 없으면 -1
 
 //        여기서 1D 배열을 2D 배열로 변환
-        return Nd4j.create(new float[][]{features});
+        return Nd4j.create(new float[][]{normalize(features)});
+    }
+
+    // 정규화 메서드
+    private float[] normalize(float[] array) {
+        float min = Float.MAX_VALUE;
+        float max = Float.MIN_VALUE;
+
+        // 최소값 및 최대값 계산
+        for (float value : array) {
+            if (value != -1) { // -1은 정규화하지 않음
+                if (value < min) min = value;
+                if (value > max) max = value;
+            }
+        }
+
+        // 정규화 수행
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] != -1) { // -1은 그대로 유지
+                array[i] = (array[i] - min) / (max - min);
+            }
+        }
+
+        return array;
     }
 
     public INDArray preprocessPlaceCategories(String cat1, String cat2, String cat3) {

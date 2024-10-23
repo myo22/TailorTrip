@@ -34,8 +34,8 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
 
         try {
             // 위도와 경도
-            double latitude = place.getMapy();
-            double longitude = place.getMapx();
+            double latitude = place.getMapY();
+            double longitude = place.getMapX();
 
             log.info("Fetching nearby places for latitude: {}, longitude: {}", latitude, longitude); // 로그 추가
 
@@ -65,29 +65,29 @@ public class GooglePlacesServiceImpl implements GooglePlacesService {
                     JsonNode detailsRoot = objectMapper.readTree(detailsResponse);
                     JsonNode detailsResult = detailsRoot.path("result");
 
-                    if (!detailsResult.isMissingNode()) {
-                        // 평점 및 평점 수
-                        double rating = detailsResult.path("rating").asDouble(0.0);
-                        int userRatingsTotal = detailsResult.path("user_ratings_total").asInt(0);
-                        place.updateRating(rating);
-                        place.updateRatingTotal(userRatingsTotal);
-
-                        // 가격 수준
-                        int priceLevel = detailsResult.path("price_level").asInt(0);
-                        place.updatePriceLevel(priceLevel);
-
-                        // 오픈 시간
-                        JsonNode openingHours = detailsResult.path("opening_hours");
-                        if (!openingHours.isMissingNode()) {
-                            String hours = openingHours.toString(); // JSON 형태로 저장
-                            place.updateOpeningHours(hours);
-                        }
-
-                        // 웹사이트
-                        String website = detailsResult.path("website").asText(null);
-                        place.updateWebsite(website);
-
-                    }
+//                    if (!detailsResult.isMissingNode()) {
+//                        // 평점 및 평점 수
+//                        double rating = detailsResult.path("rating").asDouble(0.0);
+//                        int userRatingsTotal = detailsResult.path("user_ratings_total").asInt(0);
+//                        place.updateRating(rating);
+//                        place.updateRatingTotal(userRatingsTotal);
+//
+//                        // 가격 수준
+//                        int priceLevel = detailsResult.path("price_level").asInt(0);
+//                        place.updatePriceLevel(priceLevel);
+//
+//                        // 오픈 시간
+//                        JsonNode openingHours = detailsResult.path("opening_hours");
+//                        if (!openingHours.isMissingNode()) {
+//                            String hours = openingHours.toString(); // JSON 형태로 저장
+//                            place.updateOpeningHours(hours);
+//                        }
+//
+//                        // 웹사이트
+//                        String website = detailsResult.path("website").asText(null);
+//                        place.updateWebsite(website);
+//
+//                    }
                 }
             }
         } catch (Exception e) {

@@ -60,3 +60,7 @@ weather:
 
 model:
   path: src/main/resources/model.zip
+
+kor:
+  api:
+    key: FoR6012UjGbYqAvG0XkZn3oM1uPihEZw5xSPmo9GmJfyBN2teJH5o0eKlkbFoK3sEs%2FAwLmbH1dgCCDsEsQ%2BEA%3D%3D

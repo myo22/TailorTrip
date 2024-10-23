@@ -20,6 +20,8 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final RecommendationService recommendationService;
 
+    private final KorService korService;
+
     @Override
     public Itinerary createItinerary(UserPreferences preferences) {
         int duration = preferences.getTripDuration(); // 여행 기간
@@ -39,8 +41,8 @@ public class ItineraryServiceImpl implements ItineraryService {
         Place selectedAccommodation = selectAccommodation(accommodations, preferences, duration);
 
         // 초기 위치: 숙소가 있다면 숙소 위치, 아니면 첫 번째 장소의 위치
-        double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapy() : 0.0;
-        double currentLng = selectedAccommodation != null ? selectedAccommodation.getMapx() : 0.0;
+        double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapY() : 0.0;
+        double currentLng = selectedAccommodation != null ? selectedAccommodation.getMapX() : 0.0;
 
         // MST 생성
         List<Place> allPlaces = new ArrayList<>(meals);
@@ -119,7 +121,7 @@ public class ItineraryServiceImpl implements ItineraryService {
         // 인접한 장소들 추가
         for (Place place : places) {
             if (place != start) {
-                double distance = calculateDistance(start.getMapy(), start.getMapx(), place.getMapy(), place.getMapx());
+                double distance = calculateDistance(start.getMapY(), start.getMapX(), place.getMapY(), place.getMapX());
                 priorityQueue.offer(new Edge(start, place, distance));
             }
         }
@@ -136,8 +138,13 @@ public class ItineraryServiceImpl implements ItineraryService {
                 // 새로운 장소에 대한 인접한 장소들 추가
                 for (Place place : places) {
                     if (!visited.contains(place)) {
-                        double distance = calculateDistance(nextPlace.getMapy(), nextPlace.getMapx(), place.getMapy(), place.getMapx());
+                        double distance = calculateDistance(nextPlace.getMapY(), nextPlace.getMapX(), place.getMapY(), place.getMapX());
                         priorityQueue.offer(new Edge(nextPlace, place, distance));
+
+                        // KorService에서 정보 받아오기
+                        place.updateOverview(korService.getOverview(place.getContentId(), place.getContentTypeId()));
+                        place.updateDetailInfo(korService.getIntro(place.getContentId(), place.getContentTypeId()));
+                        place.updateIntro(korService.getDetailInfo(place.getContentId(), place.getContentTypeId()));
                     }
                 }
             }
@@ -185,7 +192,6 @@ public class ItineraryServiceImpl implements ItineraryService {
         // 선호 숙소 유형에 맞는 숙소 필터링 후 평점 순으로 정렬
         List<Place> preferredAccommodations = accommodations.stream()
                 .filter(place -> place.getCat3().equalsIgnoreCase(preferences.getAccommodationPreference()))
-                .sorted(Comparator.comparingDouble(Place::getRating).reversed())
                 .collect(Collectors.toList());
 
         if (!preferredAccommodations.isEmpty()) {
@@ -193,7 +199,6 @@ public class ItineraryServiceImpl implements ItineraryService {
         } else {
             // 선호 숙소 유형이 없을 경우 평점이 높은 숙소 선택
             return accommodations.stream()
-                    .sorted(Comparator.comparingDouble(Place::getRating).reversed())
                     .findFirst()
                     .orElse(accommodations.get(0));
         }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Entity
@@ -20,50 +21,39 @@ public class Place {
     private String addr1; // 주소
     private String addr2;
     private String zipcode;
-    private double mapx; // 경도
-    private double mapy; // 위도
+    private double mapX; // 경도
+    private double mapY; // 위도
     private String tel;
-    private Integer contentid;
+    private Integer contentId;
     private String cat1; // 대분류 (자연, 인문, 레포츠 등)
     private String cat2; // 중분류 (자연관광지, 역사관광지, 휴양관광지 등)
     private String cat3; // 소분류 (산, 중식, 한식, 백화점 등)
     private String acmpyTypeCd;
-    private String firstimage;
-    private String firstimage2;
-    private Integer areacode;
-    private Integer sigungucode;
+    private String firstImage;
+    private String firstImage2;
+    private Integer areaCode;
+    private Integer sigunguCode;
     private Integer contentTypeId;
 
-    private Double rating; // 평점 추가
-    private Integer userRatingsTotal; // 평점 수
-    private Integer priceLevel; // 가격 수준
-    private String openingHours; // 오픈 시간 (JSON 형식 또는 문자열)
-    private String website; // 웹사이트 URL
+    private String overview; // 개요 정보
 
-    public void updateRating(double rating) {
-        this.rating = rating;
+    @ElementCollection
+    private Map<String, String> intro; // 추가 정보
+
+    @ElementCollection
+    private List<DetailInfo> detailInfo; // 상세 정보 (List로 Embeddable 클래스 사용)
+
+    public void updateDetailInfo(List<DetailInfo> detailInfo) {
+        this.detailInfo = detailInfo;
     }
 
-
-    public void updateRatingTotal(int userRatingsTotal) {
-        this.userRatingsTotal = userRatingsTotal;
+    public void  updateIntro(Map<String, String> intro) {
+        this.intro = intro;
     }
 
-
-    public void updatePriceLevel(int priceLevel) {
-        this.priceLevel = priceLevel;
+    public void  updateOverview(String overview) {
+        this.overview = overview;
     }
-
-
-    public void updateOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
-    }
-
-
-    public void updateWebsite(String website) {
-        this.website = website;
-    }
-
 }
 
 

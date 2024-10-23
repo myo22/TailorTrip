@@ -20,6 +20,8 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final RecommendationService recommendationService;
 
+    private final KorService korService;
+
     @Override
     public Itinerary createItinerary(UserPreferences preferences) {
         int duration = preferences.getTripDuration(); // 여행 기간
@@ -99,11 +101,42 @@ public class ItineraryServiceImpl implements ItineraryService {
                     .build());
         }
 
+        for (ItineraryDay itineraryDay : itineraryDays) {
+            for (ItineraryItem item : itineraryDay.getItems()) {
+                Place place = item.getPlace();
+
+                // overview, intro, detailInfo 업데이트
+//                updatePlaceInformation(place);
+            }
+        }
+
         return Itinerary.builder()
                 .duration(duration)
                 .days(itineraryDays)
                 .build();
     }
+
+//    private void updatePlaceInformation(Place place) {
+//        // overview가 이미 존재하는지 확인
+//        if (place.getOverview() == null || place.getOverview().isEmpty()) {
+//            String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
+//            if (overview != null && !overview.isEmpty()) {
+//                place.updateOverview(overview);
+//            }
+//        }
+//
+//        // intro 업데이트
+//        Map<String, Object> intro = korService.getIntro(place.getContentId(), place.getContentTypeId());
+//        if (intro != null) {
+//            place.setIntro(intro); // Assuming you have an appropriate setter for intro
+//        }
+//
+//        // detailInfo 업데이트
+//        List<DetailInfo> detailInfos = korService.getDetailInfo(place.getContentId(), place.getContentTypeId());
+//        if (detailInfos != null) {
+//            place.setDetailInfo(detailInfos); // Assuming you have an appropriate setter for detailInfo
+//        }
+//    }
 
     private List<Place> generateMSTPath(List<Place> places) {
         // Prim 알고리즘을 사용하여 MST 경로 생성

@@ -143,8 +143,8 @@ public class ItineraryServiceImpl implements ItineraryService {
 
                         // KorService에서 정보 받아오기
                         place.updateOverview(korService.getOverview(place.getContentId(), place.getContentTypeId()));
-                        place.updateDetailInfo(korService.getIntro(place.getContentId(), place.getContentTypeId()));
-                        place.updateIntro(korService.getDetailInfo(place.getContentId(), place.getContentTypeId()));
+                        place.updateIntro(korService.getIntro(place.getContentId(), place.getContentTypeId()));
+                        place.updateDetailInfo(korService.getDetailInfo(place.getContentId(), place.getContentTypeId()));
                     }
                 }
             }

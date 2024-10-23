@@ -38,7 +38,7 @@ public class Place {
     private String overview; // 개요 정보
 
     @ElementCollection
-    private Map<String, String> intro; // 추가 정보
+    private Map<String, Object> intro; // 추가 정보
 
     @ElementCollection
     private List<DetailInfo> detailInfo; // 상세 정보 (List로 Embeddable 클래스 사용)
@@ -47,7 +47,7 @@ public class Place {
         this.detailInfo = detailInfo;
     }
 
-    public void  updateIntro(Map<String, String> intro) {
+    public void  updateIntro(Map<String, Object> intro) {
         this.intro = intro;
     }
 

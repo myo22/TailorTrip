@@ -37,19 +37,19 @@ public class Place {
 
     private String overview; // 개요 정보
 
-    @ElementCollection
-    private Map<String, Object> intro; // 추가 정보
-
-    @ElementCollection
-    private List<DetailInfo> detailInfo; // 상세 정보 (List로 Embeddable 클래스 사용)
-
-    public void updateDetailInfo(List<DetailInfo> detailInfo) {
-        this.detailInfo = detailInfo;
-    }
-
-    public void  updateIntro(Map<String, Object> intro) {
-        this.intro = intro;
-    }
+//    @ElementCollection
+//    private Map<String, Object> intro; // 추가 정보
+//
+//    @ElementCollection
+//    private List<DetailInfo> detailInfo; // 상세 정보 (List로 Embeddable 클래스 사용)
+//
+//    public void updateDetailInfo(List<DetailInfo> detailInfo) {
+//        this.detailInfo = detailInfo;
+//    }
+//
+//    public void  updateIntro(Map<String, Object> intro) {
+//        this.intro = intro;
+//    }
 
     public void  updateOverview(String overview) {
         this.overview = overview;

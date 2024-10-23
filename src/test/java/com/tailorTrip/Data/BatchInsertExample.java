@@ -18,7 +18,7 @@ public class BatchInsertExample {
         String url = "jdbc:mysql://localhost:3306/tailortrip_db";
         String user = "root";
         String password = "220211";
-        String insertQuery = "INSERT INTO place (id, title, addr1, addr2, zipcode, mapx, mapy, tel, contentid, cat1, cat2, cat3, acmpyTypeCd, firstimage, firstimage2, areacode, sigungucode, contentTypeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO place (id, title, addr1, addr2, zipcode, mapx, mapy, tel, content_id, cat1, cat2, cat3, acmpy_type_cd, first_image, first_image2, area_code, sigungu_code, content_type_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {

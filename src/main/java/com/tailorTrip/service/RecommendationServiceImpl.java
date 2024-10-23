@@ -26,6 +26,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     private final DataPreprocessor dataPreprocessor;
 
+    private final KorService korService;
+
     @Override
     public List<Place> getRecommendations(UserPreferences preferences) {
 
@@ -45,6 +47,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         for (Place place : regionalPlaces) {
             INDArray placeLabel = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
+
+            System.out.println(place.getContentId() + place.getContentTypeId());
 
             // 복합 유사도 계산
             double score = combinedSimilarity(output, placeLabel);
@@ -80,7 +84,6 @@ public class RecommendationServiceImpl implements RecommendationService {
             // 최종 장소 리스트에 추가
             topPlaces.addAll(topScoredPlaces.stream().map(PlaceScore::getPlace).collect(Collectors.toList()));
         }
-
 
         return topPlaces; // 최종 장소 리스트 반환
     }

@@ -20,8 +20,6 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final RecommendationService recommendationService;
 
-    private final KorService korService;
-
     @Override
     public Itinerary createItinerary(UserPreferences preferences) {
         int duration = preferences.getTripDuration(); // 여행 기간
@@ -140,11 +138,6 @@ public class ItineraryServiceImpl implements ItineraryService {
                     if (!visited.contains(place)) {
                         double distance = calculateDistance(nextPlace.getMapY(), nextPlace.getMapX(), place.getMapY(), place.getMapX());
                         priorityQueue.offer(new Edge(nextPlace, place, distance));
-
-                        // KorService에서 정보 받아오기
-                        place.updateOverview(korService.getOverview(place.getContentId(), place.getContentTypeId()));
-                        place.updateIntro(korService.getIntro(place.getContentId(), place.getContentTypeId()));
-                        place.updateDetailInfo(korService.getDetailInfo(place.getContentId(), place.getContentTypeId()));
                     }
                 }
             }

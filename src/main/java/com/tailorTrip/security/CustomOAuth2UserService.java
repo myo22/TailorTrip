@@ -50,6 +50,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             case "kakao":
                 email = getKakaoEmail(paramMap);
                 break;
+            case "google":
+                email = getGoogleEmail(paramMap);
+                break;
         }
 
         log.info("============================");
@@ -104,6 +107,24 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("KAKAO------------------------------------");
 
         Object value = paramMap.get("kakao_account");
+
+        log.info(value);
+
+        LinkedHashMap accountMap = (LinkedHashMap) value;
+
+        String email = (String)accountMap.get("email");
+
+        log.info("email..." + email);
+
+        return email;
+    }
+
+    private String getGoogleEmail(Map<String, Object> paramMap){
+
+        log.info("Google------------------------------------");
+
+        // Google의 경우 email이 최상위 키에 포함되는 경우가 일반적입니다.
+        Object value = paramMap.get("email");
 
         log.info(value);
 

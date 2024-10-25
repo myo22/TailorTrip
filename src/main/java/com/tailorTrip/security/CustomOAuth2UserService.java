@@ -62,7 +62,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info(email);
         log.info("============================");
 
-
         return generateDTO(email, paramMap);
     }
 

@@ -27,6 +27,10 @@ spring:
             user-name-attribute: id
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
 
         registration:
           kakao:
@@ -40,6 +44,13 @@ spring:
             scope:
               - profile_nickname
               - account_email
+          google:
+            client-id: 229264352456-nq7l48q0mkm2urqa0gvhvpb5teph96d1.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - profile
+              - email
+
 
 logging:
   level:

@@ -2,6 +2,7 @@ package com.tailorTrip.config;
 
 import com.tailorTrip.security.CustomUserDetailsService;
 import com.tailorTrip.security.filter.APILoginFilter;
+import com.tailorTrip.security.handler.APILoginSuccessHandler;
 import com.tailorTrip.security.handler.Custom403Handler;
 import com.tailorTrip.security.handler.CustomSocialLoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,11 @@ public class CustomSecurityConfig {
         // APILoginFilter
         APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
+
+        // APILoginSuccessHandler
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        // SuccessHandler 세팅
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         // APILoginFilter의 위치 조정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);

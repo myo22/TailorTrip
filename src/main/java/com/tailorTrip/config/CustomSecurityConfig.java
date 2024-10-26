@@ -2,6 +2,7 @@ package com.tailorTrip.config;
 
 import com.tailorTrip.security.CustomUserDetailsService;
 import com.tailorTrip.security.filter.APILoginFilter;
+import com.tailorTrip.security.filter.TokenCheckFilter;
 import com.tailorTrip.security.handler.APILoginSuccessHandler;
 import com.tailorTrip.security.handler.Custom403Handler;
 import com.tailorTrip.security.handler.CustomSocialLoginSuccessHandler;
@@ -74,6 +75,12 @@ public class CustomSecurityConfig {
         // APILoginFilter의 위치 조정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
+        //api로 시작하는 모든 경로는 TokenCheckFilter 동작
+        http.addFilterBefore(
+                tokenCheckFilter(jwtUtil),
+                UsernamePasswordAuthenticationFilter.class
+        );
+
         // 커스텀 로그인 페이지
         http.formLogin(form -> form.loginPage("/member/login"));
         // CSRF 토큰 비활성화
@@ -124,4 +131,7 @@ public class CustomSecurityConfig {
         return new CustomSocialLoginSuccessHandler(passwordEncoder());
     }
 
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil){
+        return new TokenCheckFilter(jwtUtil);
+    }
 }

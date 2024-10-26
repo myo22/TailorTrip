@@ -5,6 +5,7 @@ import com.tailorTrip.security.filter.APILoginFilter;
 import com.tailorTrip.security.handler.APILoginSuccessHandler;
 import com.tailorTrip.security.handler.Custom403Handler;
 import com.tailorTrip.security.handler.CustomSocialLoginSuccessHandler;
+import com.tailorTrip.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -35,6 +36,7 @@ public class CustomSecurityConfig {
     //주입 필요
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
+    private final JWTUtil jwtUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -65,7 +67,7 @@ public class CustomSecurityConfig {
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
         // APILoginSuccessHandler
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
         // SuccessHandler 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 

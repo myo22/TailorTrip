@@ -33,7 +33,7 @@ public class JWTUtil {
         payloads.putAll(valueMap);
 
         // 테스트 시에는 짧은 유효 기간
-        int time = (1) * days; // 테스트는 분단위로 나중에 60*24 (일)단위로 변경
+        int time = (60 * 24) * days; // 테스트는 분단위로 나중에 60*24 (일)단위로 변경
 
         String jwtStr = Jwts.builder()
                 .setHeader(headers)
@@ -47,9 +47,14 @@ public class JWTUtil {
         return jwtStr;
     }
 
-    public Map<String, Object> validateToken(String Token) throws JwtException {
+    public Map<String, Object> validateToken(String token) throws JwtException {
 
         Map<String, Object> claim = null;
+
+        claim = Jwts.parser()
+                .setSigningKey(key.getBytes()) // Set Key
+                .parseClaimsJws(token) // 파싱 및 검증, 실패시 에러
+                .getBody();
 
         return claim;
     }

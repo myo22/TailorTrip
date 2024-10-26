@@ -11,12 +11,20 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
 
-    document.querySelector(".btn1").addEventListener("click", () => {
+    document.querySelector(".btn1").addEventListener("click",()=> {
 
-        const data = {mid: "member1", mpw: "1111"}
+        const data = {mid: "member1", mpw:"1111"}
 
-        axios.post("http://localhost:8080/generateToken", data)
-    },false)
+        // 내용을 쉽게 복사할 수 있도록 잠깐 수정
+        axios.post("http://localhost:8080/generateToken", data).then(res => {
+            const accessToken = res.data.accessToken
+            const refreshToken = res.data.refreshToken
+
+            localStorage.setItem("accessToken", accessToken)
+            localStorage.setItem("refreshToken", refreshToken)
+        })
+
+    }, false)
 
 </script>
 </body>

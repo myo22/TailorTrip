@@ -2,6 +2,7 @@ package com.tailorTrip.config;
 
 import com.tailorTrip.security.CustomUserDetailsService;
 import com.tailorTrip.security.filter.APILoginFilter;
+import com.tailorTrip.security.filter.RefreshTokenFilter;
 import com.tailorTrip.security.filter.TokenCheckFilter;
 import com.tailorTrip.security.handler.APILoginSuccessHandler;
 import com.tailorTrip.security.handler.Custom403Handler;
@@ -81,11 +82,15 @@ public class CustomSecurityConfig {
                 UsernamePasswordAuthenticationFilter.class
         );
 
-        // 커스텀 로그인 페이지
+        // refreshToken 호출처리
+        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil),
+                TokenCheckFilter.class);
+
+        // 로그인 화면에서 로그인을 진행한다는 설정, 커스텀 로그인 페이지
         http.formLogin(form -> form.loginPage("/member/login"));
+
         // CSRF 토큰 비활성화
-        http.csrf(csrf -> csrf.disable()
-        );
+        http.csrf(csrf -> csrf.disable());
 
         http.rememberMe(rememberMe -> rememberMe
                 .key("12345678")

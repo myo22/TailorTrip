@@ -93,12 +93,6 @@ public class CustomSecurityConfig {
         // CSRF 토큰 비활성화
         http.csrf(csrf -> csrf.disable());
 
-        http.rememberMe(rememberMe -> rememberMe
-                .key("12345678")
-                .tokenRepository(persistentTokenRepository())
-                .userDetailsService(userDetailsService)
-                .tokenValiditySeconds(60*60*24*30));
-
         http.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(accessDeniedHanler())); // 403
 
         http.oauth2Login(oauth2Login ->

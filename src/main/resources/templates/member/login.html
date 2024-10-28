@@ -65,5 +65,38 @@
         </div><!--end card body-->
     </div><!--end card-->
 </div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+
+    document.querySelector(".submitBtn").addEventListener("click", () => {
+
+        event.preventDefault(); // 기본 폼 제출 방지
+
+        // 사용자 입력값 수집
+        const mid = document.querySelector('input[name="username"]').value;
+        const mpw = document.querySelector('input[name="password"]').value;
+
+        const data = { mid, mpw }; // axios 전송 데이터 설정
+
+        // 토큰 요청
+        axios.post("http://localhost:8080/generateToken", data)
+            .then(res => {
+                const accessToken = res.data.accessToken;
+                const refreshToken = res.data.refreshToken;
+
+                // 로컬 스토리지에 토큰 저장
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("refreshToken", refreshToken);
+
+                alert("로그인 성공!");
+                window.location.href = "/"; // 원하는 리디렉션 경로
+            })
+            .catch(error => {
+                console.error("로그인 실패:", error);
+                alert("로그인 실패! 다시 시도하세요.");
+            });
+    }, false);
+
+</script>
 </body>
 </html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Google Maps</title>
+  <!-- css -->
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/reset.css">
+  <!-- script -->
+  <script defer src="./js/script.js" defer></script>
+  <script src="./js/fetchCoordinates.js" defer></script>
+  <script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-8-WIoCCD0NYDvaNOPIpBt-Et-rB0GiQ&callback=initMap"></script>
+
+  <!-- script -->
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="section1">
+      <div class="container">
+        <div class="wrap-box">
+          <div class="left-box">
+            <div class="tab_inner">
+              <!-- 탭영역 -->
+              <ul class="btn">
+                <!-- 클릭하는 버튼영역 -->
+                <li data-tab="tab1" class="active">전체</li>
+                <li data-tab="tab2">1일차</li>
+                <li data-tab="tab3">2일차</li>
+                <li data-tab="tab4">3일차</li>
+                <li data-tab="tab5">4일차</li>
+                <li data-tab="tab6">5일차</li>
+                <li data-tab="tab7">6일차</li>
+                <li data-tab="tab8">7일차</li>
+              </ul>
+              
+              <div class="tabs">
+                <!-- 탭 내용이 들어가는 영역 -->
+                <div id="tab1" class="active">
+                  <h2>전체</h2>
+                </div>
+                <div id="tab2">
+                  <h2>1일차</h2>
+                </div>
+                <div id="tab3">
+                  <h2>2일차</h2>
+                </div>
+                <div id="tab4">
+                  <h2>3일차</h2>
+                </div>
+                <div id="tab5">
+                  <h2>4일차</h2>
+                </div>
+                <div id="tab6">
+                  <h2>5일차</h2>
+                </div>
+                <div id="tab7">
+                  <h2>6일차</h2>
+                </div>
+                <div id="tab8">
+                  <h2>7일차</h2>
+                </div>
+                
+              </div>
+              <!-- tabs 끝 -->
+            </div>
+            <!-- tab-inner -->
+          </div>
+          <!-- left-box -->
+          <div class="dmdrk">
+            <div class="left-box2">
+              <div class="con1">1일차</div>
+              <div class="con2">2일차</div>
+              <div class="con3">3일차</div>
+              <div class="con4">4일차</div>
+              <div class="con5">5일차</div>
+              <div class="con6">6일차</div>
+              <div class="con7">7일차</div>
+            </div>
+          </div>
+          <div class="open">>>
+          </div>
+          <div id="map"></div>
+        </div>
+    </section>
+  </div>
+</body>
+
+</html>

@@ -40,7 +40,7 @@ public class RecommendationController {
 
 
     @PostMapping("/submit-preferences")
-    public ResponseEntity<Itinerary> submitAllPreferences(@RequestBody UserPreferencesDTO prefsDTO, HttpSession session) {
+    public ResponseEntity<Itinerary> submitAllPreferences(@RequestBody UserPreferencesDTO prefsDTO) {
 
         // 지역에 따른 중심 좌표 가져오기
         double[] coordinates = regionService.getCoordinates(prefsDTO.getRegion());
@@ -66,10 +66,6 @@ public class RecommendationController {
 
         // 일정 생성
         Itinerary itinerary = itineraryService.createItinerary(prefs);
-
-        // 세션에 Itinerary 저장
-        session.setAttribute("itinerary", itinerary);
-
 
         return ResponseEntity.ok(itinerary); // 또는 다른 응답 객체를 반환
     }

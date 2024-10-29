@@ -64,35 +64,35 @@ window.initMap = function () {
 function getMarkerIcon(contenttypeid) {
   // Marker 색상을 contenttypeid에 따라 반환하는 함수
   switch (contenttypeid) {
-    case '12':
+    case '1':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png" // 타입 12에 대한 빨간색
       };
-    case '14':
+    case '2':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" // 타입 14에 대한 파란색
       };
-    case '15':
+    case '3':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" // 타입 15에 대한 초록색
       };
-    case '25':
+    case '4':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png" // 타입 25에 대한 노란색
       };
-    case '28':
+    case '5':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png" // 타입 28에 대한 보라색
       };
-    case '32':
+    case '6':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png" // 타입 32에 대한 주황색
       };
-    case '38':
+    case '7':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/pink-dot.png" // 타입 38에 대한 분홍색
       };
-    case '39':
+    case '8':
       return {
         url: "http://maps.google.com/mapfiles/ms/icons/gray-dot.png" // 타입 39에 대한 회색
       };

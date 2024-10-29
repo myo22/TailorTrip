@@ -125,7 +125,7 @@ function updateContentBox(data) {
 
       // 겹치는 내용이 있는지 확인 (이름 기준으로)
       const existingContent = Array.from(targetContainer.querySelectorAll('.content'))
-        .some(existingBox => existingBox.querySelector('h3').textContent === box.querySelector('h3').textContent);
+          .some(existingBox => existingBox.querySelector('h3').textContent === box.querySelector('h3').textContent);
 
       if (existingContent) {
         // 겹치는 내용이 있을 때 경고 메시지 표시
@@ -163,35 +163,13 @@ function updateContentBox(data) {
   }
 }
 
-// 페이지가 로드될 때 tab1을 보이게 호출
+// 페이지가 로드될 때 로컬 스토리지에서 데이터 불러오기
 document.addEventListener('DOMContentLoaded', () => {
-  // Local Storage에서 itinerary 데이터 가져오기
-  const itineraryData = localStorage.getItem('itinerary');
-
+  const itineraryData = JSON.parse(localStorage.getItem('itinerary')); // 로컬 스토리지에서 데이터 불러오기
   if (itineraryData) {
-    const itinerary = JSON.parse(itineraryData);
-    // 가져온 itinerary 데이터를 사용하여 페이지 업데이트
-    document.getElementById('itineraryContainer').innerText = JSON.stringify(itinerary, null, 2);
-
-    const exampleData = itinerary.days.flatMap(day =>
-        day.items.map(item => ({
-          contentid: `contentid-${day.dayNumber}-${item.timeOfDay}`, // 각 항목의 고유 ID 생성
-          contenttypeid: item.activityType === "식사" ? "12" : "14", // 식사 또는 관광에 따라 타입 결정
-          infoname: item.activityType === "식사" ? "식사 장소" : "관광 장소", // 정보 이름
-          infotext: `이곳에서 ${item.activityType}를 즐길 수 있습니다.`, // 정보 텍스트
-          label: item.activityType === "식사" ? "F" : "T", // 레이블 (임의 설정)
-          name: item.place.name, // 장소 이름
-          lat: item.place.mapy, // 위도
-          lng: item.place.mapx  // 경도
-        }))
-    );
-
-    // itinerary 데이터를 사용하여 예시 데이터를 업데이트
-    updateContentBox(exampleData); // itinerary를 인자로 전달
+    updateContentBox(itineraryData); // 불러온 데이터를 사용하여 업데이트
   } else {
-    console.error('Itinerary data not found in Local Storage.');
-    // 데이터가 없을 경우 적절한 처리
-    document.getElementById('itineraryContainer').innerText = '일정 데이터를 찾을 수 없습니다.';
+    console.log('로컬 스토리지에 일정 데이터가 없습니다.');
   }
 });
 
@@ -200,143 +178,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// 예시 데이터 (백엔드에서 받아올 데이터처럼 가정)
-const exampleData = [
-  {
-    contentid: "129194",
-    contenttypeid: "12",
-    infoname: "이용가능시설",
-    infotext: "가나 어린이미술관 / 블루 스페이스 / 옐로우 스페이스 등",
-    label: "C",
-    name: "코엑스몰",
-    lat: 37.5115557,
-    lng: 127.0595261
-  },
-  {
-    contentid: "129194",
-    contenttypeid: "12",
-    infoname: "입장료",
-    infotext: "대인∙소인(24개월 이상~성인) : 12,000원 <br> 24개월 미만 영유아 : 무료",
-    label: "G",
-    name: "고투몰",
-    lat: 37.5062379,
-    lng: 127.0050378
-  },
-  {
-    contentid: "129194",
-    contenttypeid: "12",
-    infoname: "화장실",
-    infotext: "있음(남녀 구분)",
-    label: "D",
-    name: "동대문시장",
-    lat: 37.566596,
-    lng: 127.007702
-  },
-  {
-    contentid: "129194",
-    contenttypeid: "14",
-    infoname: "내국인 예약안내",
-    infotext: "[단체관람예약] - 25인 이상 단체 관람 시 사전예약 필수",
-    label: "I",
-    name: "IFC몰",
-    lat: 37.5251644,
-    lng: 126.9255491
-  },
-  {
-    contentid: "129195",
-    contenttypeid: "12",
-    infoname: "외국인 예약안내",
-    infotext: "[개인 관람예약] - 사전예약 필수",
-    label: "N",
-    name: "N서울타워",
-    lat: 37.5511694,
-    lng: 126.9882266
-  },
-  {
-    contentid: "129196",
-    contenttypeid: "15",
-    infoname: "단체 예약안내",
-    infotext: "[단체관람예약] - 30인 이상 단체 관람 시 사전예약 필수",
-    label: "L",
-    name: "롯데월드",
-    lat: 37.5110745,
-    lng: 127.0980205
-  },
-  {
-    contentid: "129197",
-    contenttypeid: "25",
-    infoname: "문화유산 예약안내",
-    infotext: "[개인 관람예약] - 사전예약 필수",
-    label: "K",
-    name: "경복궁",
-    lat: 37.579617,
-    lng: 126.977041
-  },
-  {
-    contentid: "129198",
-    contenttypeid: "28",
-    infoname: "내국인 예약안내",
-    infotext: "[단체관람예약] - 25인 이상 단체 관람 시 사전예약 필수",
-    label: "B",
-    name: "북촌한옥마을",
-    lat: 37.582604,
-    lng: 126.983594
-  },
-  {
-    contentid: "129199",
-    contenttypeid: "32",
-    infoname: "내국인 예약안내",
-    infotext: "[단체관람예약] - 25인 이상 단체 관람 시 사전예약 필수",
-    label: "H",
-    name: "한강공원",
-    lat: 37.526028,
-    lng: 126.932609
-  },
-  {
-    contentid: "129200",
-    contenttypeid: "38",
-    infoname: "내국인 예약안내",
-    infotext: "[단체관람예약] - 25인 이상 단체 관람 시 사전예약 필수",
-    label: "P",
-    name: "광화문 광장",
-    lat: 37.571271,
-    lng: 126.976927
-  },
-  {
-    contentid: "129201",
-    contenttypeid: "37",
-    infoname: "외국인 예약안내",
-    infotext: "[단체관람예약] - 25인 이상 단체 관람 시 사전예약 필수",
-    label: "M",
-    name: "명동성당",
-    lat: 37.564509,
-    lng: 126.987058
-  },
-  {
-    contentid: "129202",
-    contenttypeid: "12",
-    infoname: "내국인 예약안내",
-    infotext: "[단체관람예약] - 25인 이상 단체 관람 시 사전예약 필수",
-    label: "G",
-    name: "강남역",
-    lat: 37.497942,
-    lng: 127.027621
-  },
-  {
-    contentid: "129203",
-    contenttypeid: "14",
-    infoname: "내국인 예약안내",
-    infotext: "[단체관람예약] - 25인 이상 단체 관람 시 사전예약 필수",
-    label: "D",
-    name: "동대문 디자인 플라자",
-    lat: 37.566492,
-    lng: 127.008219
-  }
-
-
-
-
-
-];
-
-// 페이지 로드 시 데이터를 추가

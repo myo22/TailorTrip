@@ -3,6 +3,8 @@ package com.tailorTrip.controller;
 import com.tailorTrip.Repository.UserPreferencesRepository;
 import com.tailorTrip.dto.Itinerary;
 import com.tailorTrip.domain.UserPreferences;
+import com.tailorTrip.dto.ItineraryDay;
+import com.tailorTrip.dto.ItineraryItem;
 import com.tailorTrip.dto.UserPreferencesDTO;
 import com.tailorTrip.service.ItineraryServiceImpl;
 import com.tailorTrip.service.RegionService;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +43,7 @@ public class RecommendationController {
 
 
     @PostMapping("/submit-preferences")
-    public ResponseEntity<Itinerary> submitAllPreferences(@RequestBody UserPreferencesDTO prefsDTO) {
+    public ResponseEntity<List<Map<String, Object>>> submitAllPreferences(@RequestBody UserPreferencesDTO prefsDTO) {
 
         // 지역에 따른 중심 좌표 가져오기
         double[] coordinates = regionService.getCoordinates(prefsDTO.getRegion());
@@ -67,6 +70,24 @@ public class RecommendationController {
         // 일정 생성
         Itinerary itinerary = itineraryService.createItinerary(prefs);
 
-        return ResponseEntity.ok(itinerary); // 또는 다른 응답 객체를 반환
+        // 프론트엔드 형식에 맞게 데이터를 변환
+        List<Map<String, Object>> responseData = new ArrayList<>();
+        for (ItineraryDay day : itinerary.getDays()) {
+            for (ItineraryItem item : day.getItems()) {
+                Map<String, Object> itemData = new HashMap<>();
+                itemData.put("contentid", item.getPlace().getContentId().toString());
+                itemData.put("contenttypeid", "12");
+                itemData.put("infoname", "문화유산 예약안내");
+                itemData.put("infotext", "[개인 관람예약] - 사전예약 필수");
+                itemData.put("label", "G");
+                itemData.put("name", item.getPlace().getTitle());
+                itemData.put("lat", item.getPlace().getMapY());
+                itemData.put("lng", item.getPlace().getMapX());
+
+                responseData.add(itemData);
+            }
+        }
+
+        return ResponseEntity.ok(responseData);
     }
 }

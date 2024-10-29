@@ -69,21 +69,4 @@ public class RecommendationController {
 
         return ResponseEntity.ok(itinerary); // 또는 다른 응답 객체를 반환
     }
-
-    @GetMapping("/recommendResult")
-    public String showRecommendResultPage(Model model, HttpSession session) {
-        Itinerary itinerary = (Itinerary) session.getAttribute("itinerary");
-
-        if (itinerary != null) {
-            model.addAttribute("itinerary", itinerary);
-            System.out.println(itinerary.getDays());
-            System.out.println(itinerary.getDuration());
-            System.out.println(itinerary.getClass());
-
-        } else {
-            // Itinerary가 없는 경우에 대한 처리 (예: 에러 페이지로 리디렉션)
-            return "redirect:/home"; // 홈 페이지로 리디렉션
-        }
-        return "recommendResult"; // recommendResult.html 반환
-    }
 }

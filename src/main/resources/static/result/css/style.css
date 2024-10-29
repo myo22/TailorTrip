@@ -1,0 +1,143 @@
+#map{
+  height: 600px;
+  width: 1000px;
+}
+
+.left-box>div{
+  height: 100px;
+}
+.left-box {
+  width: 400px;
+  overflow-y: auto; /* 수직 스크롤이 가능하도록 설정 */
+  height: 500px; /* 고정 높이 설정 */
+  border: 1px solid #ccc; /* 테두리 추가 */
+  box-sizing: border-box; /* 테두리와 패딩을 포함한 크기 계산 */
+  height: 100vh;
+}
+
+#map{
+  width: 100%;
+  height: 500px; /* 지도도 같은 높이 설정 */
+  border: 1px solid #ccc; /* 테두리 추가 */
+  height: 100vh;
+}
+
+
+/* ----------------------------------------- */
+
+
+/* tab 영역 */
+
+
+.btn{
+  display: flex;
+  margin-left: 10px;
+}
+
+.btn li{
+  font-weight: 300;
+  width: 100%;
+  height: 140px;
+  cursor: pointer;
+  background-color: #eee;
+  padding: 5px;
+  box-sizing: border-box;
+  text-align: center;
+  border-right: 1px solid #ddd;
+  border-top: 2px solid transparent;
+
+}
+
+
+
+.btn li:hover,
+.btn li.active{
+  background-color: #fff;
+  border-top-color: rgb(77, 76, 73);
+}
+
+.btn li:last-child{
+  border-right: none;
+}
+
+.tabs>div{
+  display: none;
+  background-color: #fff;
+
+  box-sizing: border-box;
+
+}
+
+.tabs div.active{
+  display: block;
+}
+
+.tabs div h2{
+  margin-bottom: 10px;
+  color: rgb(77, 76, 73);
+  font-size: 18px;
+  text-align: right;
+}
+
+.tabs div img{
+  float: left;
+  margin-right: 10px;
+}
+
+.tabs div p{
+  font-family: "Noto Sans KR", sans-serif;
+}
+.content{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #eee;
+}
+/* tab영역 끝 */
+
+.wrap-box {
+  display: flex; /* 수평으로 나란히 배치 */
+
+}
+.left-box2{
+  height: 100%;
+  display: flex;
+  display: none;
+  width: 1200px;
+
+}
+.left-box2.on{
+  display: block;
+  display: flex;
+}
+.left-box2 div{
+  width: 170px;
+
+}
+button{
+  width: 20px;
+  height: 100px;
+}
+.open{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  background-color: aquamarine;
+}
+/* script로 짠 구조 코딩 */
+.content button{
+  width: 30px;
+  height: 50px;
+
+}
+.content{
+  font-size: 0.725rem;
+  background-color: #fff;
+  height: 120px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+}
+/* script로 짠 구조 코딩 끝 */
+

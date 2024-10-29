@@ -44,35 +44,35 @@ function updateContentBox(data) {
 
     // 각 탭에 맞는 버튼 리스너 설정
     switch (item.contenttypeid) {
-      case "12":
+      case "1":
         tab2Container.appendChild(newContentBox); // tab2에 복사본 추가
         setupMoveButton(newContentBox, 'tab1', item.contenttypeid); // tab1에서 이동할 수 있도록 설정
         break;
-      case "14":
+      case "2":
         tab3Container.appendChild(newContentBox); // tab3에 복사본 추가
         setupMoveButton(newContentBox, 'tab1', item.contenttypeid); // tab1에서 이동할 수 있도록 설정
         break;
-      case "15":
+      case "3":
         tab4Container.appendChild(newContentBox); // tab4에 복사본 추가
         setupMoveButton(newContentBox, 'tab1', item.contenttypeid); // tab1에서 이동할 수 있도록 설정
         break;
-      case "25":
+      case "4":
         tab5Container.appendChild(newContentBox); // tab5에 복사본 추가
         setupMoveButton(newContentBox, 'tab1', item.contenttypeid); // tab1에서 이동할 수 있도록 설정
         break;
-      case "28":
+      case "5":
         tab6Container.appendChild(newContentBox); // tab6에 복사본 추가
         setupMoveButton(newContentBox, 'tab1', item.contenttypeid); // tab1에서 이동할 수 있도록 설정
         break;
-      case "32":
+      case "6":
         tab7Container.appendChild(newContentBox); // tab7에 복사본 추가
         setupMoveButton(newContentBox, 'tab1', item.contenttypeid); // tab1에서 이동할 수 있도록 설정
         break;
-      case "38":
+      case "7":
         tab8Container.appendChild(newContentBox); // tab8에 복사본 추가
         setupMoveButton(newContentBox, 'tab1', item.contenttypeid); // tab1에서 이동할 수 있도록 설정
         break;
-      case "39":
+      case "8":
         // 추가 처리 (필요 시)
         break;
       default:
@@ -92,28 +92,28 @@ function updateContentBox(data) {
     moveButton.addEventListener('click', () => {
       let targetSelector = '';
       switch (contentTypeId) {
-        case "12":
+        case "1":
           targetSelector = '.left-box2 .con1'; // con1으로 이동
           break;
-        case "14":
+        case "2":
           targetSelector = '.left-box2 .con2'; // con2로 이동
           break;
-        case "15":
+        case "3":
           targetSelector = '.left-box2 .con3'; // con3으로 이동
           break;
-        case "25":
+        case "4":
           targetSelector = '.left-box2 .con4'; // con4로 이동
           break;
-        case "28":
+        case "5":
           targetSelector = '.left-box2 .con5'; // con5으로 이동
           break;
-        case "32":
+        case "6":
           targetSelector = '.left-box2 .con6'; // con6으로 이동
           break;
-        case "38":
+        case "7":
           targetSelector = '.left-box2 .con7'; // con7으로 이동
           break;
-        case "39":
+        case "8":
           targetSelector = '.left-box2 .con8'; // con8으로 이동
           break;
         default:

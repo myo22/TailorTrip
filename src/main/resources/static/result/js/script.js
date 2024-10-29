@@ -137,14 +137,14 @@ function filterMarkersByType(contenttypeid) {
 
 // 각 탭에 클릭 이벤트 추가
 document.querySelector('li[data-tab="tab1"]').addEventListener('click', () => filterMarkersByType(null));
-document.querySelector('li[data-tab="tab2"]').addEventListener('click', () => filterMarkersByType(12));
-document.querySelector('li[data-tab="tab3"]').addEventListener('click', () => filterMarkersByType(14));
-document.querySelector('li[data-tab="tab4"]').addEventListener('click', () => filterMarkersByType(15));
-document.querySelector('li[data-tab="tab5"]').addEventListener('click', () => filterMarkersByType(25));
-document.querySelector('li[data-tab="tab6"]').addEventListener('click', () => filterMarkersByType(28));
-document.querySelector('li[data-tab="tab7"]').addEventListener('click', () => filterMarkersByType(32));
-document.querySelector('li[data-tab="tab8"]').addEventListener('click', () => filterMarkersByType(38));
-document.querySelector('li[data-tab="tab9"]').addEventListener('click', () => filterMarkersByType(39));
+document.querySelector('li[data-tab="tab2"]').addEventListener('click', () => filterMarkersByType(1));
+document.querySelector('li[data-tab="tab3"]').addEventListener('click', () => filterMarkersByType(2));
+document.querySelector('li[data-tab="tab4"]').addEventListener('click', () => filterMarkersByType(3));
+document.querySelector('li[data-tab="tab5"]').addEventListener('click', () => filterMarkersByType(4));
+document.querySelector('li[data-tab="tab6"]').addEventListener('click', () => filterMarkersByType(5));
+document.querySelector('li[data-tab="tab7"]').addEventListener('click', () => filterMarkersByType(6));
+document.querySelector('li[data-tab="tab8"]').addEventListener('click', () => filterMarkersByType(7));
+document.querySelector('li[data-tab="tab9"]').addEventListener('click', () => filterMarkersByType(8));
 
 function clearMarkers() {
   markersArray.forEach(marker => marker.setMap(null)); // 모든 마커를 지도에서 제거

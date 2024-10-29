@@ -103,10 +103,13 @@ function getMarkerIcon(contenttypeid) {
   }
 }
 function filterMarkersByType(contenttypeid) {
+
+  const itinerary = JSON.parse(localStorage.getItem('itinerary')) || []; // 로컬 스토리지에서 가져오기
+
   // contenttypeid가 null이면 전체 데이터를 필터링 없이 사용
   const filteredData = contenttypeid
-    ? exampleData.filter(item => item.contenttypeid === contenttypeid.toString())
-    : exampleData;
+    ? itinerary.filter(item => item.contenttypeid === contenttypeid.toString())
+    : itinerary;
 
   // 이전에 추가된 마커 제거 및 새로운 마커 추가
   clearMarkers(); // 기존 마커를 제거하는 함수

@@ -76,10 +76,10 @@ public class RecommendationController {
             for (ItineraryItem item : day.getItems()) {
                 Map<String, Object> itemData = new HashMap<>();
                 itemData.put("contentid", item.getPlace().getContentId().toString());
-                itemData.put("contenttypeid", "12");
+                itemData.put("contenttypeid", String.valueOf(day.getDayNumber()));
                 itemData.put("infoname", "문화유산 예약안내");
                 itemData.put("infotext", "[개인 관람예약] - 사전예약 필수");
-                itemData.put("label", "G");
+                itemData.put("label", item.getActivityType());
                 itemData.put("name", item.getPlace().getTitle());
                 itemData.put("lat", item.getPlace().getMapY());
                 itemData.put("lng", item.getPlace().getMapX());

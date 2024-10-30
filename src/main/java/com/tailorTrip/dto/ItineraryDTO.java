@@ -6,7 +6,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class Itinerary {
+public class ItineraryDTO {
 
     private int duration; // 여행 기간 (예: 1박, 2박)
     private List<ItineraryDay> days;

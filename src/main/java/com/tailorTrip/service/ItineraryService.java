@@ -1,11 +1,10 @@
 package com.tailorTrip.service;
 
-import com.tailorTrip.domain.Member;
 import com.tailorTrip.domain.UserPreferences;
-import com.tailorTrip.dto.Itinerary;
+import com.tailorTrip.dto.ItineraryDTO;
 
 public interface ItineraryService {
-    Itinerary createItinerary(UserPreferences preferences);
+    ItineraryDTO createItinerary(UserPreferences preferences);
 
-    void saveItinerary(Itinerary itinerary, Member member);
+    void saveItinerary(ItineraryDTO itinerary, String userId);
 }

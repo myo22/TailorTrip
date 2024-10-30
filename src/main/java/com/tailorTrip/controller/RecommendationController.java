@@ -1,19 +1,16 @@
 package com.tailorTrip.controller;
 
 import com.tailorTrip.Repository.UserPreferencesRepository;
-import com.tailorTrip.dto.Itinerary;
+import com.tailorTrip.dto.ItineraryDTO;
 import com.tailorTrip.domain.UserPreferences;
 import com.tailorTrip.dto.ItineraryDay;
 import com.tailorTrip.dto.ItineraryItem;
 import com.tailorTrip.dto.UserPreferencesDTO;
 import com.tailorTrip.service.ItineraryServiceImpl;
 import com.tailorTrip.service.RegionService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,7 +66,7 @@ public class RecommendationController {
         userPreferencesRepository.save(prefs);
 
         // 일정 생성
-        Itinerary itinerary = itineraryService.createItinerary(prefs);
+        ItineraryDTO itinerary = itineraryService.createItinerary(prefs);
 
         // 프론트엔드 형식에 맞게 데이터를 변환
         List<Map<String, Object>> responseData = new ArrayList<>();

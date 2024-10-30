@@ -1,16 +1,17 @@
 package com.tailorTrip.service;
 
-import com.tailorTrip.Repository.PlaceRepository;
+import com.tailorTrip.Repository.ItineraryRepository;
+import com.tailorTrip.Repository.MemberRepository;
 import com.tailorTrip.domain.*;
-import com.tailorTrip.dto.Itinerary;
+import com.tailorTrip.dto.ItineraryDTO;
 import com.tailorTrip.dto.ItineraryDay;
 import com.tailorTrip.dto.ItineraryItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,8 +23,13 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final KorService korService;
 
+    private final MemberRepository memberRepository;
+
+    private final ItineraryRepository itineraryRepository;
+    private final ModelMapper modelMapper;
+
     @Override
-    public Itinerary createItinerary(UserPreferences preferences) {
+    public ItineraryDTO createItinerary(UserPreferences preferences) {
         int duration = preferences.getTripDuration(); // 여행 기간
         List<Place> recommendedPlaces = recommendationService.getRecommendations(preferences); // 100개의 장소들
 
@@ -114,15 +120,20 @@ public class ItineraryServiceImpl implements ItineraryService {
             }
         }
 
-        return Itinerary.builder()
+        return ItineraryDTO.builder()
                 .duration(duration)
                 .days(itineraryDays)
                 .build();
     }
 
     @Override
-    public void saveItinerary(Itinerary itinerary, Member member){
-        
+    public void saveItinerary(ItineraryDTO itineraryDTO, String userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Itinerary itinerary = modelMapper.map(itineraryDTO, Itinerary.class);
+        itinerary.assignMember(member); // Using custom method
+        itineraryRepository.save(itinerary);
     }
 
 //    private void updatePlaceInformation(Place place) {

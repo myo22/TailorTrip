@@ -19,10 +19,16 @@ public class Itinerary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long memberId;  // 사용자 ID 참조만 저장
+    @ManyToOne
+    @JoinColumn(name = "mid", nullable = false)
+    private Member member;
 
     private int duration; // 여행 기간
 
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL)
     private List<ItineraryDay> days; // 일자별 일정
+
+    public void assignMember(Member member) {
+        this.member = member;
+    }
 }

@@ -120,6 +120,11 @@ public class ItineraryServiceImpl implements ItineraryService {
                 .build();
     }
 
+    @Override
+    public void saveItinerary(Itinerary itinerary, Member member){
+        
+    }
+
 //    private void updatePlaceInformation(Place place) {
 //        // overview가 이미 존재하는지 확인
 //        if (place.getOverview() == null || place.getOverview().isEmpty()) {

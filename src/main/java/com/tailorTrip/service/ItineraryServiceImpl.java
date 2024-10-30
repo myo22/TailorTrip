@@ -52,6 +52,7 @@ public class ItineraryServiceImpl implements ItineraryService {
 
         List<ItineraryDay> itineraryDays = new ArrayList<>();
         int totalDays = duration;
+        Set<Place> usedPlaces = new HashSet<>(); // 이미 사용된 장소를 추적하는 집합
 
         for (int day = 1; day <= totalDays; day++) {
             List<ItineraryItem> items = new ArrayList<>();
@@ -68,6 +69,7 @@ public class ItineraryServiceImpl implements ItineraryService {
 
             // MST 경로에서 장소 선택
             for (Place place : mstPath) {
+                if (usedPlaces.contains(place)) continue; // 이미 사용된 장소는 건너뜀
                 if (items.size() >= (mealsPerDay + activitiesPerDay)) break;
 
                 // 식사 또는 활동으로 분류하여 일정 아이템 추가
@@ -77,12 +79,14 @@ public class ItineraryServiceImpl implements ItineraryService {
                             .place(place)
                             .activityType("식사")
                             .build());
+                    usedPlaces.add(place); // 추가된 장소를 usedPlaces에 추가
                 } else if (activities.contains(place) && items.stream().filter(item -> item.getActivityType().equals("활동")).count() < activitiesPerDay) {
                     items.add(ItineraryItem.builder()
                             .timeOfDay("활동")
                             .place(place)
                             .activityType("활동")
                             .build());
+                    usedPlaces.add(place); // 추가된 장소를 usedPlaces에 추가
                 }
             }
 

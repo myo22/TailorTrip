@@ -3,6 +3,7 @@ package com.tailorTrip.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tailorTrip.domain.DetailInfo;
+import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -35,6 +36,7 @@ public class KorServiceImpl implements KorService {
                 "&defaultYN=Y&firstImageYN=N&areacodeYN=N&catcodeYN=N&addrinfoYN=N&mapinfoYN=N&overviewYN=Y&numOfRows=1&pageNo=1";
 
         StringBuilder overview = new StringBuilder();
+        // API 호출 코드 수정
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -42,13 +44,20 @@ public class KorServiceImpl implements KorService {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;
+            StringBuilder response = new StringBuilder();
+
             while ((inputLine = in.readLine()) != null) {
-                overview.append(inputLine);
+                response.append(inputLine);
             }
             in.close();
 
-            JsonNode response = objectMapper.readTree(overview.toString());
-            return response.path("response").path("body").path("items").path("item").get(0).path("overview").asText();
+            // 응답 내용 출력
+            System.out.println("응답: " + response.toString());
+
+            JSONObject jsonResponse = new JSONObject(response.toString());
+            return jsonResponse.getJSONObject("response").getJSONObject("body")
+                    .getJSONObject("items").getJSONArray("item").getJSONObject(0).getString("overview");
+
 
         } catch (Exception e) {
             System.out.println("API 호출 오류: " + e.getMessage());

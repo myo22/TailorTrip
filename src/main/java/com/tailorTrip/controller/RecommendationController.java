@@ -11,6 +11,7 @@ import com.tailorTrip.service.RegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Log4j2
 public class RecommendationController {
@@ -31,7 +32,6 @@ public class RecommendationController {
     private final ItineraryServiceImpl itineraryService;
 
     private final RegionService regionService;
-
 
 
     @GetMapping("/")

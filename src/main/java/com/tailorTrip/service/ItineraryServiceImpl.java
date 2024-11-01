@@ -21,12 +21,12 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final RecommendationService recommendationService;
 
-    private final KorService korService;
-
     private final MemberRepository memberRepository;
 
     private final ItineraryRepository itineraryRepository;
+
     private final ModelMapper modelMapper;
+
 
     @Override
     public ItineraryDTO createItinerary(UserPreferences preferences) {
@@ -109,16 +109,6 @@ public class ItineraryServiceImpl implements ItineraryService {
                     .dayNumber(day)
                     .items(items)
                     .build());
-        }
-
-        for (ItineraryDay itineraryDay : itineraryDays) {
-            for (ItineraryItem item : itineraryDay.getItems()) {
-                Place place = item.getPlace();
-                // overview가 비어 있는 경우에만 KorService 호출
-                if (place.getOverview() == null || place.getOverview().isEmpty()) {
-                    place.updateOverview(korService.getOverview(place.getContentId(), place.getContentTypeId()));
-                }
-            }
         }
 
         return ItineraryDTO.builder()

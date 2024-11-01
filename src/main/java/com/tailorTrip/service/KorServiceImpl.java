@@ -1,5 +1,7 @@
 package com.tailorTrip.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tailorTrip.domain.DetailInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,6 +9,10 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -16,34 +22,34 @@ public class KorServiceImpl implements KorService {
 
     private final RestTemplate restTemplate;
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     @Value("${kor.api.key}")
     private String serviceKey;
 
     @Override
     // API에서 overview를 가져오는 함수 (detailCommon1 엔드포인트 사용)
     public String getOverview(int contentId, int contentTypeId) {
-        if (contentId < 0 || contentTypeId <= 0) {
-            System.out.println("Invalid contentId or contentTypeId");
-            return null;
-        }
-        String baseUrl = "http://apis.data.go.kr/B551011/KorService1/detailCommon1";
-        String url = baseUrl + "?serviceKey=" + serviceKey + "&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=" + contentId
-                + "&contentTypeId=" + contentTypeId + "&defaultYN=Y&firstImageYN=N&areacodeYN=N&catcodeYN=N&addrinfoYN=N&mapinfoYN=N&overviewYN=Y&numOfRows=1&pageNo=1";
+        String urlString = "http://apis.data.go.kr/B551011/KorService1/detailCommon1?serviceKey=" + serviceKey +
+                "&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=" + contentId + "&contentTypeId=" + contentTypeId +
+                "&defaultYN=Y&firstImageYN=N&areacodeYN=N&catcodeYN=N&addrinfoYN=N&mapinfoYN=N&overviewYN=Y&numOfRows=1&pageNo=1";
 
+        StringBuilder overview = new StringBuilder();
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE); // Accept 헤더 설정
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-            System.out.println("Request URL: " + url);
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                overview.append(inputLine);
+            }
+            in.close();
 
-            HttpEntity<String> entity = new HttpEntity<>(headers);
+            JsonNode response = objectMapper.readTree(overview.toString());
+            return response.path("response").path("body").path("items").path("item").get(0).path("overview").asText();
 
-            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
-
-            Map<String, Object> body = (Map<String, Object>) response.getBody().get("response");
-            Map<String, Object> items = (Map<String, Object>) body.get("body");
-            Map<String, Object> item = (Map<String, Object>) ((List) items.get("items")).get(0);
-            return (String) item.getOrDefault("overview", "No overview available");
         } catch (Exception e) {
             System.out.println("API 호출 오류: " + e.getMessage());
             return null;

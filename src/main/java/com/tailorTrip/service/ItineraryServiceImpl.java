@@ -114,9 +114,10 @@ public class ItineraryServiceImpl implements ItineraryService {
         for (ItineraryDay itineraryDay : itineraryDays) {
             for (ItineraryItem item : itineraryDay.getItems()) {
                 Place place = item.getPlace();
-
-                // overview, intro, detailInfo 업데이트
-//                updatePlaceInformation(place);
+                // overview가 비어 있는 경우에만 KorService 호출
+                if (place.getOverview() == null || place.getOverview().isEmpty()) {
+                    place.updateOverview(korService.getOverview(place.getContentId(), place.getContentTypeId()));
+                }
             }
         }
 

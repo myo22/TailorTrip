@@ -2,8 +2,10 @@ package com.tailorTrip.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tailorTrip.domain.DetailInfo;
-import org.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -23,7 +25,7 @@ public class KorServiceImpl implements KorService {
 
     private final RestTemplate restTemplate;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final Gson gson;
 
     @Value("${kor.api.key}")
     private String serviceKey;
@@ -36,7 +38,6 @@ public class KorServiceImpl implements KorService {
                 "&defaultYN=Y&firstImageYN=N&areacodeYN=N&catcodeYN=N&addrinfoYN=N&mapinfoYN=N&overviewYN=Y&numOfRows=1&pageNo=1";
 
         StringBuilder overview = new StringBuilder();
-        // API 호출 코드 수정
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -44,20 +45,14 @@ public class KorServiceImpl implements KorService {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;
-            StringBuilder response = new StringBuilder();
-
             while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+                overview.append(inputLine);
             }
             in.close();
 
-            // 응답 내용 출력
-            System.out.println("응답: " + response.toString());
-
-            JSONObject jsonResponse = new JSONObject(response.toString());
-            return jsonResponse.getJSONObject("response").getJSONObject("body")
-                    .getJSONObject("items").getJSONArray("item").getJSONObject(0).getString("overview");
-
+            JsonObject response = JsonParser.parseString(overview.toString()).getAsJsonObject();
+            return response.getAsJsonObject("response").getAsJsonObject("body")
+                    .getAsJsonObject("items").getAsJsonArray("item").get(0).getAsJsonObject().get("overview").getAsString();
 
         } catch (Exception e) {
             System.out.println("API 호출 오류: " + e.getMessage());

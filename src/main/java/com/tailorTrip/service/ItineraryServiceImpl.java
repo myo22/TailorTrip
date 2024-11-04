@@ -1,5 +1,6 @@
 package com.tailorTrip.service;
 
+import com.google.maps.errors.NotFoundException;
 import com.tailorTrip.Repository.ItineraryRepository;
 import com.tailorTrip.Repository.MemberRepository;
 import com.tailorTrip.domain.*;
@@ -26,6 +27,7 @@ public class ItineraryServiceImpl implements ItineraryService {
     private final MemberRepository memberRepository;
 
     private final ItineraryRepository itineraryRepository;
+
     private final ModelMapper modelMapper;
 
     @Override
@@ -125,6 +127,24 @@ public class ItineraryServiceImpl implements ItineraryService {
         Itinerary itinerary = modelMapper.map(itineraryDTO, Itinerary.class);
         itinerary.assignMember(member); // Using custom method
         itineraryRepository.save(itinerary);
+    }
+
+    public void updateItinerary(String userId, Long id, ItineraryDTO itineraryDTO) {
+        // 기존 일정을 데이터베이스에서 가져오기
+        Itinerary existingItinerary = itineraryRepository.findByIdAndMid(id, userId);
+
+        // DTO의 값으로 기존 일정을 업데이트
+        modelMapper.map(itineraryDTO, existingItinerary);
+
+        // 업데이트된 일정 저장
+        itineraryRepository.save(existingItinerary);
+    }
+
+    @Override
+    public ItineraryDTO getItineraryById(Long id){
+        Itinerary itinerary = itineraryRepository.findById(id).orElseThrow();
+        ItineraryDTO itineraryDTO = modelMapper.map(itinerary, ItineraryDTO.class);
+        return itineraryDTO;
     }
 
 //    private void updatePlaceInformation(Place place) {

@@ -111,17 +111,6 @@ public class ItineraryServiceImpl implements ItineraryService {
                     .build());
         }
 
-        for (ItineraryDay itineraryDay : itineraryDays) {
-            for (ItineraryItem item : itineraryDay.getItems()) {
-                Place place = item.getPlace();
-                // overview가 비어 있는 경우에만 KorService 호출
-                if (place.getOverview() == null || place.getOverview().isEmpty()) {
-                    String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
-                    place.updateOverview(overview);
-                }
-            }
-        }
-
         return ItineraryDTO.builder()
                 .duration(duration)
                 .days(itineraryDays)

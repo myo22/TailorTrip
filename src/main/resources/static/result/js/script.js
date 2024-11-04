@@ -47,11 +47,16 @@ document.addEventListener(`DOMContentLoaded`, function () {
     });
   }
 });
+// 데이터 받아와서 들어오는 첫번째 데이터 기준으로 줌 
+window.initMap = function (itineraryData) {
+  // 초기 중심 좌표 설정
+  const initialCenter = itineraryData && itineraryData.length > 0
+    ? { lat: itineraryData[0].lat, lng: itineraryData[0].lng } // 첫 번째 항목의 좌표
+    : { lat: 37.5400456, lng: 126.9921017 }; // 기본 좌표
 
-window.initMap = function () {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 37.5400456, lng: 126.9921017 }, // 지도 중심 좌표
-    zoom: 11 // 지도 확대 수준
+    center: initialCenter,
+    zoom: 10
   });
 
   bounds = new google.maps.LatLngBounds();
@@ -60,6 +65,7 @@ window.initMap = function () {
   // 초기 데이터로 마커 로드 (모든 마커를 보여주기 위해 null 전달)
   filterMarkersByType(null);
 };
+
 
 function getMarkerIcon(contenttypeid) {
   // Marker 색상을 contenttypeid에 따라 반환하는 함수
@@ -150,6 +156,60 @@ function clearMarkers() {
   markersArray.forEach(marker => marker.setMap(null)); // 모든 마커를 지도에서 제거
   markersArray = []; // 배열을 초기화
 }
+
+
+
+
+// 버튼 클릭하면 다음페이지로 이동하면서 데이터 받기코드 html에 버튼 추가해라
+document.getElementById('moveButton').addEventListener('click', () => {
+  // left-box2에서 데이터 수집
+  const leftBox2Contents = document.querySelectorAll('.left-box2 .content');
+  const dataToSend = [];
+
+  // 각 콘텐츠 박스의 정보를 수집하기
+  leftBox2Contents.forEach(contentBox => {
+      const title = contentBox.querySelector('h3').textContent; // 제목 가져오기
+      const info = contentBox.querySelector('p').innerHTML; // 정보 가져오기
+      dataToSend.push({ title, info });
+  });
+
+  // 로컬 스토리지에 데이터 저장
+  localStorage.setItem('leftBox2Data', JSON.stringify(dataToSend));
+
+  // 페이지 이동
+  window.location.href = 'nextPage.html'; // 다음 페이지로 이동
+});
+
+
+
+
+
+// 데이터 받는 코드 
+// 페이지가 로드될 때 로컬 스토리지에서 데이터 불러오기
+// document.addEventListener('DOMContentLoaded', () => {
+//   const leftBox2Data = JSON.parse(localStorage.getItem('leftBox2Data')); // 로컬 스토리지에서 데이터 불러오기
+//   if (leftBox2Data) {
+//       leftBox2Data.forEach(item => {
+//           const contentBox = document.createElement('div');
+//           contentBox.className = 'content';
+
+//           const h3Element = document.createElement('h3');
+//           h3Element.textContent = item.title; // 제목 설정
+
+//           const pElement = document.createElement('p');
+//           pElement.innerHTML = item.info; // 정보 설정
+
+//           contentBox.appendChild(h3Element);
+//           contentBox.appendChild(pElement);
+
+//           // 원하는 컨테이너에 추가
+//           document.querySelector('#targetContainer').appendChild(contentBox);
+//       });
+//   } else {
+//       console.log('로컬 스토리지에 leftBox2 데이터가 없습니다.');
+//   }
+// });
+
 
 
 

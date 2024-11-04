@@ -15,9 +15,11 @@ function updateContentBox(data) {
     contentBox.dataset.contenttypeid = item.contenttypeid; // contenttypeid를 데이터 속성으로 추가
 
     const moveButton = document.createElement('button');
+    moveButton.className = 'move-button';
     moveButton.innerHTML = '<img src="./image/none_select.svg" alt="이동하기"> ';
 
     const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete-button';
     deleteButton.innerHTML = '<img src="./image/none_select.svg" alt="삭제"> ';
     deleteButton.style.display = 'none'; // 초기에는 숨김
 

@@ -47,12 +47,13 @@ document.addEventListener(`DOMContentLoaded`, function () {
     });
   }
 });
-// 데이터 받아와서 들어오는 첫번째 데이터 기준으로 줌 
+
+// 데이터 받아와서 들어오는 첫번째 데이터 기준으로 줌
 window.initMap = function (itineraryData) {
   // 초기 중심 좌표 설정
-  const initialCenter = itineraryData && itineraryData.length > 0
-    ? { lat: itineraryData[0].lat, lng: itineraryData[0].lng } // 첫 번째 항목의 좌표
-    : { lat: 37.5400456, lng: 126.9921017 }; // 기본 좌표
+  const initialCenter = itineraryData && itineraryData.length > 0  // `itineraryData` 대신 `itinerary` 사용
+      ? { lat: itineraryData[0].lat, lng: itineraryData[0].lng }    // 첫 번째 항목의 좌표
+      : { lat: 37.5400456, lng: 126.9921017 };              // 기본 좌표
 
   map = new google.maps.Map(document.getElementById("map"), {
     center: initialCenter,
@@ -65,6 +66,7 @@ window.initMap = function (itineraryData) {
   // 초기 데이터로 마커 로드 (모든 마커를 보여주기 위해 null 전달)
   filterMarkersByType(null);
 };
+
 
 
 function getMarkerIcon(contenttypeid) {

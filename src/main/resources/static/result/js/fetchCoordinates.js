@@ -175,6 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+function initMapWithData() {
+  const itineraryData = JSON.parse(localStorage.getItem('itinerary')) || []; // 로컬 스토리지에서 데이터 불러오기
+
+  if (itineraryData.length === 0) {
+    console.warn("Itinerary data is empty or not found in local storage.");
+    return;
+  }
+
+  window.initMap(itineraryData); // 데이터와 함께 initMap 호출
+}
+
 
 
 

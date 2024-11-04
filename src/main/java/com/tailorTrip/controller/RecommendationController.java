@@ -76,7 +76,7 @@ public class RecommendationController {
                 itemData.put("contentid", item.getPlace().getContentId().toString());
                 itemData.put("contenttypeid", String.valueOf(day.getDayNumber()));
                 itemData.put("infoname", "문화유산 예약안내");
-                itemData.put("infotext", "[개인 관람예약] - 사전예약 필수");
+                itemData.put("infotext", item.getTimeOfDay());
                 itemData.put("label", item.getActivityType());
                 itemData.put("name", item.getPlace().getTitle());
                 itemData.put("lat", item.getPlace().getMapY());

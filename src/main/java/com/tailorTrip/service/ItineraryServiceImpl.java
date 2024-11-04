@@ -131,7 +131,9 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     public void updateItinerary(String userId, Long id, ItineraryDTO itineraryDTO) {
         // 기존 일정을 데이터베이스에서 가져오기
-        Itinerary existingItinerary = itineraryRepository.findByIdAndMid(id, userId);
+        Optional<Itinerary> result = itineraryRepository.findByIdAndMemberMid(id, userId);
+
+        Itinerary existingItinerary = result.orElseThrow();
 
         // DTO의 값으로 기존 일정을 업데이트
         modelMapper.map(itineraryDTO, existingItinerary);
@@ -142,7 +144,8 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     @Override
     public ItineraryDTO getItineraryById(Long id){
-        Itinerary itinerary = itineraryRepository.findById(id).orElseThrow();
+        Optional<Itinerary> result = itineraryRepository.findById(id);
+        Itinerary itinerary = result.orElseThrow();
         ItineraryDTO itineraryDTO = modelMapper.map(itinerary, ItineraryDTO.class);
         return itineraryDTO;
     }

@@ -3,6 +3,7 @@ package com.tailorTrip.service;
 import com.google.maps.errors.NotFoundException;
 import com.tailorTrip.Repository.ItineraryRepository;
 import com.tailorTrip.Repository.MemberRepository;
+import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.domain.*;
 import com.tailorTrip.dto.ItineraryDTO;
 import com.tailorTrip.dto.ItineraryDay;
@@ -29,6 +30,8 @@ public class ItineraryServiceImpl implements ItineraryService {
     private final ItineraryRepository itineraryRepository;
 
     private final ModelMapper modelMapper;
+
+    private final PlaceRepository placeRepository;
 
     @Override
     public ItineraryDTO createItinerary(UserPreferences preferences) {
@@ -111,6 +114,30 @@ public class ItineraryServiceImpl implements ItineraryService {
                     .dayNumber(day)
                     .items(items)
                     .build());
+        }
+
+        for (ItineraryDay itineraryDay : itineraryDays) {
+            for (ItineraryItem item : itineraryDay.getItems()) {
+                Place place = item.getPlace();
+                // overview가 비어 있는 경우에만 KorService 호출
+                if (place.getOverview() == null || place.getOverview().isEmpty()) {
+                    try {
+                        // KorService에서 overview 가져오기
+                        String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
+                        System.out.println(overview);
+                        place.updateOverview(overview);
+                        placeRepository.save(place);
+
+                        // 요청 간의 지연 (예: 1초)
+                        Thread.sleep(1000); // 1000ms = 1초
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 복원
+                        System.out.println("요청 간의 지연 중 오류 발생: " + e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("Error fetching overview for place " + place.getContentId() + ": " + e.getMessage());
+                    }
+                }
+            }
         }
 
         return ItineraryDTO.builder()

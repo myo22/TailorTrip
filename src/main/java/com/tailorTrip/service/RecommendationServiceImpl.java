@@ -26,6 +26,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     private final DataPreprocessor dataPreprocessor;
 
+    private final KorService korService;
+
 
     @Override
     public List<Place> getRecommendations(UserPreferences preferences) {

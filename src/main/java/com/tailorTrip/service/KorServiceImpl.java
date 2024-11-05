@@ -25,23 +25,29 @@ public class KorServiceImpl implements KorService {
 
     private final RestTemplate restTemplate;
 
-    private final Gson gson;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${kor.api.key}")
     private String serviceKey;
 
-    @Override
     // API에서 overview를 가져오는 함수 (detailCommon1 엔드포인트 사용)
     public String getOverview(int contentId, int contentTypeId) {
-        String urlString = "http://apis.data.go.kr/B551011/KorService1/detailCommon1?serviceKey=" + serviceKey +
-                "&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=" + contentId + "&contentTypeId=" + contentTypeId +
-                "&defaultYN=Y&firstImageYN=N&areacodeYN=N&catcodeYN=N&addrinfoYN=N&mapinfoYN=N&overviewYN=Y&numOfRows=1&pageNo=1";
+        String urlString = String.format(
+                "http://apis.data.go.kr/B551011/KorService1/detailCommon1?serviceKey=%s&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=%d&contentTypeId=%d&defaultYN=Y&firstImageYN=N&areacodeYN=N&catcodeYN=N&addrinfoYN=N&mapinfoYN=N&overviewYN=Y&numOfRows=1&pageNo=1",
+                serviceKey, contentId, contentTypeId
+        );
 
         StringBuilder overview = new StringBuilder();
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+
+            // HTTP 응답 코드 체크
+            int responseCode = conn.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new RuntimeException("HTTP error code: " + responseCode);
+            }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;
@@ -50,9 +56,9 @@ public class KorServiceImpl implements KorService {
             }
             in.close();
 
-            JsonObject response = JsonParser.parseString(overview.toString()).getAsJsonObject();
-            return response.getAsJsonObject("response").getAsJsonObject("body")
-                    .getAsJsonObject("items").getAsJsonArray("item").get(0).getAsJsonObject().get("overview").getAsString();
+            // JSON 응답 파싱
+            JsonNode response = objectMapper.readTree(overview.toString());
+            return response.path("response").path("body").path("items").path("item").get(0).path("overview").asText("No overview available");
 
         } catch (Exception e) {
             System.out.println("API 호출 오류: " + e.getMessage());

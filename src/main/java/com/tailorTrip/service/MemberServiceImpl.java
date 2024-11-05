@@ -42,4 +42,10 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.save(member);
     }
+
+    @Override
+    public Member findMemberById(String userId){
+        return memberRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 }

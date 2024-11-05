@@ -7,4 +7,6 @@ import java.util.List;
 public interface PlaceService {
 
     List<Place> getRegionalPlaces(String region);
+
+    void updatePlaceOverview(Place place, String overview);
 }

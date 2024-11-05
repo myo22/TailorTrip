@@ -19,4 +19,10 @@ public class PlaceServiceImpl implements PlaceService {
     public List<Place> getRegionalPlaces(String region) {
         return placeRepository.findByAddr1Containing(region);
     }
+
+    // Place 업데이트 메소드
+    public void updatePlaceOverview(Place place, String overview) {
+        place.updateOverview(overview);
+        placeRepository.save(place); // 데이터베이스에 저장
+    }
 }

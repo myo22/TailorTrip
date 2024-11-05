@@ -75,8 +75,8 @@ public class RecommendationController {
                 Map<String, Object> itemData = new HashMap<>();
                 itemData.put("contentid", item.getPlace().getContentId().toString());
                 itemData.put("contenttypeid", String.valueOf(day.getDayNumber()));
-                itemData.put("infoname", "문화유산 예약안내");
-                itemData.put("infotext", item.getTimeOfDay());
+                itemData.put("infoname", item.getTimeOfDay());
+                itemData.put("infotext", item.getPlace().getOverview());
                 itemData.put("label", item.getActivityType());
                 itemData.put("name", item.getPlace().getTitle());
                 itemData.put("lat", item.getPlace().getMapY());

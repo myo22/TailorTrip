@@ -35,6 +35,7 @@ public class Place {
     private Integer sigunguCode;
     private Integer contentTypeId;
 
+    @Column(length = 2000)
     private String overview; // 개요 정보
 
 //    @ElementCollection

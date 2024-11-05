@@ -25,13 +25,13 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final KorService korService;
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     private final ItineraryRepository itineraryRepository;
 
     private final ModelMapper modelMapper;
 
-    private final PlaceRepository placeRepository;
+    private final PlaceService placeService;
 
     @Override
     public ItineraryDTO createItinerary(UserPreferences preferences) {
@@ -119,19 +119,18 @@ public class ItineraryServiceImpl implements ItineraryService {
         for (ItineraryDay itineraryDay : itineraryDays) {
             for (ItineraryItem item : itineraryDay.getItems()) {
                 Place place = item.getPlace();
-                // overview가 비어 있는 경우에만 KorService 호출
                 if (place.getOverview() == null || place.getOverview().isEmpty()) {
                     try {
-                        // KorService에서 overview 가져오기
                         String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
                         System.out.println(overview);
-                        place.updateOverview(overview);
-                        placeRepository.save(place);
+
+                        // PlaceService를 통해 Place 업데이트
+                        placeService.updatePlaceOverview(place, overview);
 
                         // 요청 간의 지연 (예: 1초)
-                        Thread.sleep(1000); // 1000ms = 1초
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 복원
+                        Thread.currentThread().interrupt();
                         System.out.println("요청 간의 지연 중 오류 발생: " + e.getMessage());
                     } catch (Exception e) {
                         System.out.println("Error fetching overview for place " + place.getContentId() + ": " + e.getMessage());
@@ -139,6 +138,7 @@ public class ItineraryServiceImpl implements ItineraryService {
                 }
             }
         }
+
 
         return ItineraryDTO.builder()
                 .duration(duration)
@@ -148,8 +148,7 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     @Override
     public void saveItinerary(ItineraryDTO itineraryDTO, String userId) {
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Member member = memberService.findMemberById(userId);
 
         Itinerary itinerary = modelMapper.map(itineraryDTO, Itinerary.class);
         itinerary.assignMember(member); // Using custom method

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Log4j2
 public class RecommendationServiceImpl implements RecommendationService {
 
-    private final PlaceRepository placeRepository;
+    private final PlaceService placeService;
 
     private final RecommendationModel recommendationModel;
 
@@ -33,7 +33,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     public List<Place> getRecommendations(UserPreferences preferences) {
 
         // 데이터베이스 쿼리를 통해 지역별로 필터링된 장소들 가져오기
-        List<Place> regionalPlaces = placeRepository.findByAddr1Containing(preferences.getRegion());
+        List<Place> regionalPlaces = placeService.getRegionalPlaces(preferences.getRegion());
 
 
         // 1. 사용자 선호도를 벡터로 전처리

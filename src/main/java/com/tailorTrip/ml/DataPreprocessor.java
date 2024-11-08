@@ -114,9 +114,19 @@ public class DataPreprocessor {
             features[2] = -1; // 선호 음식이 없는 경우
         }
 
-        // 숙소 인코딩 (소분류)
-        Integer accommodationIndex = DETAIL_CATEGORY_MAP.get(prefs.getAccommodationPreference());
-        features[3] = accommodationIndex != null ? accommodationIndex : -1; // 카테고리 매핑이 없으면 -1
+        // 선호하는 숙소 인코딩 (소분류)
+        if (prefs.getAccommodationPreference() != null) {
+            Set<Integer> accommodationIndexes = new HashSet<>();
+            for (String accommodationPref : prefs.getAccommodationPreference()) {
+                Integer accommodationIndex = DETAIL_CATEGORY_MAP.get(accommodationPref);
+                if (accommodationIndex != null) {
+                    accommodationIndexes.add(accommodationIndex);
+                }
+            }
+            features[3] = accommodationIndexes.isEmpty() ? -1 : (float) accommodationIndexes.size(); // 여러 개라면 개수로 표현
+        } else {
+            features[3] = -1;
+        }
 
 //        여기서 1D 배열을 2D 배열로 변환
         return Nd4j.create(new float[][]{normalize(features)});

@@ -13,6 +13,6 @@ public class UserPreferencesDTO {
     private List<String> foodPreferences;
     private boolean petPreference;
     private String travelStyle;
-    private String accommodation;
+    private List<String> accommodation;
 }
 

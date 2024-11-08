@@ -136,7 +136,13 @@ public class DatasetCreator {
             return specificCategories; // early return
         }
 
-        addAccommodationCategories(pref.getAccommodationPreference(), specificCategories);
+        // 숙소 선호 리스트를 처리
+        if (pref.getAccommodationPreference() != null) {
+            for (String accommodationPref : pref.getAccommodationPreference()) {
+                addAccommodationCategories(accommodationPref, specificCategories);
+            }
+        }
+
         // 음식 선호 리스트를 처리
         if (pref.getFoodPreference() != null) {
             for (String foodPref : pref.getFoodPreference()) {

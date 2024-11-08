@@ -94,7 +94,7 @@ public class BatchInsertExample {
                 pstmt.setString(15, obj.optString("firstimage2", ""));
 
                 // areacode
-                pstmt.setInt(16, obj.optInt("areacode", 0));
+                pstmt.setString(16, obj.optString("areacode", ""));
 
                 // sigungucode 처리: null 가능성을 고려
                 Object sigungucodeObj = obj.opt("sigungucode");

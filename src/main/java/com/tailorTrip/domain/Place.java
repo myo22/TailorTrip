@@ -31,7 +31,7 @@ public class Place {
     private String acmpyTypeCd;
     private String firstImage;
     private String firstImage2;
-    private Integer areaCode;
+    private String areaCode;
     private Integer sigunguCode;
     private Integer contentTypeId;
 

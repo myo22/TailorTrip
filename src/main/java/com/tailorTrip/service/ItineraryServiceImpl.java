@@ -100,13 +100,18 @@ public class ItineraryServiceImpl implements ItineraryService {
             }
 
             // 3일마다 숙소를 배정 (3일 단위로 하나씩 배정)
-            if (day % 3 == 1 && !selectedAccommodations.isEmpty()) {  // 1일, 4일, 7일 등 3일마다 배정
-                Place selectedAccommodation = selectedAccommodations.get((day - 1) / 3);  // 3일마다 인덱스 접근
-                items.add(ItineraryItem.builder()
-                        .timeOfDay("숙소")
-                        .place(selectedAccommodation)
-                        .activityType("숙박")
-                        .build());
+            if (!selectedAccommodations.isEmpty()) {
+                // 1, 2, 3일에는 첫 번째 숙소 배정
+                // 4, 5, 6일에는 두 번째 숙소 배정
+                int accommodationIndex = (day - 1) / 3; // day가 1~3이면 0, 4~6이면 1이 된다
+                if (accommodationIndex < selectedAccommodations.size()) {
+                    Place selectedAccommodation = selectedAccommodations.get(accommodationIndex);  // 해당 인덱스의 숙소 선택
+                    items.add(ItineraryItem.builder()
+                            .timeOfDay("숙소")
+                            .place(selectedAccommodation)
+                            .activityType("숙박")
+                            .build());
+                }
             }
 
             itineraryDays.add(ItineraryDay.builder()

@@ -48,17 +48,15 @@ public class ItineraryServiceImpl implements ItineraryService {
         List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
         List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
 
-        // 숙소 선택 (최대 1개)
-        Place selectedAccommodation = selectAccommodation(accommodations, preferences, duration);
+        // 여행 일정 동안 사용될 숙소 리스트를 가져옴
+        List<Place> selectedAccommodations = selectAccommodationForDays(accommodations, preferences, duration);
 
-        // 초기 위치: 숙소가 있다면 숙소 위치, 아니면 첫 번째 장소의 위치
-        double currentLat = selectedAccommodation != null ? selectedAccommodation.getMapY() : 0.0;
-        double currentLng = selectedAccommodation != null ? selectedAccommodation.getMapX() : 0.0;
-
-        // MST 생성
+        // MST에 포함할 모든 장소들을 리스트로 합침
         List<Place> allPlaces = new ArrayList<>(meals);
         allPlaces.addAll(activities);
-        allPlaces.add(selectedAccommodation);
+        allPlaces.addAll(selectedAccommodations);
+
+        // MST 생성
         List<Place> mstPath = generateMSTPath(allPlaces);
 
         List<ItineraryDay> itineraryDays = new ArrayList<>();
@@ -102,7 +100,8 @@ public class ItineraryServiceImpl implements ItineraryService {
             }
 
             // 마지막 날에 숙소 배정
-            if (selectedAccommodation != null && day == totalDays) {
+            if (!selectedAccommodations.isEmpty() && day == totalDays) {
+                Place selectedAccommodation = selectedAccommodations.get(day - 1);
                 items.add(ItineraryItem.builder()
                         .timeOfDay("숙소")
                         .place(selectedAccommodation)
@@ -264,30 +263,29 @@ public class ItineraryServiceImpl implements ItineraryService {
      *
      * @param accommodations 숙소 목록
      * @param preferences     사용자 선호도
-     * @param duration        여행 기간
+     * @param totalDays        여행 기간
      * @return 선택된 숙소
      */
-    private Place selectAccommodation(List<Place> accommodations, UserPreferences preferences, int duration) {
-        if (accommodations.isEmpty()) return null;
+    private List<Place> selectAccommodationForDays(List<Place> accommodations, UserPreferences preferences, int totalDays) {
+        if (accommodations.isEmpty()) return Collections.emptyList();
 
-        // 숙소 교대 간격 설정 (예: 3일마다 교대)
+        // 숙소 교체 주기 설정 (예: 3일마다 교체)
         int accommodationChangeInterval = 3;
-        // 단, 전체 기간이 짧다면 한 번만 선택
-        accommodationChangeInterval = Math.min(accommodationChangeInterval, duration);
-
-        // 선호 숙소 유형에 맞는 숙소 필터링 후 평점 순으로 정렬
+        
+        // 각 숙소에 대한 선호도에 따라 필터링
         List<Place> preferredAccommodations = accommodations.stream()
                 .filter(place -> place.getCat3().equalsIgnoreCase(preferences.getAccommodationPreference()))
                 .collect(Collectors.toList());
 
-        if (!preferredAccommodations.isEmpty()) {
-            return preferredAccommodations.get(0); // 평점이 가장 높은 숙소 선택
-        } else {
-            // 선호 숙소 유형이 없을 경우 평점이 높은 숙소 선택
-            return accommodations.stream()
-                    .findFirst()
-                    .orElse(accommodations.get(0));
+        // 선호 숙소가 있으면 사용하고, 없으면 모든 숙소에서 선택
+        List<Place> accommodationsToUse = preferredAccommodations.isEmpty() ? accommodations : preferredAccommodations;
+
+        List<Place> selectedAccommodations = new ArrayList<>();
+        for (int day = 0; day < totalDays; day += accommodationChangeInterval) {
+            int index = (day / accommodationChangeInterval) % accommodationsToUse.size();
+            selectedAccommodations.add(accommodationsToUse.get(index));
         }
+        return selectedAccommodations;
     }
 
     /**

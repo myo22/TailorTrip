@@ -121,12 +121,13 @@ document.addEventListener(`DOMContentLoaded`, function () {
             if (this.classList.contains('on')) {
                 this.classList.remove('on');
                 selectedInterests = selectedInterests.filter(interest => interest !== this.querySelector('.box-txt p').textContent); // 선택 해제 시 관심사 배열에서 제거
-            } else if (selectedInterests.length < maxSelection) {
+            } else if (selectedInterests.length < 5) {
                 this.classList.add('on');
                 selectedInterests.push(this.querySelector('.box-txt p').textContent); // 선택된 관심사 배열에 추가
-            } else {
-                alert(`최대 ${maxSelection}개까지만 선택할 수 있습니다.`); // 최대 선택 수 초과 시 경고
             }
+            // else {
+            //     alert(`최대 ${maxSelection}개까지만 선택할 수 있습니다.`); // 최대 선택 수 초과 시 경고
+            // }
         });
     }
 
@@ -143,7 +144,7 @@ document.addEventListener(`DOMContentLoaded`, function () {
             if (this.classList.contains('on')) {
                 this.classList.remove('on');
                 window.selectedActivities = window.selectedActivities.filter(activity => activity !== this.querySelector('p').textContent);
-            } else if (window.selectedActivities.length < 2) {
+            } else if (window.selectedActivities.length < 4) {
                 this.classList.add('on');
                 window.selectedActivities.push(this.querySelector('p').textContent);
             }
@@ -175,7 +176,7 @@ document.addEventListener(`DOMContentLoaded`, function () {
                 this.classList.remove('on');
                 window.selectedFoodPreferences = window.selectedFoodPreferences.filter(food => food !== this.querySelector('p').textContent);
                 selectedFoodCount--;  // 선택 해제 시 카운트 감소
-            } else if (selectedFoodCount < 2) {
+            } else if (selectedFoodCount < 5) {
                 this.classList.add('on');
                 window.selectedFoodPreferences.push(this.querySelector('p').textContent);
                 selectedFoodCount++;  // 새로 선택할 때 카운트 증가
@@ -197,48 +198,22 @@ document.addEventListener(`DOMContentLoaded`, function () {
     const bttn6 = document.querySelectorAll('.sec-7-box');
 
     // 숙소 선택을 위한 변수
-    window.selectedAccommodation = null; // 전역 변수로 설정
+    window.selectedAccommodation = []; // 배열로 설정하여 여러 숙소를 저장
 
     // 숙소 선택 이벤트 리스너 추가
     for (let button of bttn6) {
         button.addEventListener('click', function () {
-            // 선택된 숙소에 'on' 클래스 추가
-            this.classList.add('on');
-            window.selectedAccommodation = this.getAttribute('data-accommodation'); // 숙소 정보 저장
-
-            // 다른 숙소에서 'on' 클래스 제거
-            for (let btn of bttn6) {
-                if (btn !== this) {
-                    btn.classList.remove('on');
-                }
+            // 'on' 클래스가 이미 있다면 제거하고, 선택 목록에서 해당 숙소를 제거
+            if (this.classList.contains('on')) {
+                this.classList.remove('on');
+                window.selectedAccommodation = window.selectedAccommodation.filter(accommodation => accommodation !== this.getAttribute('data-accommodation'));
+            } else {
+                // 'on' 클래스 추가하고, 선택 목록에 숙소 추가
+                this.classList.add('on');
+                window.selectedAccommodation.push(this.getAttribute('data-accommodation'));
             }
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

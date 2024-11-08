@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PlaceRepository extends JpaRepository<Place, Long> {
 
-    List<Place> findByAddr1Containing(String region);
+    List<Place> findByAreaCodeContaining(String region);
 }

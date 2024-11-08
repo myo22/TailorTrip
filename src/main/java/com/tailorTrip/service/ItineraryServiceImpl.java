@@ -99,9 +99,9 @@ public class ItineraryServiceImpl implements ItineraryService {
                 }
             }
 
-            // 마지막 날에 숙소 배정
-            if (!selectedAccommodations.isEmpty() && day == totalDays) {
-                Place selectedAccommodation = selectedAccommodations.get(day - 1);
+            // 3일마다 숙소를 배정 (3일 단위로 하나씩 배정)
+            if (day % 3 == 1 && !selectedAccommodations.isEmpty()) {  // 1일, 4일, 7일 등 3일마다 배정
+                Place selectedAccommodation = selectedAccommodations.get((day - 1) / 3);  // 3일마다 인덱스 접근
                 items.add(ItineraryItem.builder()
                         .timeOfDay("숙소")
                         .place(selectedAccommodation)
@@ -271,10 +271,11 @@ public class ItineraryServiceImpl implements ItineraryService {
 
         // 숙소 교체 주기 설정 (예: 3일마다 교체)
         int accommodationChangeInterval = 3;
-        
+
         // 각 숙소에 대한 선호도에 따라 필터링
         List<Place> preferredAccommodations = accommodations.stream()
-                .filter(place -> place.getCat3().equalsIgnoreCase(preferences.getAccommodationPreference()))
+                .filter(place -> preferences.getAccommodationPreference().stream()
+                        .anyMatch(preference -> preference.equalsIgnoreCase(place.getCat3())))
                 .collect(Collectors.toList());
 
         // 선호 숙소가 있으면 사용하고, 없으면 모든 숙소에서 선택

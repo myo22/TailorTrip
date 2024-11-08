@@ -51,7 +51,7 @@ public class ItineraryServiceImpl implements ItineraryService {
         // 여행 일정 동안 사용될 숙소 리스트를 가져옴
         List<Place> selectedAccommodations = selectAccommodationForDays(accommodations, preferences, duration);
 
-        // MST에 포함할 모든 장소들을 리스트로 합침
+        // MST에 포함할 모든 장소들을 리스트로 합침 (숙소도 포함)
         List<Place> allPlaces = new ArrayList<>(meals);
         allPlaces.addAll(activities);
         allPlaces.addAll(selectedAccommodations);
@@ -120,6 +120,7 @@ public class ItineraryServiceImpl implements ItineraryService {
                     .build());
         }
 
+        // Place의 overview를 업데이트
         for (ItineraryDay itineraryDay : itineraryDays) {
             for (ItineraryItem item : itineraryDay.getItems()) {
                 Place place = item.getPlace();
@@ -202,8 +203,8 @@ public class ItineraryServiceImpl implements ItineraryService {
 //        }
 //    }
 
+    // 숙소의 위치도 포함하여 MST 경로를 생성하는 메서드
     private List<Place> generateMSTPath(List<Place> places) {
-        // Prim 알고리즘을 사용하여 MST 경로 생성
         List<Place> mstPath = new ArrayList<>();
         Set<Place> visited = new HashSet<>();
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(Comparator.comparingDouble(edge -> edge.weight));
@@ -213,7 +214,7 @@ public class ItineraryServiceImpl implements ItineraryService {
         visited.add(start);
         mstPath.add(start);
 
-        // 인접한 장소들 추가
+        // 인접한 장소들 추가 (모든 장소가 연결될 수 있도록)
         for (Place place : places) {
             if (place != start) {
                 double distance = calculateDistance(start.getMapY(), start.getMapX(), place.getMapY(), place.getMapX());

@@ -17,7 +17,7 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     public List<Place> getRegionalPlaces(String region) {
-        return placeRepository.findByAreaCodeContaining(region);
+        return placeRepository.findByAreaCodeEquals(region);
     }
 
     // Place 업데이트 메소드

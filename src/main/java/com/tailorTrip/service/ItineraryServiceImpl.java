@@ -1,9 +1,6 @@
 package com.tailorTrip.service;
 
-import com.google.maps.errors.NotFoundException;
 import com.tailorTrip.Repository.ItineraryRepository;
-import com.tailorTrip.Repository.MemberRepository;
-import com.tailorTrip.Repository.PlaceRepository;
 import com.tailorTrip.domain.*;
 import com.tailorTrip.dto.ItineraryDTO;
 import com.tailorTrip.dto.ItineraryDay;
@@ -41,10 +38,8 @@ public class ItineraryServiceImpl implements ItineraryService {
         // 장소를 카테고리별로 분류
         Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
 
-        // 숙소는 별도로 관리
+        // 숙소, 식사, 활동 장소
         List<Place> accommodations = categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>());
-
-        // 식사 및 활동 장소
         List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
         List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
 
@@ -56,91 +51,17 @@ public class ItineraryServiceImpl implements ItineraryService {
         allPlaces.addAll(activities);
         allPlaces.addAll(selectedAccommodations);
 
-        // MST 생성
-        List<Place> mstPath = generateMSTPath(allPlaces);
+        // TSP 경로 생성
+        List<Place> optimalPath = generateOptimalPath(allPlaces);
 
-        List<ItineraryDay> itineraryDays = new ArrayList<>();
-        int totalDays = duration;
-        Set<Place> usedPlaces = new HashSet<>(); // 이미 사용된 장소를 추적하는 집합
+        List<ItineraryDay> itineraryDays = createItineraryDays(optimalPath, meals, activities, selectedAccommodations, preferences, duration);
 
-        for (int day = 1; day <= totalDays; day++) {
-            List<ItineraryItem> items = new ArrayList<>();
-
-            // 하루에 필요한 장소 수 설정
-            int mealsPerDay = 3; // 아침, 점심, 저녁
-            int activitiesPerDay = 3; // 오전 1개, 오후 활동 2개
-
-            if (preferences.getTravelPace().equalsIgnoreCase("느긋하게")) {
-                mealsPerDay -= 1; // 점심, 저녁
-            } else if (preferences.getTravelPace().equalsIgnoreCase("바쁘게")) {
-                activitiesPerDay += 1; // 바쁘게: 오전, 오후 2개, 저녁 활동
-            }
-
-            // MST 경로에서 장소 선택
-            for (Place place : mstPath) {
-                if (usedPlaces.contains(place)) continue; // 이미 사용된 장소는 건너뜀
-                if (items.size() >= (mealsPerDay + activitiesPerDay)) break;
-
-                // 식사 또는 활동으로 분류하여 일정 아이템 추가
-                if (meals.contains(place) && items.stream().filter(item -> item.getActivityType().equals("식사")).count() < mealsPerDay) {
-                    items.add(ItineraryItem.builder()
-                            .timeOfDay("식사")
-                            .place(place)
-                            .activityType("식사")
-                            .build());
-                    usedPlaces.add(place); // 추가된 장소를 usedPlaces에 추가
-                } else if (activities.contains(place) && items.stream().filter(item -> item.getActivityType().equals("활동")).count() < activitiesPerDay) {
-                    items.add(ItineraryItem.builder()
-                            .timeOfDay("활동")
-                            .place(place)
-                            .activityType("활동")
-                            .build());
-                    usedPlaces.add(place); // 추가된 장소를 usedPlaces에 추가
-                }
-            }
-
-            // 3일마다 숙소를 배정 (3일 단위로 하나씩 배정)
-            if (!selectedAccommodations.isEmpty()) {
-                // 1, 2, 3일에는 첫 번째 숙소 배정
-                // 4, 5, 6일에는 두 번째 숙소 배정
-                int accommodationIndex = (day - 1) / 3; // day가 1~3이면 0, 4~6이면 1이 된다
-                if (accommodationIndex < selectedAccommodations.size()) {
-                    Place selectedAccommodation = selectedAccommodations.get(accommodationIndex);  // 해당 인덱스의 숙소 선택
-                    items.add(ItineraryItem.builder()
-                            .timeOfDay("숙소")
-                            .place(selectedAccommodation)
-                            .activityType("숙박")
-                            .build());
-                }
-            }
-
-            itineraryDays.add(ItineraryDay.builder()
-                    .dayNumber(day)
-                    .items(items)
-                    .build());
-        }
 
         // Place의 overview를 업데이트
         for (ItineraryDay itineraryDay : itineraryDays) {
             for (ItineraryItem item : itineraryDay.getItems()) {
                 Place place = item.getPlace();
-                if (place.getOverview() == null || place.getOverview().isEmpty()) {
-                    try {
-                        String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
-                        System.out.println(overview);
-
-                        // PlaceService를 통해 Place 업데이트
-                        placeService.updatePlaceOverview(place, overview);
-
-                        // 요청 간의 지연 (예: 1초)
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        System.out.println("요청 간의 지연 중 오류 발생: " + e.getMessage());
-                    } catch (Exception e) {
-                        System.out.println("Error fetching overview for place " + place.getContentId() + ": " + e.getMessage());
-                    }
-                }
+                updatePlaceInformation(place);
             }
         }
 
@@ -177,19 +98,111 @@ public class ItineraryServiceImpl implements ItineraryService {
     public ItineraryDTO getItineraryById(Long id){
         Optional<Itinerary> result = itineraryRepository.findById(id);
         Itinerary itinerary = result.orElseThrow();
-        ItineraryDTO itineraryDTO = modelMapper.map(itinerary, ItineraryDTO.class);
-        return itineraryDTO;
+        return modelMapper.map(itinerary, ItineraryDTO.class);
     }
 
-//    private void updatePlaceInformation(Place place) {
-//        // overview가 이미 존재하는지 확인
-//        if (place.getOverview() == null || place.getOverview().isEmpty()) {
-//            String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
-//            if (overview != null && !overview.isEmpty()) {
-//                place.updateOverview(overview);
-//            }
-//        }
-//
+    private List<Place> generateOptimalPath(List<Place> places) {
+        List<Place> optimalPath = new ArrayList<>();
+        if (places.isEmpty()) return optimalPath;
+
+        Place startPlace = places.get(0);
+        optimalPath.add(startPlace);
+
+        Set<Place> visited = new HashSet<>();
+        visited.add(startPlace);
+
+        while (visited.size() < places.size()) {
+            Place lastPlace = optimalPath.get(optimalPath.size() - 1);
+            Place nearestPlace = null;
+            double nearestDistance = Double.MAX_VALUE;
+
+            for (Place place : places) {
+                if (visited.contains(place)) continue;
+                double distance = calculateDistance(lastPlace.getMapY(), lastPlace.getMapX(), place.getMapY(), place.getMapX());
+                if (distance < nearestDistance) {
+                    nearestPlace = place;
+                    nearestDistance = distance;
+                }
+            }
+
+            if (nearestPlace != null) {
+                optimalPath.add(nearestPlace);
+                visited.add(nearestPlace);
+            }
+        }
+
+        return optimalPath;
+    }
+
+    private List<ItineraryDay> createItineraryDays(List<Place> optimalPath, List<Place> meals, List<Place> activities,
+                                                   List<Place> accommodations, UserPreferences preferences, int duration) {
+        List<ItineraryDay> itineraryDays = new ArrayList<>();
+        int mealsPerDay = preferences.getTravelPace().equalsIgnoreCase("느긋하게") ? 2 : 3;
+        int activitiesPerDay = preferences.getTravelPace().equalsIgnoreCase("바쁘게") ? 4 : 3;
+
+        Set<Place> usedPlaces = new HashSet<>();
+
+        for (int day = 1; day <= duration; day++) {
+            List<ItineraryItem> items = new ArrayList<>();
+            addMealAndActivityItems(optimalPath, meals, activities, mealsPerDay, activitiesPerDay, usedPlaces, items);
+
+            if (!accommodations.isEmpty()) {
+                int accommodationIndex = (day - 1) / 3;
+                if (accommodationIndex < accommodations.size()) {
+                    Place accommodation = accommodations.get(accommodationIndex);
+                    items.add(ItineraryItem.builder().timeOfDay("숙소").place(accommodation).activityType("숙박").build());
+                }
+            }
+
+            itineraryDays.add(ItineraryDay.builder().dayNumber(day).items(items).build());
+        }
+
+        return itineraryDays;
+    }
+
+    private void addMealAndActivityItems(List<Place> path, List<Place> meals, List<Place> activities, int mealsPerDay,
+                                         int activitiesPerDay, Set<Place> usedPlaces, List<ItineraryItem> items) {
+        int mealCount = 0;
+        int activityCount = 0;
+
+        for (Place place : path) {
+            if (usedPlaces.contains(place)) continue;
+
+            if (meals.contains(place) && mealCount < mealsPerDay) {
+                items.add(ItineraryItem.builder().timeOfDay(determineMealTimeOfDay(mealCount)).place(place).activityType("식사").build());
+                usedPlaces.add(place);
+                mealCount++;
+            } else if (activities.contains(place) && activityCount < activitiesPerDay) {
+                items.add(ItineraryItem.builder().timeOfDay(determineActivityTimeOfDay(activityCount)).place(place).activityType("활동").build());
+                usedPlaces.add(place);
+                activityCount++;
+            }
+
+            if (mealCount >= mealsPerDay && activityCount >= activitiesPerDay) break;
+        }
+    }
+
+
+    private void updatePlaceInformation(Place place) {
+        // overview가 이미 존재하는지 확인
+        if (place.getOverview() == null || place.getOverview().isEmpty()) {
+            try {
+                String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
+                System.out.println(overview);
+
+                // PlaceService를 통해 Place 업데이트
+                placeService.updatePlaceOverview(place, overview);
+
+                // 요청 간의 지연 (예: 1초)
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("요청 간의 지연 중 오류 발생: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error fetching overview for place " + place.getContentId() + ": " + e.getMessage());
+            }
+        }
+
 //        // intro 업데이트
 //        Map<String, Object> intro = korService.getIntro(place.getContentId(), place.getContentTypeId());
 //        if (intro != null) {
@@ -201,7 +214,7 @@ public class ItineraryServiceImpl implements ItineraryService {
 //        if (detailInfos != null) {
 //            place.setDetailInfo(detailInfos); // Assuming you have an appropriate setter for detailInfo
 //        }
-//    }
+    }
 
     // 숙소의 위치도 포함하여 MST 경로를 생성하는 메서드
     private List<Place> generateMSTPath(List<Place> places) {
@@ -254,14 +267,11 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     private CategoryType determineCategoryType(Place place) {
-        switch (place.getCat1()) {
-            case "A05":
-                return CategoryType.MEAL;
-            case "B02":
-                return CategoryType.ACCOMMODATION;
-            default:
-                return CategoryType.ACTIVITY; // 기본적으로 활동으로 분류
-        }
+        return switch (place.getCat1()) {
+            case "A05" -> CategoryType.MEAL;
+            case "B02" -> CategoryType.ACCOMMODATION;
+            default -> CategoryType.ACTIVITY; // 기본적으로 활동으로 분류
+        };
     }
 
     /**
@@ -316,43 +326,31 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     private String determineMealTimeOfDay(int index) {
-        switch (index) {
-            case 0:
-                return "아침";
-            case 1:
-                return "점심";
-            case 2:
-                return "저녁";
-            default:
-                return "식사";
-        }
+        return switch (index) {
+            case 0 -> "아침";
+            case 1 -> "점심";
+            case 2 -> "저녁";
+            default -> "식사";
+        };
     }
 
     private String determineActivityTimeOfDay(int index) {
-        switch (index) {
-            case 0:
-                return "오전 활동";
-            case 1, 2:
-                return "오후 활동";
-            case 3:
-                return "저녁 활동";
-            default:
-                return "활동";
-        }
+        return switch (index) {
+            case 0 -> "오전 활동";
+            case 1, 2 -> "오후 활동";
+            case 3 -> "저녁 활동";
+            default -> "활동";
+        };
     }
 
     private String determineActivityType(Place place) {
         // 장소의 카테고리에 따라 활동 유형 결정
-        switch (place.getCat1()) {
-            case "A01":
-                return "자연 관광";
-            case "A02":
-                return "문화/역사 탐방";
-            case "A03":
-                return "레포츠";
-            default:
-                return "관광";
-        }
+        return switch (place.getCat1()) {
+            case "A01" -> "자연 관광";
+            case "A02" -> "문화/역사 탐방";
+            case "A03" -> "레포츠";
+            default -> "관광";
+        };
     }
 
     private static class Edge {

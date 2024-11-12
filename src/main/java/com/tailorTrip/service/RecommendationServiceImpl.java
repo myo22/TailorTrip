@@ -26,8 +26,6 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     private final DataPreprocessor dataPreprocessor;
 
-    private final KorService korService;
-
 
     @Override
     public List<Place> getRecommendations(UserPreferences preferences) {
@@ -76,7 +74,7 @@ public class RecommendationServiceImpl implements RecommendationService {
             // 점수로 정렬하여 상위 100개 선택
             List<PlaceScore> topScoredPlaces = scoredPlaces.stream()
                     .sorted(Comparator.comparingDouble(PlaceScore::getScore).reversed())
-                    .limit(100)
+                    .limit(300)
                     .collect(Collectors.toList());
 
 

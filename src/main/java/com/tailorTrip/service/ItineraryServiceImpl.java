@@ -35,15 +35,36 @@ public class ItineraryServiceImpl implements ItineraryService {
         int duration = preferences.getTripDuration(); // 여행 기간
         List<Place> recommendedPlaces = recommendationService.getRecommendations(preferences); // 100개의 장소들
 
-        // 장소를 카테고리별로 분류
-        Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
+        // 1. 카테고리별로 장소를 분류하고 숙소를 기준으로 하루 단위 클러스터링 수행
+        Map<Integer, List<Place>> dailyClusters = categorizeAndClusterPlaces(recommendedPlaces, preferences, duration);
 
-        // 숙소, 식사, 활동 장소
-        List<Place> accommodations = categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>());
-        List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
-        List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
+        List<ItineraryDay> itineraryDays = new ArrayList<>();
 
-        List<ItineraryDay> itineraryDays = createItineraryDaysByAccommodation(meals, activities, accommodations, preferences, duration);
+        // 2. 각 하루 단위 클러스터에 대해 최적의 경로 생성
+        for (int day = 1; day <= duration; day++) {
+            List<Place> dailyPlaces = dailyClusters.get(day);
+            List<Place> optimalPath = generateOptimalPath(dailyPlaces);
+
+            List<ItineraryItem> items = new ArrayList<>();
+            int mealCount = 0, activityCount = 0;
+
+            // 최적 경로에 따라 일정 항목 생성
+            for (Place place : optimalPath) {
+                if (dailyPlaces.contains(place)) {
+                    String activityType = determineCategoryType(place).toString();
+                    String timeOfDay = (activityType.equals("MEAL")) ? determineMealTimeOfDay(mealCount++) : determineActivityTimeOfDay(activityCount++);
+
+                    items.add(ItineraryItem.builder()
+                            .timeOfDay(timeOfDay)
+                            .place(place)
+                            .activityType(activityType)
+                            .build()
+                    );
+                }
+            }
+
+            itineraryDays.add(ItineraryDay.builder().dayNumber(day).items(items).build());
+        }
 
 
         // Place의 overview를 업데이트
@@ -89,90 +110,68 @@ public class ItineraryServiceImpl implements ItineraryService {
         return modelMapper.map(itinerary, ItineraryDTO.class);
     }
 
-    private List<ItineraryDay> createItineraryDaysByAccommodation(List<Place> meals, List<Place> activities,
-                                                                  List<Place> accommodations, UserPreferences preferences,
-                                                                  int duration) {
-        List<ItineraryDay> itineraryDays = new ArrayList<>();
-        int mealsPerDay = preferences.getTravelPace().equalsIgnoreCase("느긋하게") ? 2 : 3;
-        int activitiesPerDay = preferences.getTravelPace().equalsIgnoreCase("바쁘게") ? 4 : 3;
+    private Map<Integer, List<Place>> categorizeAndClusterPlaces(List<Place> recommendedPlaces, UserPreferences preferences, int duration) {
+        Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
+        List<Place> accommodations = categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>());
+
+        Map<Integer, List<Place>> dailyClusters = new HashMap<>();
 
         for (int day = 1; day <= duration; day++) {
-            List<ItineraryItem> items = new ArrayList<>();
-            Place accommodation = accommodations.get((day - 1) % accommodations.size());
+            List<Place> dayCluster = new ArrayList<>();
 
-            Set<Place> usedPlaces = new HashSet<>();
-            usedPlaces.add(accommodation); // 숙소는 사용된 장소에 추가
+            Place currentAccommodation = accommodations.get(day % accommodations.size());
 
-            // 하루 일정 경로 생성 (숙소 기준)
-            List<Place> dailyPath = generateDailyOptimalPath(accommodation, meals, activities, usedPlaces, mealsPerDay, activitiesPerDay);
+            // 클러스터링: 숙소와 가까운 활동 및 식사 장소 선택
+            List<Place> nearbyMeals = findNearbyPlaces(currentAccommodation, categorizedPlaces.get(CategoryType.MEAL));
+            List<Place> nearbyActivities = findNearbyPlaces(currentAccommodation, categorizedPlaces.get(CategoryType.ACTIVITY));
 
-            // 하루 일정 생성
-            items.add(ItineraryItem.builder().timeOfDay("숙소").place(accommodation).activityType("숙박").build());
-            addDailyActivitiesAndMeals(items, dailyPath, meals, activities);
+            // 각 하루 일정에 대해 일정 수의 식사와 활동 장소를 추가
+            dayCluster.add(currentAccommodation);
+            dayCluster.addAll(nearbyMeals.subList(0, Math.min(nearbyMeals.size(), 3)));
+            dayCluster.addAll(nearbyActivities.subList(0, Math.min(nearbyActivities.size(), 3)));
 
-            itineraryDays.add(ItineraryDay.builder().dayNumber(day).items(items).build());
+            dailyClusters.put(day, dayCluster);
         }
-
-        return itineraryDays;
+        return dailyClusters;
     }
 
-    private List<Place> generateDailyOptimalPath(Place accommodation, List<Place> meals, List<Place> activities,
-                                                 Set<Place> usedPlaces, int mealsPerDay, int activitiesPerDay) {
-        List<Place> dailyPath = new ArrayList<>();
-        dailyPath.add(accommodation);  // 첫 장소는 숙소
+    private List<Place> findNearbyPlaces(Place accommodation, List<Place> places) {
+        return places.stream()
+                .sorted(Comparator.comparingDouble(place -> calculateDistance(accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX())))
+                .collect(Collectors.toList());
+    }
 
-        int mealCount = 0;
-        int activityCount = 0;
+    private List<Place> generateOptimalPath(List<Place> places) {
+        List<Place> optimalPath = new ArrayList<>();
+        if (places.isEmpty()) return optimalPath;
 
-        while (mealCount < mealsPerDay || activityCount < activitiesPerDay) {
+        Place startPlace = places.get(0); // 시작점을 숙소로 설정
+        optimalPath.add(startPlace);
+
+        Set<Place> visited = new HashSet<>();
+        visited.add(startPlace);
+
+        while (visited.size() < places.size()) {
+            Place lastPlace = optimalPath.get(optimalPath.size() - 1);
             Place nearestPlace = null;
             double nearestDistance = Double.MAX_VALUE;
 
-            for (Place place : meals) {
-                if (!usedPlaces.contains(place) && mealCount < mealsPerDay) {
-                    double distance = calculateDistance(accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX());
-                    if (distance < nearestDistance) {
-                        nearestPlace = place;
-                        nearestDistance = distance;
-                    }
-                }
-            }
-
-            for (Place place : activities) {
-                if (!usedPlaces.contains(place) && activityCount < activitiesPerDay) {
-                    double distance = calculateDistance(accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX());
-                    if (distance < nearestDistance) {
-                        nearestPlace = place;
-                        nearestDistance = distance;
-                    }
+            for (Place place : places) {
+                if (visited.contains(place)) continue;
+                double distance = calculateDistance(lastPlace.getMapY(), lastPlace.getMapX(), place.getMapY(), place.getMapX());
+                if (distance < nearestDistance) {
+                    nearestPlace = place;
+                    nearestDistance = distance;
                 }
             }
 
             if (nearestPlace != null) {
-                dailyPath.add(nearestPlace);
-                usedPlaces.add(nearestPlace);
-
-                if (meals.contains(nearestPlace)) mealCount++;
-                else if (activities.contains(nearestPlace)) activityCount++;
-            } else {
-                break;
+                optimalPath.add(nearestPlace);
+                visited.add(nearestPlace);
             }
         }
 
-        return dailyPath;
-    }
-
-    private void addDailyActivitiesAndMeals(List<ItineraryItem> items, List<Place> dailyPath, List<Place> meals, List<Place> activities) {
-        int mealIndex = 0;
-        int activityIndex = 0;
-
-        for (Place place : dailyPath) {
-            if (meals.contains(place)) {
-                items.add(ItineraryItem.builder().timeOfDay(determineMealTimeOfDay(mealIndex++)).place(place).activityType("식사").build());
-            } else if (activities.contains(place)) {
-                items.add(ItineraryItem.builder().timeOfDay(determineActivityTimeOfDay(activityIndex++)).place(place).activityType("활동").build());
-            }
-        }
+        return optimalPath;
     }
 
 
@@ -263,16 +262,6 @@ public class ItineraryServiceImpl implements ItineraryService {
             case 1, 2 -> "오후 활동";
             case 3 -> "저녁 활동";
             default -> "활동";
-        };
-    }
-
-    private String determineActivityType(Place place) {
-        // 장소의 카테고리에 따라 활동 유형 결정
-        return switch (place.getCat1()) {
-            case "A01" -> "자연 관광";
-            case "A02" -> "문화/역사 탐방";
-            case "A03" -> "레포츠";
-            default -> "관광";
         };
     }
 

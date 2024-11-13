@@ -32,23 +32,48 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     @Override
     public ItineraryDTO createItinerary(UserPreferences preferences) {
-        int duration = preferences.getTripDuration(); // 여행 기간
-        List<Place> recommendedPlaces = recommendationService.getRecommendations(preferences); // 100개의 장소들
+        int duration = preferences.getTripDuration();
+        List<Place> recommendedPlaces = recommendationService.getRecommendations(preferences);
 
         // 1. 카테고리별로 장소를 분류하고 숙소를 기준으로 하루 단위 클러스터링 수행
-        Map<Integer, List<Place>> dailyClusters = categorizeAndClusterPlaces(recommendedPlaces, preferences, duration);
+        Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
+        List<Place> accommodations = categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>());
+        List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
+        List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
+
+        Set<Place> usedMeals = new HashSet<>();
+        Set<Place> usedActivities = new HashSet<>();
 
         List<ItineraryDay> itineraryDays = new ArrayList<>();
 
-        // 2. 각 하루 단위 클러스터에 대해 최적의 경로 생성
+        // 2. 숙소를 기준으로 일정 구성
         for (int day = 1; day <= duration; day++) {
-            List<Place> dailyPlaces = dailyClusters.get(day);
+            Place currentAccommodation = accommodations.get((day - 1) / 3 % accommodations.size()); // 3일마다 숙소 변경
+            List<Place> dayMeals = new ArrayList<>();
+            List<Place> dayActivities = new ArrayList<>();
+
+            // 3. 숙소를 기준으로 근처의 활동 및 식사 장소 클러스터링
+            List<Place> nearbyMeals = findNearbyPlaces(currentAccommodation, meals, usedMeals);
+            List<Place> nearbyActivities = findNearbyPlaces(currentAccommodation, activities, usedActivities);
+
+            // 3일마다 숙소 변경하므로 하루 일정에 맞는 식사 및 활동 추가
+            List<Place> dailyPlaces = new ArrayList<>();
+            dailyPlaces.add(currentAccommodation);
+
+            // 식사와 활동을 최대 3개씩 추가
+            dayMeals.addAll(nearbyMeals.subList(0, Math.min(3, nearbyMeals.size())));
+            dayActivities.addAll(nearbyActivities.subList(0, Math.min(3, nearbyActivities.size())));
+
+            dailyPlaces.addAll(dayMeals);
+            dailyPlaces.addAll(dayActivities);
+
+            // 4. 해당 하루 일정에 대해 TSP 경로 생성
             List<Place> optimalPath = generateOptimalPath(dailyPlaces);
 
             List<ItineraryItem> items = new ArrayList<>();
             int mealCount = 0, activityCount = 0;
 
-            // 최적 경로에 따라 일정 항목 생성
+            // Step 5: 최적 경로에 따라 일정 항목 생성
             for (Place place : optimalPath) {
                 if (dailyPlaces.contains(place)) {
                     String activityType = determineCategoryType(place).toString();
@@ -60,6 +85,13 @@ public class ItineraryServiceImpl implements ItineraryService {
                             .activityType(activityType)
                             .build()
                     );
+
+                    // 사용된 장소는 중복을 피하기 위해 기록
+                    if (activityType.equals("MEAL")) {
+                        usedMeals.add(place);
+                    } else {
+                        usedActivities.add(place);
+                    }
                 }
             }
 
@@ -110,33 +142,9 @@ public class ItineraryServiceImpl implements ItineraryService {
         return modelMapper.map(itinerary, ItineraryDTO.class);
     }
 
-    private Map<Integer, List<Place>> categorizeAndClusterPlaces(List<Place> recommendedPlaces, UserPreferences preferences, int duration) {
-        Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
-        List<Place> accommodations = categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>());
-
-        Map<Integer, List<Place>> dailyClusters = new HashMap<>();
-
-        for (int day = 1; day <= duration; day++) {
-            List<Place> dayCluster = new ArrayList<>();
-
-            Place currentAccommodation = accommodations.get(day % accommodations.size());
-
-            // 클러스터링: 숙소와 가까운 활동 및 식사 장소 선택
-            List<Place> nearbyMeals = findNearbyPlaces(currentAccommodation, categorizedPlaces.get(CategoryType.MEAL));
-            List<Place> nearbyActivities = findNearbyPlaces(currentAccommodation, categorizedPlaces.get(CategoryType.ACTIVITY));
-
-            // 각 하루 일정에 대해 일정 수의 식사와 활동 장소를 추가
-            dayCluster.add(currentAccommodation);
-            dayCluster.addAll(nearbyMeals.subList(0, Math.min(nearbyMeals.size(), 3)));
-            dayCluster.addAll(nearbyActivities.subList(0, Math.min(nearbyActivities.size(), 3)));
-
-            dailyClusters.put(day, dayCluster);
-        }
-        return dailyClusters;
-    }
-
-    private List<Place> findNearbyPlaces(Place accommodation, List<Place> places) {
+    private List<Place> findNearbyPlaces(Place accommodation, List<Place> places, Set<Place> usedPlaces) {
         return places.stream()
+                .filter(place -> !usedPlaces.contains(place)) // 이미 사용된 장소는 제외
                 .sorted(Comparator.comparingDouble(place -> calculateDistance(accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX())))
                 .collect(Collectors.toList());
     }

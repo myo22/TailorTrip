@@ -43,18 +43,7 @@ public class ItineraryServiceImpl implements ItineraryService {
         List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
         List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
 
-        // 여행 일정 동안 사용될 숙소 리스트를 가져옴
-        List<Place> selectedAccommodations = selectAccommodationForDays(accommodations, preferences, duration);
-
-        // MST에 포함할 모든 장소들을 리스트로 합침 (숙소도 포함)
-        List<Place> allPlaces = new ArrayList<>(meals);
-        allPlaces.addAll(activities);
-        allPlaces.addAll(selectedAccommodations);
-
-        // TSP 경로 생성
-        List<Place> optimalPath = generateOptimalPath(allPlaces);
-
-        List<ItineraryDay> itineraryDays = createItineraryDays(optimalPath, meals, activities, selectedAccommodations, preferences, duration);
+        List<ItineraryDay> itineraryDays = createItineraryDaysByAccommodation(meals, activities, accommodations, preferences, duration);
 
 
         // Place의 overview를 업데이트
@@ -64,7 +53,6 @@ public class ItineraryServiceImpl implements ItineraryService {
                 updatePlaceInformation(place);
             }
         }
-
 
         return ItineraryDTO.builder()
                 .duration(duration)
@@ -101,58 +89,26 @@ public class ItineraryServiceImpl implements ItineraryService {
         return modelMapper.map(itinerary, ItineraryDTO.class);
     }
 
-    private List<Place> generateOptimalPath(List<Place> places) {
-        List<Place> optimalPath = new ArrayList<>();
-        if (places.isEmpty()) return optimalPath;
-
-        Place startPlace = places.get(0);
-        optimalPath.add(startPlace);
-
-        Set<Place> visited = new HashSet<>();
-        visited.add(startPlace);
-
-        while (visited.size() < places.size()) {
-            Place lastPlace = optimalPath.get(optimalPath.size() - 1);
-            Place nearestPlace = null;
-            double nearestDistance = Double.MAX_VALUE;
-
-            for (Place place : places) {
-                if (visited.contains(place)) continue;
-                double distance = calculateDistance(lastPlace.getMapY(), lastPlace.getMapX(), place.getMapY(), place.getMapX());
-                if (distance < nearestDistance) {
-                    nearestPlace = place;
-                    nearestDistance = distance;
-                }
-            }
-
-            if (nearestPlace != null) {
-                optimalPath.add(nearestPlace);
-                visited.add(nearestPlace);
-            }
-        }
-
-        return optimalPath;
-    }
-
-    private List<ItineraryDay> createItineraryDays(List<Place> optimalPath, List<Place> meals, List<Place> activities,
-                                                   List<Place> accommodations, UserPreferences preferences, int duration) {
+    private List<ItineraryDay> createItineraryDaysByAccommodation(List<Place> meals, List<Place> activities,
+                                                                  List<Place> accommodations, UserPreferences preferences,
+                                                                  int duration) {
         List<ItineraryDay> itineraryDays = new ArrayList<>();
         int mealsPerDay = preferences.getTravelPace().equalsIgnoreCase("느긋하게") ? 2 : 3;
         int activitiesPerDay = preferences.getTravelPace().equalsIgnoreCase("바쁘게") ? 4 : 3;
 
-        Set<Place> usedPlaces = new HashSet<>();
-
         for (int day = 1; day <= duration; day++) {
             List<ItineraryItem> items = new ArrayList<>();
-            addMealAndActivityItems(optimalPath, meals, activities, mealsPerDay, activitiesPerDay, usedPlaces, items);
+            Place accommodation = accommodations.get((day - 1) % accommodations.size());
 
-            if (!accommodations.isEmpty()) {
-                int accommodationIndex = (day - 1) / 3;
-                if (accommodationIndex < accommodations.size()) {
-                    Place accommodation = accommodations.get(accommodationIndex);
-                    items.add(ItineraryItem.builder().timeOfDay("숙소").place(accommodation).activityType("숙박").build());
-                }
-            }
+            Set<Place> usedPlaces = new HashSet<>();
+            usedPlaces.add(accommodation); // 숙소는 사용된 장소에 추가
+
+            // 하루 일정 경로 생성 (숙소 기준)
+            List<Place> dailyPath = generateDailyOptimalPath(accommodation, meals, activities, usedPlaces, mealsPerDay, activitiesPerDay);
+
+            // 하루 일정 생성
+            items.add(ItineraryItem.builder().timeOfDay("숙소").place(accommodation).activityType("숙박").build());
+            addDailyActivitiesAndMeals(items, dailyPath, meals, activities);
 
             itineraryDays.add(ItineraryDay.builder().dayNumber(day).items(items).build());
         }
@@ -160,25 +116,62 @@ public class ItineraryServiceImpl implements ItineraryService {
         return itineraryDays;
     }
 
-    private void addMealAndActivityItems(List<Place> path, List<Place> meals, List<Place> activities, int mealsPerDay,
-                                         int activitiesPerDay, Set<Place> usedPlaces, List<ItineraryItem> items) {
+    private List<Place> generateDailyOptimalPath(Place accommodation, List<Place> meals, List<Place> activities,
+                                                 Set<Place> usedPlaces, int mealsPerDay, int activitiesPerDay) {
+        List<Place> dailyPath = new ArrayList<>();
+        dailyPath.add(accommodation);  // 첫 장소는 숙소
+
         int mealCount = 0;
         int activityCount = 0;
 
-        for (Place place : path) {
-            if (usedPlaces.contains(place)) continue;
+        while (mealCount < mealsPerDay || activityCount < activitiesPerDay) {
+            Place nearestPlace = null;
+            double nearestDistance = Double.MAX_VALUE;
 
-            if (meals.contains(place) && mealCount < mealsPerDay) {
-                items.add(ItineraryItem.builder().timeOfDay(determineMealTimeOfDay(mealCount)).place(place).activityType("식사").build());
-                usedPlaces.add(place);
-                mealCount++;
-            } else if (activities.contains(place) && activityCount < activitiesPerDay) {
-                items.add(ItineraryItem.builder().timeOfDay(determineActivityTimeOfDay(activityCount)).place(place).activityType("활동").build());
-                usedPlaces.add(place);
-                activityCount++;
+            for (Place place : meals) {
+                if (!usedPlaces.contains(place) && mealCount < mealsPerDay) {
+                    double distance = calculateDistance(accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX());
+                    if (distance < nearestDistance) {
+                        nearestPlace = place;
+                        nearestDistance = distance;
+                    }
+                }
             }
 
-            if (mealCount >= mealsPerDay && activityCount >= activitiesPerDay) break;
+            for (Place place : activities) {
+                if (!usedPlaces.contains(place) && activityCount < activitiesPerDay) {
+                    double distance = calculateDistance(accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX());
+                    if (distance < nearestDistance) {
+                        nearestPlace = place;
+                        nearestDistance = distance;
+                    }
+                }
+            }
+
+            if (nearestPlace != null) {
+                dailyPath.add(nearestPlace);
+                usedPlaces.add(nearestPlace);
+
+                if (meals.contains(nearestPlace)) mealCount++;
+                else if (activities.contains(nearestPlace)) activityCount++;
+            } else {
+                break;
+            }
+        }
+
+        return dailyPath;
+    }
+
+    private void addDailyActivitiesAndMeals(List<ItineraryItem> items, List<Place> dailyPath, List<Place> meals, List<Place> activities) {
+        int mealIndex = 0;
+        int activityIndex = 0;
+
+        for (Place place : dailyPath) {
+            if (meals.contains(place)) {
+                items.add(ItineraryItem.builder().timeOfDay(determineMealTimeOfDay(mealIndex++)).place(place).activityType("식사").build());
+            } else if (activities.contains(place)) {
+                items.add(ItineraryItem.builder().timeOfDay(determineActivityTimeOfDay(activityIndex++)).place(place).activityType("활동").build());
+            }
         }
     }
 
@@ -216,46 +209,6 @@ public class ItineraryServiceImpl implements ItineraryService {
 //        }
     }
 
-    // 숙소의 위치도 포함하여 MST 경로를 생성하는 메서드
-    private List<Place> generateMSTPath(List<Place> places) {
-        List<Place> mstPath = new ArrayList<>();
-        Set<Place> visited = new HashSet<>();
-        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(Comparator.comparingDouble(edge -> edge.weight));
-
-        // 시작점: 첫 번째 장소
-        Place start = places.get(0);
-        visited.add(start);
-        mstPath.add(start);
-
-        // 인접한 장소들 추가 (모든 장소가 연결될 수 있도록)
-        for (Place place : places) {
-            if (place != start) {
-                double distance = calculateDistance(start.getMapY(), start.getMapX(), place.getMapY(), place.getMapX());
-                priorityQueue.offer(new Edge(start, place, distance));
-            }
-        }
-
-        while (!priorityQueue.isEmpty() && visited.size() < places.size()) {
-            Edge edge = priorityQueue.poll();
-            Place nextPlace = edge.to;
-
-            // 방문하지 않은 장소인 경우
-            if (!visited.contains(nextPlace)) {
-                visited.add(nextPlace);
-                mstPath.add(nextPlace);
-
-                // 새로운 장소에 대한 인접한 장소들 추가
-                for (Place place : places) {
-                    if (!visited.contains(place)) {
-                        double distance = calculateDistance(nextPlace.getMapY(), nextPlace.getMapX(), place.getMapY(), place.getMapX());
-                        priorityQueue.offer(new Edge(nextPlace, place, distance));
-                    }
-                }
-            }
-        }
-
-        return mstPath;
-    }
 
     private Map<CategoryType, List<Place>> categorizePlaces(List<Place> places) {
         Map<CategoryType, List<Place>> categorized = new HashMap<>();
@@ -274,36 +227,6 @@ public class ItineraryServiceImpl implements ItineraryService {
         };
     }
 
-    /**
-     * 선호 숙소 유형에 맞는 숙소를 선택합니다.
-     *
-     * @param accommodations 숙소 목록
-     * @param preferences     사용자 선호도
-     * @param totalDays        여행 기간
-     * @return 선택된 숙소
-     */
-    private List<Place> selectAccommodationForDays(List<Place> accommodations, UserPreferences preferences, int totalDays) {
-        if (accommodations.isEmpty()) return Collections.emptyList();
-
-        // 숙소 교체 주기 설정 (예: 3일마다 교체)
-        int accommodationChangeInterval = 3;
-
-        // 각 숙소에 대한 선호도에 따라 필터링
-        List<Place> preferredAccommodations = accommodations.stream()
-                .filter(place -> preferences.getAccommodationPreference().stream()
-                        .anyMatch(preference -> preference.equalsIgnoreCase(place.getCat3())))
-                .collect(Collectors.toList());
-
-        // 선호 숙소가 있으면 사용하고, 없으면 모든 숙소에서 선택
-        List<Place> accommodationsToUse = preferredAccommodations.isEmpty() ? accommodations : preferredAccommodations;
-
-        List<Place> selectedAccommodations = new ArrayList<>();
-        for (int day = 0; day < totalDays; day += accommodationChangeInterval) {
-            int index = (day / accommodationChangeInterval) % accommodationsToUse.size();
-            selectedAccommodations.add(accommodationsToUse.get(index));
-        }
-        return selectedAccommodations;
-    }
 
     /**
      * 두 지점 간의 거리 계산 (Haversine 공식 사용)
@@ -351,6 +274,47 @@ public class ItineraryServiceImpl implements ItineraryService {
             case "A03" -> "레포츠";
             default -> "관광";
         };
+    }
+
+    // 숙소의 위치도 포함하여 MST 경로를 생성하는 메서드
+    private List<Place> generateMSTPath(List<Place> places) {
+        List<Place> mstPath = new ArrayList<>();
+        Set<Place> visited = new HashSet<>();
+        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(Comparator.comparingDouble(edge -> edge.weight));
+
+        // 시작점: 첫 번째 장소
+        Place start = places.get(0);
+        visited.add(start);
+        mstPath.add(start);
+
+        // 인접한 장소들 추가 (모든 장소가 연결될 수 있도록)
+        for (Place place : places) {
+            if (place != start) {
+                double distance = calculateDistance(start.getMapY(), start.getMapX(), place.getMapY(), place.getMapX());
+                priorityQueue.offer(new Edge(start, place, distance));
+            }
+        }
+
+        while (!priorityQueue.isEmpty() && visited.size() < places.size()) {
+            Edge edge = priorityQueue.poll();
+            Place nextPlace = edge.to;
+
+            // 방문하지 않은 장소인 경우
+            if (!visited.contains(nextPlace)) {
+                visited.add(nextPlace);
+                mstPath.add(nextPlace);
+
+                // 새로운 장소에 대한 인접한 장소들 추가
+                for (Place place : places) {
+                    if (!visited.contains(place)) {
+                        double distance = calculateDistance(nextPlace.getMapY(), nextPlace.getMapX(), place.getMapY(), place.getMapX());
+                        priorityQueue.offer(new Edge(nextPlace, place, distance));
+                    }
+                }
+            }
+        }
+
+        return mstPath;
     }
 
     private static class Edge {

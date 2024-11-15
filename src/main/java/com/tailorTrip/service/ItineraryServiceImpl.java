@@ -20,15 +20,11 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final RecommendationService recommendationService;
 
-    private final KorService korService;
-
     private final MemberService memberService;
 
     private final ItineraryRepository itineraryRepository;
 
     private final ModelMapper modelMapper;
-
-    private final PlaceService placeService;
 
     private static final double MIN_DISTANCE = 10.0; // 최소 거리 제약: 10km
 

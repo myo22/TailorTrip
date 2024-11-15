@@ -30,6 +30,8 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final PlaceService placeService;
 
+    private static final double MIN_DISTANCE = 10.0; // 최소 거리 제약: 10km
+
     @Override
     public ItineraryDTO createItinerary(UserPreferences preferences) {
         int duration = preferences.getTripDuration();
@@ -167,7 +169,9 @@ public class ItineraryServiceImpl implements ItineraryService {
             for (Place place : places) {
                 if (visited.contains(place)) continue;
                 double distance = calculateDistance(lastPlace.getMapY(), lastPlace.getMapX(), place.getMapY(), place.getMapX());
-                if (distance < nearestDistance) {
+
+                // 최소 거리 제약을 추가
+                if (distance >= MIN_DISTANCE && distance < nearestDistance) {
                     nearestPlace = place;
                     nearestDistance = distance;
                 }

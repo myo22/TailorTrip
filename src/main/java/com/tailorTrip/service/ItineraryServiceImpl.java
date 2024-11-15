@@ -75,7 +75,7 @@ public class ItineraryServiceImpl implements ItineraryService {
             List<ItineraryItem> items = new ArrayList<>();
             int mealCount = 0, activityCount = 0;
 
-            // Step 5: 최적 경로에 따라 일정 항목 생성
+            // 5. 최적 경로에 따라 일정 항목 생성
             for (Place place : optimalPath) {
                 if (dailyPlaces.contains(place)) {
                     String activityType = determineCategoryType(place).toString();

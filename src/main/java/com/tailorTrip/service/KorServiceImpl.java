@@ -58,8 +58,15 @@ public class KorServiceImpl implements KorService {
 
             // JSON 응답 파싱
             JsonNode response = objectMapper.readTree(overview.toString());
-            return response.path("response").path("body").path("items").path("item").get(0).path("overview").asText("No overview available");
+            String fullOverview = response.path("response").path("body").path("items").path("item").get(0).path("overview").asText("No overview available");
 
+            // 마침표를 기준으로 첫 번째 문장만 추출
+            if (fullOverview != null && !fullOverview.isEmpty()) {
+                String[] sentences = fullOverview.split("\\."); // 마침표를 기준으로 분리
+                return sentences.length > 0 ? sentences[0] + "." : fullOverview; // 첫 번째 문장만 반환
+            }
+
+            return "No overview available"; // overview가 비어있는 경우 처리
         } catch (Exception e) {
             System.out.println("API 호출 오류: " + e.getMessage());
             return null;

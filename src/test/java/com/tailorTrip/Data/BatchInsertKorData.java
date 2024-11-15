@@ -59,16 +59,15 @@ public class BatchInsertKorData {
             // getOverview를 호출하여 overview 가져오기
             String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
 
-            // 가져온 overview가 null이 아니면 DB에 삽입
-            if (overview != null && !overview.isEmpty()) {
-                place.updateOverview(overview); // Place 객체에 overview 세팅
+            place.updateOverview(overview); // Place 객체에 overview 세팅
 
-                // PlaceService를 통해 DB에 업데이트
-                placeService.updatePlaceOverview(place, overview);
+            // PlaceService를 통해 DB에 업데이트
+            placeService.updatePlaceOverview(place, overview);
+
+            // 요청 간의 지연 (배치 크기마다 1초 지연)
+            if (places.indexOf(place) % batchSize == 0 && places.indexOf(place) > 0) {
+                Thread.sleep(1000);  // 배치 크기마다 지연
             }
-
-            // 요청 간의 지연 (예: 1초), 배치 크기만큼 처리 후 지연
-            Thread.sleep(100);  // 배치 크기마다 잠시 대기
         }
         return CompletableFuture.completedFuture(null);
     }

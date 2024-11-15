@@ -101,14 +101,6 @@ public class ItineraryServiceImpl implements ItineraryService {
         }
 
 
-        // Place의 overview를 업데이트
-        for (ItineraryDay itineraryDay : itineraryDays) {
-            for (ItineraryItem item : itineraryDay.getItems()) {
-                Place place = item.getPlace();
-                updatePlaceInformation(place);
-            }
-        }
-
         return ItineraryDTO.builder()
                 .duration(duration)
                 .days(itineraryDays)
@@ -184,40 +176,6 @@ public class ItineraryServiceImpl implements ItineraryService {
         }
 
         return optimalPath;
-    }
-
-
-    private void updatePlaceInformation(Place place) {
-        // overview가 이미 존재하는지 확인
-        if (place.getOverview() == null || place.getOverview().isEmpty()) {
-            try {
-                String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
-                System.out.println(overview);
-
-                // PlaceService를 통해 Place 업데이트
-                placeService.updatePlaceOverview(place, overview);
-
-                // 요청 간의 지연 (예: 1초)
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("요청 간의 지연 중 오류 발생: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Error fetching overview for place " + place.getContentId() + ": " + e.getMessage());
-            }
-        }
-
-//        // intro 업데이트
-//        Map<String, Object> intro = korService.getIntro(place.getContentId(), place.getContentTypeId());
-//        if (intro != null) {
-//            place.setIntro(intro); // Assuming you have an appropriate setter for intro
-//        }
-//
-//        // detailInfo 업데이트
-//        List<DetailInfo> detailInfos = korService.getDetailInfo(place.getContentId(), place.getContentTypeId());
-//        if (detailInfos != null) {
-//            place.setDetailInfo(detailInfos); // Assuming you have an appropriate setter for detailInfo
-//        }
     }
 
 

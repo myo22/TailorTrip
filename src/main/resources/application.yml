@@ -79,6 +79,8 @@ logging:
     com:
       tailorTrip: debug
 
+batch:
+  size: 50
 
 google:
   api:

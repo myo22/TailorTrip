@@ -52,12 +52,13 @@ document.addEventListener(`DOMContentLoaded`, function () {
 window.initMap = function (itineraryData) {
   // 초기 중심 좌표 설정
   const initialCenter = itineraryData && itineraryData.length > 0  // `itineraryData` 대신 `itinerary` 사용
-      ? { lat: itineraryData[0].lat, lng: itineraryData[0].lng }    // 첫 번째 항목의 좌표
+      ? itineraryData[0]  // 첫 번째 데이터
       : { lat: 37.5400456, lng: 126.9921017 };              // 기본 좌표
 
   map = new google.maps.Map(document.getElementById("map"), {
-    center: initialCenter,
-    zoom: 10
+    center: { lat: initialCenter.lat, lng: initialCenter.lng }, // 초기 중심 좌표
+    zoom: 10, // 지도 확대 수준
+    scrollwheel: true,
   });
 
   bounds = new google.maps.LatLngBounds();

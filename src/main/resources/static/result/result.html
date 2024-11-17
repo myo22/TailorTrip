@@ -19,89 +19,108 @@
 </head>
 
 <body>
-  <div class="wrap">
-    <section class="section1">
-      <div class="container">
-        <div class="wrap-box">
-          <div class="left-box">
-            <div class="tab_inner">
-              <!-- 탭영역 -->
-              <ul class="btn">
-                <!-- 클릭하는 버튼영역 -->
-                <li data-tab="tab1" class="active">전체</li>
-                <li data-tab="tab2">1일차</li>
-                <li data-tab="tab3">2일차</li>
-                <li data-tab="tab4">3일차</li>
-                <li data-tab="tab5">4일차</li>
-                <li data-tab="tab6">5일차</li>
-                <li data-tab="tab7">6일차</li>
-                <li data-tab="tab8">7일차</li>
-              </ul>
-              
-              <div class="tabs">
-                <!-- 탭 내용이 들어가는 영역 -->
-                <div id="tab1" class="active">
-                  <h2>전체</h2>
+<div class="wrap">
+  <section class="section1">
+    <div class="container">
+      <div class="wrap-box">
+        <div class="left-box">
+          <div class="tab_inner">
+            <!-- 탭영역 -->
+            <ul class="btn">
+              <!-- 클릭하는 버튼영역 -->
+              <li class="logo"></li>
+              <li data-tab="tab1" class="active"><a href="#">전체</a></li>
+              <li data-tab="tab2" class="tab2"><a href="#">1일차</a></li>
+              <li data-tab="tab3" class="tab3"><a href="#">2일차</a></li>
+              <li data-tab="tab4" class="tab4"><a href="#">3일차</a></li>
+              <li data-tab="tab5" class="tab5"><a href="#">4일차</a></li>
+              <li data-tab="tab6" class="tab6"><a href="#">5일차</a></li>
+              <li data-tab="tab7" class="tab7"><a href="#">6일차</a></li>
+              <li data-tab="tab8" class="tab8"><a href="#">7일차</a></li>
+              <button id="moveButton">완료</button>
+            </ul>
+
+            <div class="tabs">
+              <!-- 탭 내용이 들어가는 영역 -->
+              <article class="tabs-txt">
+                <h1 class="txt-top">여행어때는</h1>
+                <h3 class="txt-middle">여행 일정에 알맞은 장소를 추천해드립니다</h3>
+
+                <div>
+                  <div>
+                    <h1 class="wkdth">장소선택</h1>
+                  </div>
+                  <div>
+                    <h1 class="tjfaud"></h1>
+                  </div>
+
                 </div>
-                <div id="tab2">
-                  <h2>1일차</h2>
-                </div>
-                <div id="tab3">
-                  <h2>2일차</h2>
-                </div>
-                <div id="tab4">
-                  <h2>3일차</h2>
-                </div>
-                <div id="tab5">
-                  <h2>4일차</h2>
-                </div>
-                <div id="tab6">
-                  <h2>5일차</h2>
-                </div>
-                <div id="tab7">
-                  <h2>6일차</h2>
-                </div>
-                <div id="tab8">
-                  <h2>7일차</h2>
-                </div>
+              </article>
+
+              <div id="tab1" class="active">
+
               </div>
-              <!-- tabs 끝 -->
+              <div id="tab2">
+
+              </div>
+              <div id="tab3">
+
+              </div>
+              <div id="tab4">
+
+              </div>
+              <div id="tab5">
+
+              </div>
+              <div id="tab6">
+
+              </div>
+              <div id="tab7">
+
+              </div>
+              <div id="tab8">
+
+              </div>
+
             </div>
-            <!-- tab-inner -->
+            <!-- tabs 끝 -->
           </div>
-          <!-- left-box -->
-          <div class="dmdrk">
-            <div class="left-box2">
-              <div class="con1">
-                <p>1일차</p>
-              </div>
-              <div class="con2">
-                <p>2일차</p>
-              </div>
-              <div class="con3">
-                <p>3일차</p>
-              </div>
-              <div class="con4">
-                <p>4일차</p>
-              </div>
-              <div class="con5">
-                <p>5일차</p>
-              </div>
-              <div class="con6">
-                <p>6일차</p>
-              </div>
-              <div class="con7">
-                <p>7일차</p>
-              </div>
-            </div>
-            <button id="moveButton">완료</button>
-          </div>
-          <div class="open">>>
-          </div>
-          <div id="map"></div>
+          <!-- tab-inner -->
         </div>
-    </section>
-  </div>
+        <!-- left-box -->
+        <div class="dmdrk">
+          <div class="left-box2">
+            <div class="con1">
+              <p>1일차</p>
+            </div>
+            <div class="con2">
+              <p>2일차</p>
+            </div>
+            <div class="con3">
+              <p>3일차</p>
+            </div>
+            <div class="con4">
+              <p>4일차</p>
+            </div>
+            <div class="con5">
+              <p>5일차</p>
+            </div>
+            <div class="con6">
+              <p>6일차</p>
+            </div>
+            <div class="con7">
+              <p>7일차</p>
+            </div>
+          </div>
+          <div class="open">>
+          </div>
+
+        </div>
+
+        <div id="map"></div>
+      </div>
+  </section>
+</div>
 </body>
 
 </html>

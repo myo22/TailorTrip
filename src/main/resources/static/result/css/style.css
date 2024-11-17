@@ -5,15 +5,16 @@
 
 .left-box>div {
   height: 100px;
+  width: 600px;
 }
 
 .left-box {
   width: 600px;
-  overflow-y: auto;
+
   /* 수직 스크롤이 가능하도록 설정 */
   height: 500px;
   /* 고정 높이 설정 */
-  border: 1px solid #ccc;
+ 
   /* 테두리 추가 */
   box-sizing: border-box;
   /* 테두리와 패딩을 포함한 크기 계산 */
@@ -34,25 +35,37 @@
 
 /* tab 영역 */
 
-
 .btn {
-  display: flex;
-
-
+  width: 100px;
+ 
 }
 
 .btn li {
   font-weight: 700;
   width: 100%;
-  height: 100px;
+  height: 50px;
   cursor: pointer;
   background-color: #fff;
-  padding-top: 75px;
-  box-sizing: border-box;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 0;
+  transition: 0.5s;
   text-align: center;
-  font-size: 18px;
-  border-bottom: 3px solid #D0EBFE;
+  color: #D3D3D3;
+}
 
+.tab_inner {
+  display: flex;
+  width: 600px;
+  
+
+}
+
+.pick {
+  font-size: 14px;
+  color: #222;
 }
 
 
@@ -67,11 +80,15 @@
 .btn li:last-child {
   border-right: none;
 }
-
+.tabs{
+  width: 500px;
+}
 .tabs>div {
   display: none;
   background-color: #fff;
   box-sizing: border-box;
+  overflow-y: auto;
+  max-height: 1080px;
 
 }
 
@@ -79,12 +96,13 @@
   display: block;
 }
 
+
 .tabs div h2 {
-  margin-top: 20px;
+
   color: rgb(77, 76, 73);
   font-size: 24px;
   text-align: right;
-  border-bottom: 2px solid black;
+
   font-weight: 700;
 
 }
@@ -98,24 +116,10 @@
   font-family: "Noto Sans KR", sans-serif;
 }
 
-.content {
-  font-weight: 500;
+.tab1Container {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  background-color: #fff;
-  border-bottom: 2px solid #81D4FA;
-  font-size: 14px;
-  background-color: #fff;
-  height: 120px;
-  position: relative;
-  padding: 5px;
-
 }
 
-.content:hover {
-  background-color: #F0F0F0;
-}
 
 .delete-button {
   height: 30px;
@@ -142,9 +146,7 @@
   max-width: 40px;
   /* 이미지 크기 조정 */
 }
-.left-box2>div{
-  border-right: 1px solid #222;
-}
+
 .content h3 {
   font-size: 1.3rem;
 }
@@ -154,28 +156,32 @@
 .wrap-box {
   display: flex;
   /* 수평으로 나란히 배치 */
-
 }
 
 
 .left-box2 {
   height: 100%;
   display: flex;
-  display: none;
-  width: 1200px;
+  flex-direction: column;
+  width: 0; /* 초기 width를 0으로 설정 */
   position: relative;
-
+  max-height: 1080px;
+  overflow-y: auto;
+  transition: width 0.5s ease, opacity 0.3s ease; /* width와 opacity 트랜지션 */
+  opacity: 0; /* 처음에 투명하게 설정 */
+  visibility: hidden; /* 요소를 숨기기 위해 visibility 설정 */
 }
 
 .left-box2.on {
-  display: block;
-  display: flex;
+  width: 510px; /* 넓어지는 너비 설정 */
+  opacity: 1; /* 완전히 보이게 설정 */
+  visibility: visible; /* 요소가 보이도록 설정 */
 }
 
-.left-box2 div {
-  width: 170px;
 
 
+.left-box2>div {
+  border-right: 1px solid black;
 }
 
 .left-box2>div>p {
@@ -184,28 +190,37 @@
   font-weight: 700;
 }
 
-button {
-  width: 20px;
-  height: 100px;
+.logo {
+  background: url(../image/Group\ 12332.png) no-repeat center;
+
 }
+
 
 .open {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
+
+  background-color: white;
+  padding: 12px;
   font-size: 20px;
   font-weight: 700;
   cursor: pointer;
+  position: absolute;
+  right: -37px;
+  transform: translateY(-50%);
+  top: 50%;
+  z-index: 10;
+  /* 왼쪽 상단 모서리 둥글게 */
+  border-top-right-radius: 15px;
+  /* 오른쪽 상단 모서리 둥글게 */
+  /* 왼쪽 하단 모서리 둥글게 */
+  border-bottom-right-radius: 15px;
+  transform: 0.5s;
+
 }
 
 #moveButton {
-  position: absolute;
-  /* 절대 위치 설정 */
-  bottom: 10px;
-  /* 아래에서 10px 위치 */
-  right: 250px;
-  /* 오른쪽에서 10px 위치 */
   padding: 10px 20px;
   /* 패딩 설정 */
   border-radius: 5px;
@@ -214,19 +229,105 @@ button {
   /* 마우스 포인터 */
   width: 100px;
   height: 60px;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
+  position: absolute;
+  bottom: 10px;
+  left: 1px;
+  background-color: #222;
+  color: #fff;
+  border-radius: 15px;
+  
 }
 
 /* script로 짠 구조 코딩 */
 
+.dmdrk {
+  position: relative;
+  transition: 0.5s;
+}
 
 .content .move-button {
   width: 30px;
   height: 50px;
-  margin-top: 30px;
+}
 
+.content {
+  height: 100px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  width: 500px;
+  background-color: #fff;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+
+  position: relative;
+  padding: 0 8px;
+  align-items: center;
+}
+.tabs-txt{
+  padding-left: 12px;
+
+}
+.content:hover {
+  background-color: #F0F0F0;
+}
+.wkdth{
+  font-weight: 700;
+  text-align: center;
+  color: #2196F3 ;
+  border-bottom: 2px solid #2196F3;
+  font-size: 24px;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+.txt-top{
+  font-size: 28px;
+  padding-top: 24px;
+  margin-bottom: 4px;
+  color: #222;
+}
+.txt-middle{
+  
+  font-size: 14px;
+  color: #b0b0b0;
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+.image-url-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 15px;
+  margin-right: 8px;
+}
+
+.image-url-box img {
+  width: 80px;
+  height: 80px;
+  border-radius: 15px;
+}
+.box>.text-box>p{
+  width: 200px;            /* 원하는 너비 설정 */
+  overflow: hidden;        /* 넘치는 텍스트 숨기기 */
+  white-space: nowrap;     /* 텍스트를 한 줄로 표시 */
+  text-overflow: ellipsis; /* 넘친 텍스트에 ... 표시 */
+
+}
+.text-box {
+  width: 350px;
 }
 
 
+.content .box {
+  display: flex;
+  flex-direction: row-reverse;
+
+}
+
+.moved-content{
+  height: 100px;
+  
+  border-radius: 15px;
+}
 /* script로 짠 구조 코딩 끝 */

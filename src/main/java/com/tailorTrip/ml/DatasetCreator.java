@@ -17,9 +17,6 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.tailorTrip.ml.DataPreprocessor.CATEGORY_MAP;
-
-
 @Component
 @RequiredArgsConstructor
 public class DatasetCreator {

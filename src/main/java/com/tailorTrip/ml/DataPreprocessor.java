@@ -76,12 +76,13 @@ public class DataPreprocessor {
         if (prefs.getInterest() != null) {
             Set<Integer> purposeIndexes = new HashSet<>();
             for (String interest : prefs.getInterest()) {
-                Integer purposeIndex = CATEGORY_MAP.get(interest);
+                Integer purposeIndex = mapInterestToCategory(interest);
                 if (purposeIndex != null) {
                     purposeIndexes.add(purposeIndex);
                 }
             }
             features[0] = purposeIndexes.isEmpty() ? -1 : (float) purposeIndexes.size(); // 카테고리 매핑이 없으면 -1
+            System.out.println("Interest feature: " + features[0]);
         } else {
             features[0] = -1; // 관심사가 없는 경우
         }
@@ -90,12 +91,13 @@ public class DataPreprocessor {
         if (prefs.getActivityType() != null) {
             Set<Integer> paceIndexes = new HashSet<>();
             for (String activityType : prefs.getActivityType()) {
-                Integer paceIndex = SUBCATEGORY_MAP.get(activityType);
+                Integer paceIndex = mapInterestToCategory(activityType);
                 if (paceIndex != null) {
                     paceIndexes.add(paceIndex);
                 }
             }
             features[1] = paceIndexes.isEmpty() ? -1 : (float) paceIndexes.size(); // 카테고리 매핑이 없으면 -1
+            System.out.println("Activity feature: " + features[1]);
         } else {
             features[1] = -1; // 활동 스타일이 없는 경우
         }
@@ -104,12 +106,13 @@ public class DataPreprocessor {
         if (prefs.getFoodPreference() != null) {
             Set<Integer> foodIndexes = new HashSet<>();
             for (String food : prefs.getFoodPreference()) {
-                Integer foodIndex = DETAIL_CATEGORY_MAP.get(food);
+                Integer foodIndex = mapInterestToCategory(food);
                 if (foodIndex != null) {
                     foodIndexes.add(foodIndex);
                 }
             }
             features[2] = foodIndexes.isEmpty() ? -1 : (float) foodIndexes.size(); // 카테고리 매핑이 없으면 -1
+            System.out.println("Food feature: " + features[2]);
         } else {
             features[2] = -1; // 선호 음식이 없는 경우
         }
@@ -118,18 +121,69 @@ public class DataPreprocessor {
         if (prefs.getAccommodationPreference() != null) {
             Set<Integer> accommodationIndexes = new HashSet<>();
             for (String accommodationPref : prefs.getAccommodationPreference()) {
-                Integer accommodationIndex = DETAIL_CATEGORY_MAP.get(accommodationPref);
+                Integer accommodationIndex = mapInterestToCategory(accommodationPref);
                 if (accommodationIndex != null) {
                     accommodationIndexes.add(accommodationIndex);
                 }
             }
             features[3] = accommodationIndexes.isEmpty() ? -1 : (float) accommodationIndexes.size(); // 여러 개라면 개수로 표현
+            System.out.println("Accommodation feature: " + features[3]);
         } else {
             features[3] = -1;
         }
 
 //        여기서 1D 배열을 2D 배열로 변환
         return Nd4j.create(new float[][]{normalize(features)});
+    }
+
+    // 선호도에서 자연, 인문, 레포츠 등을 A01, A02로 매핑하는 메서드
+    private Integer mapInterestToCategory(String interest) {
+        switch (interest) {
+            case "자연":
+                return  CATEGORY_MAP.get("A01");
+            case "역사":
+                return  SUBCATEGORY_MAP.get("A0201");
+            case "휴양":
+                return  SUBCATEGORY_MAP.get("A0202");
+            case "체험":
+                return  SUBCATEGORY_MAP.get("A0203");
+            case "건축／조형물":
+                return  SUBCATEGORY_MAP.get("A0205");
+
+            // 활동스타일
+            case "레포츠":
+                return CATEGORY_MAP.get("A03");
+            case "공연/행사":
+                return SUBCATEGORY_MAP.get("A0208");
+            case "쇼핑":
+                return CATEGORY_MAP.get("A04");
+            case "문화시설":
+                return SUBCATEGORY_MAP.get("A0206");
+
+            // 숙소
+            case "호텔":
+                return DETAIL_CATEGORY_MAP.get("B02010100");
+            case "모텔":
+                return DETAIL_CATEGORY_MAP.get("B02010900");
+            case "펜션":
+                return DETAIL_CATEGORY_MAP.get("B02010700");
+            case "민박":
+                return DETAIL_CATEGORY_MAP.get("B02011000");
+
+            // 음식
+            case "한식":
+                return DETAIL_CATEGORY_MAP.get("A05020100");
+            case "양식":
+                return DETAIL_CATEGORY_MAP.get("A05020200");
+            case "일식":
+                return DETAIL_CATEGORY_MAP.get("A05020400");
+            case "중식":
+                return DETAIL_CATEGORY_MAP.get("A05020300");
+
+
+            default:
+                return null; // 해당되지 않으면 null 반환
+        }
     }
 
     public INDArray preprocessPlaceCategories(String cat1, String cat2, String cat3) {

@@ -33,13 +33,16 @@ public class RecommendationServiceImpl implements RecommendationService {
         // 데이터베이스 쿼리를 통해 지역별로 필터링된 장소들 가져오기
         List<Place> regionalPlaces = placeService.getRegionalPlaces(preferences.getRegion());
 
-
         // 1. 사용자 선호도를 벡터로 전처리
         INDArray input = dataPreprocessor.preprocessUserPreferences(preferences);
+
+        // 전처리된 선호도 데이터 로그 출력
+        log.debug("Processed User Preferences: {}", input);
 
         // 모델을 사용하여 예측 (멀티레이블)
         INDArray output = recommendationModel.predict(input);
 
+        log.debug("Recommended Places: {}", output);
 
         // 장소별 점수 계산
         Map<String, List<PlaceScore>> categorizedPlaces = new HashMap<>();

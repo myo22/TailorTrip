@@ -81,6 +81,8 @@ public class RecommendationController {
                 itemData.put("name", item.getPlace().getTitle());
                 itemData.put("lat", item.getPlace().getMapY());
                 itemData.put("lng", item.getPlace().getMapX());
+                itemData.put("url", item.getPlace().getFirstImage());
+                itemData.put("address", item.getPlace().getAddr1());
 
                 responseData.add(itemData);
             }

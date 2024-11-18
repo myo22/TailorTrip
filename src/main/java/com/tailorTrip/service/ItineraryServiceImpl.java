@@ -26,7 +26,7 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final ModelMapper modelMapper;
 
-    private static final double MIN_DISTANCE = 3.0; // 최소 거리 제약: 10km
+    private static final double MIN_DISTANCE = 10.0; // 최소 거리 제약: 10km
 
     @Override
     public ItineraryDTO createItinerary(UserPreferences preferences) {
@@ -35,7 +35,7 @@ public class ItineraryServiceImpl implements ItineraryService {
 
         // 1. 카테고리별로 장소를 분류하고 숙소를 기준으로 하루 단위 클러스터링 수행
         Map<CategoryType, List<Place>> categorizedPlaces = categorizePlaces(recommendedPlaces);
-        List<Place> accommodations = categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>());
+        List<Place> accommodations = filterAccommodations(categorizedPlaces.getOrDefault(CategoryType.ACCOMMODATION, new ArrayList<>()));
         List<Place> meals = categorizedPlaces.getOrDefault(CategoryType.MEAL, new ArrayList<>());
         List<Place> activities = categorizedPlaces.getOrDefault(CategoryType.ACTIVITY, new ArrayList<>());
 
@@ -68,39 +68,12 @@ public class ItineraryServiceImpl implements ItineraryService {
             // 4. 해당 하루 일정에 대해 TSP 경로 생성
             List<Place> optimalPath = generateOptimalPath(dailyPlaces);
 
-            List<ItineraryItem> items = new ArrayList<>();
-            int mealCount = 0, activityCount = 0;
-
             // 5. 최적 경로에 따라 일정 항목 생성
-            for (Place place : optimalPath) {
-                if (dailyPlaces.contains(place)) {
-                    String activityType = determineCategoryType(place).toString();
-                    String timeOfDay = (activityType.equals("MEAL")) ? determineMealTimeOfDay(mealCount++) : determineActivityTimeOfDay(activityCount++);
-
-                    items.add(ItineraryItem.builder()
-                            .timeOfDay(timeOfDay)
-                            .place(place)
-                            .activityType(activityType)
-                            .build()
-                    );
-
-                    // 사용된 장소는 중복을 피하기 위해 기록
-                    if (activityType.equals("MEAL")) {
-                        usedMeals.add(place);
-                    } else {
-                        usedActivities.add(place);
-                    }
-                }
-            }
-
+            List<ItineraryItem> items = createItineraryItems(optimalPath, usedMeals, usedActivities);
             itineraryDays.add(ItineraryDay.builder().dayNumber(day).items(items).build());
         }
 
-
-        return ItineraryDTO.builder()
-                .duration(duration)
-                .days(itineraryDays)
-                .build();
+        return ItineraryDTO.builder().duration(duration).days(itineraryDays).build();
     }
 
     @Override
@@ -132,10 +105,47 @@ public class ItineraryServiceImpl implements ItineraryService {
         return modelMapper.map(itinerary, ItineraryDTO.class);
     }
 
+    private List<Place> filterAccommodations(List<Place> accommodations) {
+        List<Place> filteredAccommodations = new ArrayList<>();
+        Place lastAccommodation = null;
+
+        for (Place accommodation : accommodations) {
+            if (lastAccommodation == null || calculateDistance(
+                    lastAccommodation.getMapY(), lastAccommodation.getMapX(),
+                    accommodation.getMapY(), accommodation.getMapX()) >= MIN_DISTANCE) {
+                filteredAccommodations.add(accommodation);
+                lastAccommodation = accommodation;
+            }
+        }
+        return filteredAccommodations;
+    }
+
+    private List<ItineraryItem> createItineraryItems(List<Place> optimalPath, Set<Place> usedMeals, Set<Place> usedActivities) {
+        List<ItineraryItem> items = new ArrayList<>();
+        int mealCount = 0, activityCount = 0;
+
+        for (Place place : optimalPath) {
+            String activityType = determineCategoryType(place).toString();
+            String timeOfDay = (activityType.equals("MEAL")) ? determineMealTimeOfDay(mealCount++) : determineActivityTimeOfDay(activityCount++);
+
+            items.add(ItineraryItem.builder()
+                    .timeOfDay(timeOfDay)
+                    .place(place)
+                    .activityType(activityType)
+                    .build()
+            );
+
+            if (activityType.equals("MEAL")) usedMeals.add(place);
+            else if (activityType.equals("ACTIVITY")) usedActivities.add(place);
+        }
+        return items;
+    }
+
     private List<Place> findNearbyPlaces(Place accommodation, List<Place> places, Set<Place> usedPlaces) {
         return places.stream()
-                .filter(place -> !usedPlaces.contains(place)) // 이미 사용된 장소는 제외
-                .sorted(Comparator.comparingDouble(place -> calculateDistance(accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX())))
+                .filter(place -> !usedPlaces.contains(place))
+                .sorted(Comparator.comparingDouble(place -> calculateDistance(
+                        accommodation.getMapY(), accommodation.getMapX(), place.getMapY(), place.getMapX())))
                 .collect(Collectors.toList());
     }
 

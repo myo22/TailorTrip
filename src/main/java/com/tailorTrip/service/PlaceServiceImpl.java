@@ -25,4 +25,9 @@ public class PlaceServiceImpl implements PlaceService {
         place.updateOverview(overview);
         placeRepository.save(place); // 데이터베이스에 저장
     }
+
+    public void updatePlaceImage(Place place, String  imageUrl) {
+        place.updateImage(imageUrl);
+        placeRepository.save(place);
+    }
 }

@@ -56,17 +56,25 @@ public class BatchInsertKorData {
     @Async
     public CompletableFuture<Void> processBatch(List<Place> places) throws InterruptedException {
         for (Place place : places) {
-            // getOverview를 호출하여 overview 가져오기
-            String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
+            // overview가 비어있는 경우에만 요청
+            if (place.getOverview() == null || place.getOverview().isEmpty()) {
+                try {
+                    // getOverview를 호출하여 overview 가져오기
+                    String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
 
-            place.updateOverview(overview); // Place 객체에 overview 세팅
+                    // Place 객체에 overview 세팅
+                    place.updateOverview(overview);
 
-            // PlaceService를 통해 DB에 업데이트
-            placeService.updatePlaceOverview(place, overview);
+                    // PlaceService를 통해 DB에 업데이트
+                    placeService.updatePlaceOverview(place, overview);
 
-            // 요청 간의 지연 (배치 크기마다 1초 지연)
-            if (places.indexOf(place) % batchSize == 0 && places.indexOf(place) > 0) {
-                Thread.sleep(1000);  // 배치 크기마다 지연
+                    // 요청 간의 지연 (배치 크기마다 1초 지연)
+                    if (places.indexOf(place) % batchSize == 0 && places.indexOf(place) > 0) {
+                        Thread.sleep(1000); // 배치 크기마다 지연
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error processing place " + place.getContentId() + ": " + e.getMessage());
+                }
             }
         }
         return CompletableFuture.completedFuture(null);

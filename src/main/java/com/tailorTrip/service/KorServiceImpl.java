@@ -60,11 +60,11 @@ public class KorServiceImpl implements KorService {
             JsonNode response = objectMapper.readTree(overview.toString());
             String fullOverview = response.path("response").path("body").path("items").path("item").get(0).path("overview").asText("No overview available");
 
-            // 마침표를 기준으로 첫 번째 문장만 추출
+            // 글자수를 2000자로 제한
             if (fullOverview != null && !fullOverview.isEmpty()) {
-                String[] sentences = fullOverview.split("\\."); // 마침표를 기준으로 분리
-                return sentences.length > 0 ? sentences[0] + "." : fullOverview; // 첫 번째 문장만 반환
+                return fullOverview.length() > 2000 ? fullOverview.substring(0, 2000) : fullOverview; // 2000글자 초과 시 자르기
             }
+
 
             return "No overview available"; // overview가 비어있는 경우 처리
         } catch (Exception e) {

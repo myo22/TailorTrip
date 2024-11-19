@@ -55,6 +55,10 @@ public class Place {
     public void  updateOverview(String overview) {
         this.overview = overview;
     }
+
+    public void updateImage(String image) {
+        this.firstImage = image;
+    }
 }
 
 

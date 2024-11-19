@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,48 @@ public class KorServiceImpl implements KorService {
         } catch (Exception e) {
             System.out.println("API 호출 오류: " + e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public String getImages(int contentId) {
+        String urlString = String.format(
+                "http://apis.data.go.kr/B551011/KorService1/detailImage1?serviceKey=%s&MobileOS=ETC&MobileApp=AppTest&_type=json&contentId=%d&imageYN=Y&subImageYN=Y&numOfRows=10&pageNo=1",
+                serviceKey, contentId
+        );
+
+        StringBuilder responseBuilder = new StringBuilder();
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            // HTTP 응답 코드 확인
+            int responseCode = conn.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new RuntimeException("HTTP error code: " + responseCode);
+            }
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                responseBuilder.append(inputLine);
+            }
+            in.close();
+
+            // JSON 응답 파싱
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode response = objectMapper.readTree(responseBuilder.toString());
+            JsonNode items = response.path("response").path("body").path("items").path("item");
+
+            if (items.isArray() && items.size() > 0) {
+                // 첫 번째 이미지 URL 가져오기
+                return items.get(0).path("originimgurl").asText("No image available");
+            }
+            return "No image available";
+        } catch (Exception e) {
+            System.out.println("API 호출 오류: " + e.getMessage());
+            return "No image available";
         }
     }
 

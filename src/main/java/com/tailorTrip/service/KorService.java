@@ -8,6 +8,7 @@ import java.util.Map;
 public interface KorService {
 
     String getOverview(int contentId, int contentTypeId);
+    public String getImages(int contentId);
     Map<String, Object> getIntro(Integer contentId, Integer contentTypeId);
     List<DetailInfo> getDetailInfo(Integer contentId, Integer contentTypeId);
 }

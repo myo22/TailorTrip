@@ -61,20 +61,26 @@ public class BatchInsertKorData {
                 try {
                     // getOverview를 호출하여 overview 가져오기
                     String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
-
-                    // Place 객체에 overview 세팅
-                    place.updateOverview(overview);
-
                     // PlaceService를 통해 DB에 업데이트
                     placeService.updatePlaceOverview(place, overview);
-
-                    // 요청 간의 지연 (배치 크기마다 1초 지연)
-                    if (places.indexOf(place) % batchSize == 0 && places.indexOf(place) > 0) {
-                        Thread.sleep(1000); // 배치 크기마다 지연
-                    }
                 } catch (Exception e) {
                     System.out.println("Error processing place " + place.getContentId() + ": " + e.getMessage());
                 }
+            }
+
+            // 이미지가 비어있는 경우에만 요청
+            if (place.getFirstImage() == null || place.getFirstImage().isEmpty()) {
+                try {
+                    String imageUrl = korService.getImages(place.getContentId());
+                    placeService.updatePlaceImage(place, imageUrl);
+                } catch (Exception e) {
+                    System.out.println("Error processing image for place " + place.getContentId() + ": " + e.getMessage());
+                }
+            }
+
+            // 요청 간의 지연 (배치 크기마다 1초 지연)
+            if (places.indexOf(place) % batchSize == 0 && places.indexOf(place) > 0) {
+                Thread.sleep(1000); // 배치 크기마다 지연
             }
         }
         return CompletableFuture.completedFuture(null);

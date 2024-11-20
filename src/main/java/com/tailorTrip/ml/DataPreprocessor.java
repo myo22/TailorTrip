@@ -19,6 +19,14 @@ public class DataPreprocessor {
     public static final Map<String, Integer> SUBCATEGORY_MAP = new HashMap<>();
     // 소분류 카테고리 매핑
     public static final Map<String, Integer> DETAIL_CATEGORY_MAP = new HashMap<>();
+    // 제외할 소분류 카테고리 (예: 사후면세점 A04011000)
+    private static final Set<String> EXCLUDED_DETAIL_CATEGORIES = Set.of(
+            "A04011000"
+//            "B02010100", // 관광호텔
+//            "B02010900", // 모텔
+//            "A05020100", // 한식
+//            "A05020200"  // 양식
+    );
 
     static {
         // 대분류
@@ -139,6 +147,8 @@ public class DataPreprocessor {
     // 선호도에서 자연, 인문, 레포츠 등을 A01, A02로 매핑하는 메서드
     private Integer mapInterestToCategory(String interest) {
         switch (interest) {
+
+            // 흥미
             case "자연":
                 return  CATEGORY_MAP.get("A01");
             case "역사":
@@ -205,7 +215,7 @@ public class DataPreprocessor {
 
         // 소분류
         Integer cat3Index = DETAIL_CATEGORY_MAP.get(cat3);
-        if (cat3Index != null) {
+        if (cat3Index != null && !EXCLUDED_DETAIL_CATEGORIES.contains(cat3)) { // 제외 카테고리 확인
             labels[CATEGORY_MAP.size() + SUBCATEGORY_MAP.size() + cat3Index] = 1.0f;
         }
 

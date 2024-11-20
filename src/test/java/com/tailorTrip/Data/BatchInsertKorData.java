@@ -68,8 +68,8 @@ public class BatchInsertKorData {
                 }
             }
 
-            // 이미지가 비어있는 경우에만 요청
-            if (place.getFirstImage() == null || place.getFirstImage().isEmpty()) {
+            // 이미지가 "No image available"인 경우에만 요청
+            if ("No image available".equals(place.getFirstImage())) {
                 try {
                     String imageUrl = korService.getImages(place.getContentId());
                     placeService.updatePlaceImage(place, imageUrl);

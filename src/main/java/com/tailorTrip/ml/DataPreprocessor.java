@@ -186,9 +186,9 @@ public class DataPreprocessor {
             case "양식":
                 return DETAIL_CATEGORY_MAP.get("A05020200");
             case "일식":
-                return DETAIL_CATEGORY_MAP.get("A05020400");
-            case "중식":
                 return DETAIL_CATEGORY_MAP.get("A05020300");
+            case "중식":
+                return DETAIL_CATEGORY_MAP.get("A05020400");
 
 
             default:

@@ -48,6 +48,8 @@ public class DatasetCreator {
                 dataSets.add(ds);
             }
 
+            System.out.println("Positive places count: " + positivePlaces.size());
+
             // 부정적인 샘플 추가 (관련 없는 장소 중 일부 선택)
             List<Place> negativePlaces = getNegativePlaces(places, positivePlaces, 10); // 각 사용자당 10개의 부정 샘플
             for (Place place : negativePlaces) {
@@ -55,6 +57,8 @@ public class DatasetCreator {
                 DataSet ds = new DataSet(input, labels);
                 dataSets.add(ds);
             }
+
+            System.out.println("Negative places count: " + negativePlaces.size());
         }
 
         return new ListDataSetIterator<>(dataSets, 32); // 배치 사이즈 설정

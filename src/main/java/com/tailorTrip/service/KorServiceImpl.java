@@ -69,7 +69,7 @@ public class KorServiceImpl implements KorService {
 
             return "No overview available"; // overview가 비어있는 경우 처리
         } catch (Exception e) {
-            System.out.println("API 호출 오류: " + e.getMessage());
+            System.out.println("overview API 호출 오류: " + e.getMessage());
             return null;
         }
     }
@@ -111,7 +111,7 @@ public class KorServiceImpl implements KorService {
             }
             return "No image available";
         } catch (Exception e) {
-            System.out.println("API 호출 오류: " + e.getMessage());
+            System.out.println("image API 호출 오류: " + e.getMessage());
             return "No image available";
         }
     }

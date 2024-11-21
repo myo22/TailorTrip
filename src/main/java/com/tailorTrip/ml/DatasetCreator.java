@@ -40,6 +40,9 @@ public class DatasetCreator {
             List<String> userCategories = getUserCategories(pref); // 중분류 기준으로
             List<String> userSpecificCategories = getUserSpecificCategories(pref); // 소분류 기준으로
 
+            System.out.println("User Categories: " + userCategories);
+            System.out.println("User Specific Categories: " + userSpecificCategories);
+
             // 긍정적인 샘플 추가
             List<Place> positivePlaces = getPositivePlaces(places, userCategories, userSpecificCategories);
             for (Place place : positivePlaces) {
@@ -50,8 +53,10 @@ public class DatasetCreator {
 
             System.out.println("Positive places count: " + positivePlaces.size());
 
+            // 부정적인 샘플의 비율을 2:1로 설정
+            int negativeSampleCount = Math.max(positivePlaces.size() * 2, 10); // 긍정 샘플의 2배 또는 최소 10개
             // 부정적인 샘플 추가 (관련 없는 장소 중 일부 선택)
-            List<Place> negativePlaces = getNegativePlaces(places, positivePlaces, 10); // 각 사용자당 10개의 부정 샘플
+            List<Place> negativePlaces = getNegativePlaces(places, positivePlaces, negativeSampleCount); // 각 사용자당 10개의 부정 샘플
             for (Place place : negativePlaces) {
                 INDArray labels = dataPreprocessor.createZeroLabel(); // 39차원 제로 레이블
                 DataSet ds = new DataSet(input, labels);

@@ -32,41 +32,51 @@ public class DatasetCreator {
         List<UserPreferences> preferences = userPreferencesRepository.findAll();
         List<Place> places = placeRepository.findAll();
 
-        for (UserPreferences pref : preferences) {
-            // 사용자 선호도를 벡터로 변환
-            INDArray input = dataPreprocessor.preprocessUserPreferences(pref);
+        // 실제 데이터가 없는 경우 기본 데이터 생성
+        if (preferences.isEmpty() || places.isEmpty()) {
+            System.out.println("사용자 선호도 또는 장소 데이터가 부족합니다. 기본 데이터를 생성합니다.");
 
-            // 사용자의 중분류, 소분류 기준으로 장소 카테고리 설정
-            List<String> userCategories = getUserCategories(pref); // 중분류 기준으로
-            List<String> userSpecificCategories = getUserSpecificCategories(pref); // 소분류 기준으로
+            // 더미 입력 데이터 (input 크기: 2x4)
+            INDArray input = Nd4j.create(new float[][] {
+                    {0.8f, 0.2f, 0.6f, 0.1f},  // 샘플 1: 4개의 특성
+                    {0.3f, 0.7f, 0.4f, 0.6f}   // 샘플 2: 4개의 특성
+            });
 
-            System.out.println("User Categories: " + userCategories);
-            System.out.println("User Specific Categories: " + userSpecificCategories);
+            // 더미 출력 데이터 (labels 크기: 2x39, 각 값은 0 또는 1)
+            INDArray labels = Nd4j.create(new float[][] {
+                    {1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0},  // 샘플 1
+                    {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0}   // 샘플 2
+            });
 
-            // 긍정적인 샘플 추가
-            List<Place> positivePlaces = getPositivePlaces(places, userCategories, userSpecificCategories);
-            for (Place place : positivePlaces) {
-                INDArray labels = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
-                DataSet ds = new DataSet(input, labels);
-                dataSets.add(ds);
+            dataSets.add(new DataSet(input, labels));
+        } else {
+            // 실제 사용자 선호도 기반 데이터 생성
+            for (UserPreferences pref : preferences) {
+                // 사용자 선호도를 벡터로 변환
+                INDArray input = dataPreprocessor.preprocessUserPreferences(pref);
+
+                // 사용자 선호도에 맞는 긍정 장소 샘플 생성
+                List<String> userCategories = getUserCategories(pref);
+                List<String> userSpecificCategories = getUserSpecificCategories(pref);
+
+                List<Place> positivePlaces = getPositivePlaces(places, userCategories, userSpecificCategories);
+                for (Place place : positivePlaces) {
+                    INDArray labels = dataPreprocessor.preprocessPlaceCategories(place.getCat1(), place.getCat2(), place.getCat3());
+                    dataSets.add(new DataSet(input, labels));
+                }
+
+                // 부정 샘플 생성
+                int negativeSampleCount = Math.max(positivePlaces.size() * 2, 10);
+                List<Place> negativePlaces = getNegativePlaces(places, positivePlaces, negativeSampleCount);
+                for (Place place : negativePlaces) {
+                    INDArray labels = dataPreprocessor.createZeroLabel(); // 제로 레이블
+                    dataSets.add(new DataSet(input, labels));
+                }
             }
-
-            System.out.println("Positive places count: " + positivePlaces.size());
-
-            // 부정적인 샘플의 비율을 2:1로 설정
-            int negativeSampleCount = Math.max(positivePlaces.size() * 2, 10); // 긍정 샘플의 2배 또는 최소 10개
-            // 부정적인 샘플 추가 (관련 없는 장소 중 일부 선택)
-            List<Place> negativePlaces = getNegativePlaces(places, positivePlaces, negativeSampleCount); // 각 사용자당 10개의 부정 샘플
-            for (Place place : negativePlaces) {
-                INDArray labels = dataPreprocessor.createZeroLabel(); // 39차원 제로 레이블
-                DataSet ds = new DataSet(input, labels);
-                dataSets.add(ds);
-            }
-
-            System.out.println("Negative places count: " + negativePlaces.size());
         }
 
-        return new ListDataSetIterator<>(dataSets, 32); // 배치 사이즈 설정
+        System.out.println("생성된 데이터셋 크기: " + dataSets.size());
+        return new ListDataSetIterator<>(dataSets, 32); // 배치 크기 설정
     }
 
     private List<String> getUserCategories(UserPreferences pref) {

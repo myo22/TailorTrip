@@ -94,7 +94,7 @@ weather:
     key: 58ac08cc8af3bbe943855ca0e973fff9
 
 model:
-  path: src/main/resources/model.zip
+  path: ${user.dir}/models/model.zip
 
 kor:
   api:

@@ -20,32 +20,31 @@ public class ModelSaver {
     private ResourceLoader resourceLoader;
 
     public void saveModel(MultiLayerNetwork model) throws IOException {
-        // modelPath가 classpath일 때 Resource를 사용
-        Resource resource = resourceLoader.getResource(modelPath);
-        File file = resource.getFile(); // Resource에서 File 객체를 가져옴
+        // modelPath가 classpath인 경우 처리
+        File file = new File(modelPath); // 절대 경로나 외부 경로를 설정
 
         // 모델을 저장할 디렉토리가 존재하지 않으면 생성
         File parentDir = file.getParentFile();
         if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs();  // 부모 디렉토리 생성
-        } else if (parentDir == null) {
-            throw new IOException("잘못된 파일 경로입니다: " + modelPath);
+            parentDir.mkdirs(); // 부모 디렉토리 생성
         }
 
         // 모델 저장
         ModelSerializer.writeModel(model, file, true);
-        System.out.println("모델이 " + modelPath + "에 성공적으로 저장되었습니다.");
+        System.out.println("모델이 " + file.getAbsolutePath() + "에 성공적으로 저장되었습니다.");
     }
 
+
     public MultiLayerNetwork loadModel() throws IOException {
-        Resource resource = resourceLoader.getResource(modelPath);
-        File file = resource.getFile(); // Resource에서 File 객체를 가져옴
+        // 클래스패스 경로에서 모델 로드
+        Resource resource = resourceLoader.getResource("classpath:" + modelPath);
+        File file = resource.getFile();
 
         if (file.exists()) {
-            System.out.println("모델 파일을 " + modelPath + "에서 로드합니다.");
+            System.out.println("모델 파일을 " + file.getAbsolutePath() + "에서 로드합니다.");
             return ModelSerializer.restoreMultiLayerNetwork(file);
         } else {
-            throw new IOException("모델 파일이 존재하지 않습니다: " + modelPath);
+            throw new IOException("모델 파일이 존재하지 않습니다: " + file.getAbsolutePath());
         }
     }
 }

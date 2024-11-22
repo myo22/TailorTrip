@@ -89,7 +89,9 @@ public class BatchInsertKorData {
     @Test
     public void testGetOverviewAndInsertIntoDB() throws InterruptedException {
         // DB에서 모든 Place를 가져옵니다.
-        List<Place> places = placeRepository.findAll();
+        List<Place> places = placeRepository.findAll().stream()
+                .filter(place -> place.getId() >= 12734) // Id가 3970 이상인 곳만 필터링
+                .collect(Collectors.toList());
 
         // 전체 데이터를 배치 크기만큼 나눠서 처리
         for (int i = 0; i < places.size(); i += batchSize) {

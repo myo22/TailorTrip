@@ -1,5 +1,6 @@
 package com.tailorTrip.ml;
 
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -71,6 +72,12 @@ public class ModelInitializer implements CommandLineRunner {
                 e.printStackTrace();
             }
         }, 0, 10, TimeUnit.MINUTES); // 10분마다 학습
+    }
+
+    @PreDestroy
+    public void stopTraining() {
+        scheduler.shutdown(); // 애플리케이션 종료 시 스케줄러 종료
+        System.out.println("스케줄러 종료");
     }
 
     /**

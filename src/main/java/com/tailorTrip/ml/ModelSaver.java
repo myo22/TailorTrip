@@ -36,9 +36,8 @@ public class ModelSaver {
 
 
     public MultiLayerNetwork loadModel() throws IOException {
-        // 클래스패스 경로에서 모델 로드
-        Resource resource = resourceLoader.getResource("classpath:" + modelPath);
-        File file = resource.getFile();
+        // modelPath가 절대 경로일 경우
+        File file = new File(modelPath);
 
         if (file.exists()) {
             System.out.println("모델 파일을 " + file.getAbsolutePath() + "에서 로드합니다.");

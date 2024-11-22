@@ -26,7 +26,7 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private final ModelMapper modelMapper;
 
-    private static final double MIN_DISTANCE = 10.0; // 최소 거리 제약: 10km
+    private static final double MIN_DISTANCE = 3.0; // 최소 거리 제약: 10km
 
     @Override
     public ItineraryDTO createItinerary(UserPreferences preferences) {

@@ -381,3 +381,10 @@
   white-space: nowrap;
 
 }
+
+.text-box p:nth-child(2){
+  width: 330px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

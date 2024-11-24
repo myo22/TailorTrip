@@ -122,7 +122,7 @@ function updateContentBox(data) {
 
     // 마우스가 contentBox에 진입할 때 infoWindow 표시
     contentBox.addEventListener('mouseenter', () => {
-      const maxLength = 430; // 제한할 글자 수
+      const maxLength = 300; // 제한할 글자 수
       const infotext = item.infotext;
 
       // 글자 수 제한 후 '...' 추가

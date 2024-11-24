@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   // 1000px 이하에서 항상 on클래스 붙어있게 작성
   function toggleOnClass() {
-    const windowWidth = window.innerWidth; 
-    const boxes = document.querySelectorAll('.box'); 
+    const windowWidth = window.innerWidth;
+    const boxes = document.querySelectorAll('.box');
 
     boxes.forEach(box => {
       if (windowWidth <= 1000) {
@@ -35,26 +35,27 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('resize', toggleOnClass);
 
   // 모달2
-  const map = document.querySelectorAll(".land");
-  
-  map.forEach(maproad => {
-    maproad.addEventListener("mouseenter", function () {
+  const mapLinks = document.querySelectorAll("a[data-alt]"); // data-alt 속성이 있는 a 태그 선택
+
+  mapLinks.forEach(link => {
+    link.addEventListener("mouseenter", function () {
       const altId = this.getAttribute("data-alt");
-      const alt = document.getElementById(altId);
-      if (alt) {
-        alt.style.display = "block"; // 관련된 내용을 보이게 함
+      const altElement = document.getElementById(altId); // altId에 해당하는 요소 선택
+      if (altElement) {
+        altElement.style.display = "block"; // 요소 보이기
       }
     });
 
-    maproad.addEventListener("mouseleave", function () {
+    link.addEventListener("mouseleave", function () {
       const altId = this.getAttribute("data-alt");
-      const alt = document.getElementById(altId);
-      if (alt) {
-        alt.style.display = "none"; // 호버 해제 시 요소 숨기기
+      const altElement = document.getElementById(altId);
+      if (altElement) {
+        altElement.style.display = "none"; // 요소 숨기기
       }
     });
   });
-  
+
+
 
 
   // 모달1
@@ -108,10 +109,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // swiper banner
   var swiper = new Swiper(".mySwiper", {
+    loop: true, // 슬라이드를 루프 시키는 옵션
     pagination: {
       el: ".swiper-pagination",
     },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
   });
+
 
   // section4 스와이퍼
   let swiper2 = undefined;
@@ -155,9 +162,9 @@ document.addEventListener('DOMContentLoaded', function () {
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev",
         },
-        slidesPerView: 1,    
-        spaceBetween: 10,      
-        slidesPerGroup: 1,     
+        slidesPerView: 1,
+        spaceBetween: 10,
+        slidesPerGroup: 1,
       });
     }
     else if (windowWidth > 1000 && swiper3 != undefined) {
@@ -173,6 +180,31 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('resize', () => {
     initSwiper2();
     initSwiper3();
+  });
+
+
+
+
+
+  const topBtn = document.querySelector(`.top-btn`);
+
+  window.addEventListener(`scroll`, function () {
+    const sct = window.scrollY;
+
+    console.log(sct);
+
+    if (sct >= 300) {
+      topBtn.classList.add(`on`);
+    } else {
+      topBtn.classList.remove(`on`);
+    }
+  });
+
+  topBtn.addEventListener(`click`, () => {
+    window.scrollTo({
+      top: 0,
+      behavior: `smooth`
+    });
   });
 
 });

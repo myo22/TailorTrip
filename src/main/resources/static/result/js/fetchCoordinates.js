@@ -52,12 +52,34 @@ function updateContentBox(data) {
     pElement.innerHTML = item.address;
 
     // 새로운 p 요소 생성 및 추가
+    const pElementCategory = document.createElement('p');
+    pElementCategory.className = 'category';  // 기존 class 이름 유지
+    pElementCategory.textContent = item.category;
+
+    switch (item.category) {
+      case '음식':
+        pElementCategory.style.color = '#FFC107'; // 예: 음식 카테고리는 연한 핑크색
+        break;
+      case '숙박':
+        pElementCategory.style.color = '#FF4081'; // 숙박은 연한 초록색
+        break;
+      case '활동':
+        pElementCategory.style.color = '#2196F3'; // 관광은 연한 파란색
+        break;
+      case '':
+        pElementCategory.style.color = '#FFEB3B'; // 문화는 노란색
+        break;
+        // 추가적인 카테고리 색을 필요에 따라 추가할 수 있음
+      default:
+        pElementCategory.style.color = '#E0E0E0'; // 기본 색상 (회색)
+        break;
+    }
 
 
     // textBox에 h3, p 추가
     textBox.appendChild(h3Element);
     textBox.appendChild(pElement);
-
+    textBox.appendChild(pElementCategory);
 
     // contentBox에 추가
     box.appendChild(textBox); // 추가된 textBox를 box에 넣음
@@ -75,6 +97,20 @@ function updateContentBox(data) {
     deleteButton.innerHTML = '<img src="./image/times_bold.svg" alt="삭제"> ';
     deleteButton.style.display = 'none'; // 초기에는 숨김
 
+    // 수정1
+    let isMoved = false;  // 이미 이동했는지 여부를 확인하는 변수
+
+    moveButton.addEventListener('click', function () {
+      const img = moveButton.querySelector('img');
+
+      // isMoved가 false일 때만 이미지 변경
+      if (isMoved == false) {
+        img.src = './image/res_select.svg';  // 새로운 이미지로 변경
+        isMoved = true;  // 상태 변경
+      } else {
+        img.src = './image/res_select.svg';
+      }
+    });
 
     contentBox.appendChild(moveButton);
     contentBox.appendChild(deleteButton); // 삭제 버튼 추가
@@ -86,12 +122,22 @@ function updateContentBox(data) {
 
     // 마우스가 contentBox에 진입할 때 infoWindow 표시
     contentBox.addEventListener('mouseenter', () => {
+      const maxLength = 430; // 제한할 글자 수
+      const infotext = item.infotext;
+
+      // 글자 수 제한 후 '...' 추가
+      const truncatedText = infotext.length > maxLength
+          ? infotext.slice(0, maxLength) + "..."
+          : infotext;
+
+      // InfoWindow 콘텐츠 설정
       infoWindow.setContent(`
-      <div>
-          <h3>${item.name}</h3>
-          <p>${item.infotext}</p>
-      </div>
-  `);
+        <div>
+            <h1>${item.name}</h1>
+            <h3>${item.address}</h3>
+            <p class="infotext">${truncatedText}</p> <!-- 제한된 텍스트 사용 -->
+        </div>
+      `);
       infoWindow.setPosition({ lat: item.lat + 0.0011, lng: item.lng }); // item의 좌표를 사용
       infoWindow.open(map); // 지도에 infoWindow 표시
     });
@@ -112,8 +158,9 @@ function updateContentBox(data) {
     newContentBox.addEventListener('mouseenter', () => {
       infoWindow.setContent(`
     <div>
-        <h3>${item.name}</h3>
-        <p>${item.infotext}</p>
+        <h1>${item.name}</h1>
+        <h3>${item.address}</h3>
+        <p class="infotext">${item.infotext}</p>
     </div>
   `);
       infoWindow.setPosition({ lat: item.lat + 0.0011, lng: item.lng });
@@ -211,7 +258,17 @@ function updateContentBox(data) {
         // 추가 복사본의 삭제 버튼 설정
         const deleteButton = additionalCopy.querySelector('.delete-button');
         deleteButton.style.display = 'inline';
-        deleteButton.onclick = () => additionalCopy.remove();
+        deleteButton.onclick = () => {
+          console.log("Deleting copy and resetting state");
+
+          additionalCopy.remove();  // 복사본 삭제
+
+          const img = moveButton.querySelector('img');
+          img.src = './image/none_select.svg';  // 이미지 복원
+
+          isMoved = false;  // 상태 초기화
+          console.log("isMoved after deletion:", isMoved);  // 상태 확인
+        };
 
         // 이동 버튼 숨기기
         additionalCopy.querySelector('.move-button').style.display = 'none';
@@ -334,7 +391,17 @@ function updateContentBox(data) {
         // 추가 복사본의 삭제 버튼 설정
         const deleteButton = additionalCopy.querySelector('.delete-button');
         deleteButton.style.display = 'inline';
-        deleteButton.onclick = () => additionalCopy.remove();
+        deleteButton.onclick = () => {
+          console.log("Deleting copy and resetting state");
+
+          additionalCopy.remove();  // 복사본 삭제
+
+          const img = moveButton.querySelector('img');
+          img.src = './image/none_select.svg';  // 이미지 복원
+
+          isMoved = false;  // 상태 초기화
+          console.log("isMoved after deletion:", isMoved);  // 상태 확인
+        };
 
         // 타겟 컨테이너로 추가 복사본 이동
         targetContainer.appendChild(additionalCopy);
@@ -356,7 +423,6 @@ function initMapWithData() {
 
   window.initMap(itineraryData); // 데이터와 함께 initMap 호출
 }
-
 
 
 

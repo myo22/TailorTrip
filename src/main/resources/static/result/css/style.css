@@ -14,7 +14,7 @@
   /* 수직 스크롤이 가능하도록 설정 */
   height: 500px;
   /* 고정 높이 설정 */
- 
+
   /* 테두리 추가 */
   box-sizing: border-box;
   /* 테두리와 패딩을 포함한 크기 계산 */
@@ -37,7 +37,7 @@
 
 .btn {
   width: 100px;
- 
+
 }
 
 .btn li {
@@ -59,7 +59,7 @@
 .tab_inner {
   display: flex;
   width: 600px;
-  
+
 
 }
 
@@ -80,9 +80,11 @@
 .btn li:last-child {
   border-right: none;
 }
-.tabs{
+
+.tabs {
   width: 500px;
 }
+
 .tabs>div {
   display: none;
   background-color: #fff;
@@ -163,19 +165,26 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  width: 0; /* 초기 width를 0으로 설정 */
+  width: 0;
+  /* 초기 width를 0으로 설정 */
   position: relative;
   max-height: 1080px;
   overflow-y: auto;
-  transition: width 0.5s ease, opacity 0.3s ease; /* width와 opacity 트랜지션 */
-  opacity: 0; /* 처음에 투명하게 설정 */
-  visibility: hidden; /* 요소를 숨기기 위해 visibility 설정 */
+  transition: width 0.5s ease, opacity 0.3s ease;
+  /* width와 opacity 트랜지션 */
+  opacity: 0;
+  /* 처음에 투명하게 설정 */
+  visibility: hidden;
+  /* 요소를 숨기기 위해 visibility 설정 */
 }
 
 .left-box2.on {
-  width: 510px; /* 넓어지는 너비 설정 */
-  opacity: 1; /* 완전히 보이게 설정 */
-  visibility: visible; /* 요소가 보이도록 설정 */
+  width: 510px;
+  /* 넓어지는 너비 설정 */
+  opacity: 1;
+  /* 완전히 보이게 설정 */
+  visibility: visible;
+  /* 요소가 보이도록 설정 */
 }
 
 
@@ -237,7 +246,7 @@
   background-color: #222;
   color: #fff;
   border-radius: 15px;
-  
+
 }
 
 /* script로 짠 구조 코딩 */
@@ -266,35 +275,41 @@
   padding: 0 8px;
   align-items: center;
 }
-.tabs-txt{
+
+.tabs-txt {
   padding-left: 12px;
 
 }
+
 .content:hover {
   background-color: #F0F0F0;
 }
-.wkdth{
+
+.wkdth {
   font-weight: 700;
   text-align: center;
-  color: #2196F3 ;
+  color: #2196F3;
   border-bottom: 2px solid #2196F3;
   font-size: 24px;
   padding-bottom: 8px;
   margin-bottom: 4px;
 }
-.txt-top{
+
+.txt-top {
   font-size: 28px;
   padding-top: 24px;
   margin-bottom: 4px;
   color: #222;
 }
-.txt-middle{
-  
+
+.txt-middle {
+
   font-size: 14px;
   color: #b0b0b0;
   margin-bottom: 18px;
   font-weight: 400;
 }
+
 .image-url-box {
   width: 80px;
   height: 80px;
@@ -307,27 +322,54 @@
   height: 80px;
   border-radius: 15px;
 }
-.box>.text-box>p{
-  width: 200px;            /* 원하는 너비 설정 */
-  overflow: hidden;        /* 넘치는 텍스트 숨기기 */
-  white-space: nowrap;     /* 텍스트를 한 줄로 표시 */
-  text-overflow: ellipsis; /* 넘친 텍스트에 ... 표시 */
+
+.box h3 {
+  font-size: 24px;
+}
+
+.box>.text-box>p:nth-child(1) {
+  width: 200px;
+  /* 원하는 너비 설정 */
+  overflow: hidden;
+  /* 넘치는 텍스트 숨기기 */
+  white-space: nowrap;
+  /* 텍스트를 한 줄로 표시 */
+  text-overflow: ellipsis;
+  /* 넘친 텍스트에 ... 표시 */
+
+
 
 }
+
 .text-box {
   width: 350px;
 }
 
-
 .content .box {
   display: flex;
   flex-direction: row-reverse;
-
 }
 
-.moved-content{
+.moved-content {
   height: 100px;
-  
   border-radius: 15px;
 }
+
 /* script로 짠 구조 코딩 끝 */
+.category {
+
+  font-size: 14px;
+  font-weight: 500;
+
+  margin-top: 13px;
+
+
+}
+.infotext{
+  width: 300px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #222;
+  font-weight: 500;
+
+}

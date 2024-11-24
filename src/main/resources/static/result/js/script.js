@@ -17,8 +17,6 @@ document.addEventListener(`DOMContentLoaded`, function () {
     }
   });
 
-
-
   // tabtab 
   const buttons = document.querySelectorAll(`.btn li`);
 
@@ -117,8 +115,8 @@ function filterMarkersByType(contenttypeid) {
 
   // contenttypeid가 null이면 전체 데이터를 필터링 없이 사용
   const filteredData = contenttypeid
-    ? itinerary.filter(item => item.contenttypeid === contenttypeid.toString())
-    : itinerary;
+      ? itinerary.filter(item => item.contenttypeid === contenttypeid.toString())
+      : itinerary;
 
   // 이전에 추가된 마커 제거 및 새로운 마커 추가
   clearMarkers(); // 기존 마커를 제거하는 함수
@@ -162,7 +160,6 @@ function clearMarkers() {
 
 
 
-
 // 버튼 클릭하면 다음페이지로 이동하면서 데이터 받기코드 html에 버튼 추가해라
 document.getElementById('moveButton').addEventListener('click', () => {
   // left-box2에서 데이터 수집
@@ -171,9 +168,9 @@ document.getElementById('moveButton').addEventListener('click', () => {
 
   // 각 콘텐츠 박스의 정보를 수집하기
   leftBox2Contents.forEach(contentBox => {
-      const title = contentBox.querySelector('h3').textContent; // 제목 가져오기
-      const info = contentBox.querySelector('p').innerHTML; // 정보 가져오기
-      dataToSend.push({ title, info });
+    const title = contentBox.querySelector('h3').textContent; // 제목 가져오기
+    const info = contentBox.querySelector('p').innerHTML; // 정보 가져오기
+    dataToSend.push({ title, info });
   });
 
   // 로컬 스토리지에 데이터 저장
@@ -182,36 +179,6 @@ document.getElementById('moveButton').addEventListener('click', () => {
   // 페이지 이동
   window.location.href = 'nextPage.html'; // 다음 페이지로 이동
 });
-
-
-
-
-
-// 데이터 받는 코드 
-// 페이지가 로드될 때 로컬 스토리지에서 데이터 불러오기
-// document.addEventListener('DOMContentLoaded', () => {
-//   const leftBox2Data = JSON.parse(localStorage.getItem('leftBox2Data')); // 로컬 스토리지에서 데이터 불러오기
-//   if (leftBox2Data) {
-//       leftBox2Data.forEach(item => {
-//           const contentBox = document.createElement('div');
-//           contentBox.className = 'content';
-
-//           const h3Element = document.createElement('h3');
-//           h3Element.textContent = item.title; // 제목 설정
-
-//           const pElement = document.createElement('p');
-//           pElement.innerHTML = item.info; // 정보 설정
-
-//           contentBox.appendChild(h3Element);
-//           contentBox.appendChild(pElement);
-
-//           // 원하는 컨테이너에 추가
-//           document.querySelector('#targetContainer').appendChild(contentBox);
-//       });
-//   } else {
-//       console.log('로컬 스토리지에 leftBox2 데이터가 없습니다.');
-//   }
-// });
 
 
 

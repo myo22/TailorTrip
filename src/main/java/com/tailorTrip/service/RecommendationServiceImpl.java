@@ -63,6 +63,13 @@ public class RecommendationServiceImpl implements RecommendationService {
                 }
             }
 
+            // HubRank 순위를 점수화하여 계산
+            double hubRankScore = Double.parseDouble(place.getHubRank()); // 1 ~ 100 사이의 값 (1이 가장 높은 순위)
+            double normalizedHubRankScore = 1.0 - (hubRankScore / 100.0); // 0 ~ 1 사이의 값으로 정규화 (1이 가장 중요한 장소)
+
+            // 복합 유사도에 HubRank 반영
+            score += normalizedHubRankScore * 0.2; // 0.2는 가중치로 조정 가능
+
             // 카테고리별로 장소 추가
             categorizedPlaces.computeIfAbsent(place.getCat1(), k -> new ArrayList<>())
                     .add(new PlaceScore(place, score));

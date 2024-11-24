@@ -1,4 +1,4 @@
-let startDate = null; // 전역 변수로 선언
+  let startDate = null; // 전역 변수로 선언
 let endDate = null;
 let selectedRegion = null; // 선택된 지역을 저장하는 전역 변수
 
@@ -32,7 +32,7 @@ function submitRegionData() {
     const region = localStorage.getItem('selectedRegion'); // localStorage에서 선택된 지역 가져오기
     if (region) {
       userPreferences.region = region; // userPreferences 객체에 저장
-      alert(`지역 선택 완료: ${region}`);
+      // alert(`지역 선택 완료: ${region}`);  데이터 전송 수정
       scrollToNextSection('section3'); // 다음 섹션으로 스크롤
     } else {
       alert('지역을 선택해 주세요.');
@@ -127,7 +127,7 @@ function submitDateData() {
     const durationInDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // 날짜 객체에서 직접 계산
     userPreferences.tripDuration = durationInDays; // 여행 기간 추가
 
-    alert(`날짜 선택 완료: ${startDateString} ~ ${endDateString}`);
+    // alert(`날짜 선택 완료: ${startDateString} ~ ${endDateString}`);
     scrollToNextSection('section4'); // 다음 섹션으로 스크롤
   } else {
     alert('날짜를 선택해 주세요.');
@@ -175,7 +175,7 @@ document.getElementById('submit-interests-btn').addEventListener('click', submit
 function submitInterestsData() {
   if (selectedInterests.length > 0) {
     userPreferences.interests = selectedInterests; // userPreferences 객체에 저장
-    alert(`관심사 선택 완료: ${selectedInterests.join(', ')}`);
+    // alert(`관심사 선택 완료: ${selectedInterests.join(', ')}`);
     scrollToNextSection('section5'); // 다음 섹션으로 스크롤
   } else {
     alert('관심사를 선택해 주세요.');
@@ -193,7 +193,7 @@ function submitActivityData() {
     userPreferences.activities = activities; // userPreferences 객체에 저장
     userPreferences.petPreference = petPreference;
 
-    alert('활동 및 애완동물 동반 여부 선택 완료');
+    // alert('활동 및 애완동물 동반 여부 선택 완료');
     scrollToNextSection('section6'); // 다음 섹션으로 이동
   } else {
     alert('활동과 애완동물 동반 여부를 선택해 주세요.');
@@ -210,7 +210,7 @@ function submitFoodAndTravelStyleData() {
     userPreferences.foodPreferences = window.selectedFoodPreferences; // userPreferences 객체에 저장
     userPreferences.travelStyle = window.selectedTravelStyle;
 
-    alert('음식 종류 및 여행 스타일 선택 완료');
+    // alert('음식 종류 및 여행 스타일 선택 완료');
     scrollToNextSection('section7'); // 다음 섹션으로 이동
   } else {
     alert('음식 종류와 여행 스타일을 선택해 주세요.');
@@ -226,7 +226,7 @@ function submitAccommodationData(event) {
 
   if (window.selectedAccommodation) {
     userPreferences.accommodation = window.selectedAccommodation; // userPreferences 객체에 저장
-    alert('숙소 선택 완료');
+    // alert('숙소 선택 완료');
 
     // 모든 데이터가 수집된 후, 최종 데이터 전송 함수 호출
     submitAllUserPreferences();
@@ -264,7 +264,7 @@ function submitAllUserPreferences() {
       })
       .catch(error => {
         console.error('Error:', error);
-        alert('데이터 전송 중 오류가 발생했습니다.');
+        alert('모든 질문을 선택하지 않았습니다.');
       });
 }
 

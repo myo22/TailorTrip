@@ -373,3 +373,11 @@
   font-weight: 500;
 
 }
+
+.text-box>h3{
+  width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+}

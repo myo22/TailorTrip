@@ -34,6 +34,7 @@ public class Place {
     private String areaCode;
     private Integer sigunguCode;
     private Integer contentTypeId;
+    private String hubRank;
 
     @Column(length = 2000)
     private String overview; // 개요 정보
@@ -58,6 +59,10 @@ public class Place {
 
     public void updateImage(String image) {
         this.firstImage = image;
+    }
+
+    public void updateHubRank(String hubRank) {
+        this.hubRank = hubRank;
     }
 }
 

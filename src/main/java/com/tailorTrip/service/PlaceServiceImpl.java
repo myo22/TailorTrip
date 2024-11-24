@@ -30,4 +30,9 @@ public class PlaceServiceImpl implements PlaceService {
         place.updateImage(imageUrl);
         placeRepository.save(place);
     }
+
+    public void updatePlaceHubRank(Place place, String  hubRank) {
+        place.updateHubRank(hubRank);
+        placeRepository.save(place);
+    }
 }

@@ -11,4 +11,6 @@ public interface PlaceService {
     void updatePlaceOverview(Place place, String overview);
 
     void updatePlaceImage(Place place, String  imageUrl);
+
+    void updatePlaceHubRank(Place place, String  hubRank);
 }

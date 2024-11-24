@@ -75,7 +75,6 @@ public class RecommendationController {
                 Map<String, Object> itemData = new HashMap<>();
                 itemData.put("contentid", item.getPlace().getContentId().toString());
                 itemData.put("contenttypeid", String.valueOf(day.getDayNumber()));
-                itemData.put("infoname", item.getTimeOfDay());
                 itemData.put("infotext", item.getPlace().getOverview());
                 itemData.put("label", item.getActivityType());
                 itemData.put("name", item.getPlace().getTitle());
@@ -83,6 +82,7 @@ public class RecommendationController {
                 itemData.put("lng", item.getPlace().getMapX());
                 itemData.put("url", item.getPlace().getFirstImage());
                 itemData.put("address", item.getPlace().getAddr1());
+                itemData.put("category", item.getTimeOfDay());
 
                 responseData.add(itemData);
             }

@@ -122,21 +122,28 @@ public class ItineraryServiceImpl implements ItineraryService {
 
     private List<ItineraryItem> createItineraryItems(List<Place> optimalPath, Set<Place> usedMeals, Set<Place> usedActivities) {
         List<ItineraryItem> items = new ArrayList<>();
-        int mealCount = 0, activityCount = 0;
 
         for (Place place : optimalPath) {
-            String activityType = determineCategoryType(place).toString();
-            String timeOfDay = (activityType.equals("MEAL")) ? determineMealTimeOfDay(mealCount++) : determineActivityTimeOfDay(activityCount++);
+            CategoryType categoryType = determineCategoryType(place);
+            String timeOfDay;
+
+            // 카테고리에 따라 timeOfDay 값 설정
+            switch (categoryType) {
+                case MEAL -> timeOfDay = "음식";
+                case ACTIVITY -> timeOfDay = "활동";
+                case ACCOMMODATION -> timeOfDay = "숙박";
+                default -> timeOfDay = "기타";
+            }
 
             items.add(ItineraryItem.builder()
                     .timeOfDay(timeOfDay)
                     .place(place)
-                    .activityType(activityType)
+                    .activityType(categoryType.toString()) // 여전히 영어로 저장하고 싶다면 유지
                     .build()
             );
 
-            if (activityType.equals("MEAL")) usedMeals.add(place);
-            else if (activityType.equals("ACTIVITY")) usedActivities.add(place);
+            if (categoryType == CategoryType.MEAL) usedMeals.add(place);
+            else if (categoryType == CategoryType.ACTIVITY) usedActivities.add(place);
         }
         return items;
     }

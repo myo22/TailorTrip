@@ -57,7 +57,7 @@ public class BatchInsertKorData {
     public CompletableFuture<Void> processBatch(List<Place> places) throws InterruptedException {
         for (Place place : places) {
             // overview가 비어있는 경우에만 요청
-            if (place.getOverview() == null || place.getOverview().isEmpty()) {
+            if (place.getAcmpyTypeCd() != null) {
                 try {
                     // getOverview를 호출하여 overview 가져오기
                     String overview = korService.getOverview(place.getContentId(), place.getContentTypeId());
@@ -68,15 +68,15 @@ public class BatchInsertKorData {
                 }
             }
 
-            // 이미지가 비어있는 경우에만 요청
-            if (place.getFirstImage() == null || place.getFirstImage().isEmpty()) {
-                try {
-                    String imageUrl = korService.getImages(place.getContentId());
-                    placeService.updatePlaceImage(place, imageUrl);
-                } catch (Exception e) {
-                    System.out.println("Error processing image for place " + place.getContentId() + ": " + e.getMessage());
-                }
-            }
+//            // 이미지가 비어있는 경우에만 요청
+//            if (place.getFirstImage() == null || place.getFirstImage().isEmpty()) {
+//                try {
+//                    String imageUrl = korService.getImages(place.getContentId());
+//                    placeService.updatePlaceImage(place, imageUrl);
+//                } catch (Exception e) {
+//                    System.out.println("Error processing image for place " + place.getContentId() + ": " + e.getMessage());
+//                }
+//            }
 
             // 요청 간의 지연 (배치 크기마다 1초 지연)
             if (places.indexOf(place) % batchSize == 0 && places.indexOf(place) > 0) {

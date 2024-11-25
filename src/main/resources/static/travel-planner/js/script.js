@@ -94,12 +94,15 @@ document.addEventListener(`DOMContentLoaded`, function () {
     // 풀페이지
     new fullpage('#wrap', {
         anchors: ['anchor1', 'anchor2', 'anchor3', 'anchor4'],
-        scrollBar: true,
-        // normalScrollElements: '.sec4, .footer',
-        // 높이값이 풀페이지가 아닌 경우 풀페이지 상단으로 올라가는 것 막아주기
-        fitToSection: false,
-        responsiveWidth: 1000,
         scrollingSpeed: 600,
+        onLeave: (origin, destination, direction) => {
+            // 2번째(1)부터 7번째(6) 섹션에서 스크롤 차단
+            if (destination.index >= 1 && destination.index <= 6) {
+                fullpage_api.setAllowScrolling(false); // 스크롤 비활성화
+            } else {
+                fullpage_api.setAllowScrolling(true);  // 스크롤 활성화
+            }
+        }
 
     });
     // script.js

@@ -11,7 +11,7 @@ document.addEventListener(`DOMContentLoaded`, function () {
 
     // 'on' 클래스에 따라 #map의 width 값을 변경
     if (leftBox2.classList.contains('on')) {
-      mapElement.style.width = 'calc(100% - 1600px)'; // left-box2가 표시될 때
+      mapElement.style.width = 'calc(100% - 1000px)'; // left-box2가 표시될 때
     } else {
       mapElement.style.width = '100%'; // left-box2가 숨겨질 때
     }

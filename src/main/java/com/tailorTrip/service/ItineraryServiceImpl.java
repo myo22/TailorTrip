@@ -44,32 +44,122 @@ public class ItineraryServiceImpl implements ItineraryService {
 
         List<ItineraryDay> itineraryDays = new ArrayList<>();
 
-        // 2. 숙소를 기준으로 일정 구성
+        // 2. 속도 설정에 따른 식사와 활동 수 결정
+        int maxMeals = 3;       // 기본값: 3 (아침, 점심, 저녁)
+        int maxActivities = 3;  // 기본값: 3 (오전, 오후, 저녁)
+
+        switch (preferences.getTravelPace().toLowerCase()) {
+            case "느긋하게":
+                maxMeals = 2;        // 점심, 저녁
+                maxActivities = 3;   // 오전, 오후, 저녁 활동
+                break;
+            case "바쁘게":
+                maxMeals = 3;        // 아침, 점심, 저녁
+                maxActivities = 4;   // 오전, 오후, 저녁 활동 + 추가 활동
+                break;
+            default: // "보통"인 경우
+                // 기본값 유지
+                break;
+        }
+
+
+        // 3. 숙소를 기준으로 일정 구성 (1일인 경우 숙소 제외)
         for (int day = 1; day <= duration; day++) {
-            Place currentAccommodation = accommodations.get((day - 1) / 3 % accommodations.size()); // 3일마다 숙소 변경
-            List<Place> dayMeals = new ArrayList<>();
-            List<Place> dayActivities = new ArrayList<>();
-
-            // 3. 숙소를 기준으로 근처의 활동 및 식사 장소 클러스터링
-            List<Place> nearbyMeals = findNearbyPlaces(currentAccommodation, meals, usedMeals);
-            List<Place> nearbyActivities = findNearbyPlaces(currentAccommodation, activities, usedActivities);
-
-            // 3일마다 숙소 변경하므로 하루 일정에 맞는 식사 및 활동 추가
             List<Place> dailyPlaces = new ArrayList<>();
-            dailyPlaces.add(currentAccommodation);
 
-            // 식사와 활동을 최대 3개씩 추가
-            dayMeals.addAll(nearbyMeals.subList(0, Math.min(3, nearbyMeals.size())));
-            dayActivities.addAll(nearbyActivities.subList(0, Math.min(3, nearbyActivities.size())));
+            // 하루 일정만 있을 경우 숙소를 제외하고 활동/식사만 추가
+            if (duration == 1) {
+                // 숙소 제외하고 식사와 활동만 추가
+                List<Place> nearbyMeals = findNearbyPlaces(null, meals, usedMeals);
+                List<Place> nearbyActivities = findNearbyPlaces(null, activities, usedActivities);
 
-            dailyPlaces.addAll(dayMeals);
-            dailyPlaces.addAll(dayActivities);
+                // 식사와 활동을 번갈아 가며 추가
+                int addedMeals = 0;
+                int addedActivities = 0;
+
+                // "느긋하게"인 경우 활동 -> 식사 순으로 추가
+                boolean relaxedPace = preferences.getTravelPace().equalsIgnoreCase("느긋하게");
+
+                for (int i = 0; i < Math.max(nearbyMeals.size(), nearbyActivities.size()); i++) {
+                    if (relaxedPace) {
+                        if (addedActivities < maxActivities && i < nearbyActivities.size()) {
+                            dailyPlaces.add(nearbyActivities.get(i)); // 활동 추가
+                            usedActivities.add(nearbyActivities.get(i));
+                            addedActivities++;
+                        }
+                        if (addedMeals < maxMeals && i < nearbyMeals.size()) {
+                            dailyPlaces.add(nearbyMeals.get(i)); // 식사 추가
+                            usedMeals.add(nearbyMeals.get(i));
+                            addedMeals++;
+                        }
+                    } else {
+                        if (addedMeals < maxMeals && i < nearbyMeals.size()) {
+                            dailyPlaces.add(nearbyMeals.get(i)); // 식사 추가
+                            usedMeals.add(nearbyMeals.get(i));
+                            addedMeals++;
+                        }
+                        if (addedActivities < maxActivities && i < nearbyActivities.size()) {
+                            dailyPlaces.add(nearbyActivities.get(i)); // 활동 추가
+                            usedActivities.add(nearbyActivities.get(i));
+                            addedActivities++;
+                        }
+                    }
+                    if (addedMeals >= maxMeals && addedActivities >= maxActivities) break;
+                }
+            } else {
+                // 2박 이상일 경우, 숙소를 추가
+                Place currentAccommodation = accommodations.get((day - 1) / 3 % accommodations.size()); // 3일마다 숙소 변경
+
+                // 근처의 활동 및 식사 장소 클러스터링
+                List<Place> nearbyMeals = findNearbyPlaces(currentAccommodation, meals, usedMeals);
+                List<Place> nearbyActivities = findNearbyPlaces(currentAccommodation, activities, usedActivities);
+
+                // 식사와 활동을 번갈아 가며 추가
+                int addedMeals = 0;
+                int addedActivities = 0;
+
+                // "느긋하게"인 경우 활동 -> 식사 순으로 추가
+                boolean relaxedPace = preferences.getTravelPace().equalsIgnoreCase("느긋하게");
+
+                for (int i = 0; i < Math.max(nearbyMeals.size(), nearbyActivities.size()); i++) {
+                    if (relaxedPace) {
+                        if (addedActivities < maxActivities && i < nearbyActivities.size()) {
+                            dailyPlaces.add(nearbyActivities.get(i)); // 활동 추가
+                            usedActivities.add(nearbyActivities.get(i));
+                            addedActivities++;
+                        }
+                        if (addedMeals < maxMeals && i < nearbyMeals.size()) {
+                            dailyPlaces.add(nearbyMeals.get(i)); // 식사 추가
+                            usedMeals.add(nearbyMeals.get(i));
+                            addedMeals++;
+                        }
+                    } else {
+                        if (addedMeals < maxMeals && i < nearbyMeals.size()) {
+                            dailyPlaces.add(nearbyMeals.get(i)); // 식사 추가
+                            usedMeals.add(nearbyMeals.get(i));
+                            addedMeals++;
+                        }
+                        if (addedActivities < maxActivities && i < nearbyActivities.size()) {
+                            dailyPlaces.add(nearbyActivities.get(i)); // 활동 추가
+                            usedActivities.add(nearbyActivities.get(i));
+                            addedActivities++;
+                        }
+                    }
+                    if (addedMeals >= maxMeals && addedActivities >= maxActivities) break;
+                }
+
+                // 숙소는 항상 마지막에 추가
+                dailyPlaces.add(currentAccommodation);
+            }
 
             // 4. 해당 하루 일정에 대해 TSP 경로 생성
             List<Place> optimalPath = generateOptimalPath(dailyPlaces);
 
+            // 4-1. 순서를 복원: TSP 결과를 원래 의도한 순서대로 정렬
+            List<Place> orderedPath = reorderDailyPlaces(optimalPath, dailyPlaces);
+
             // 5. 최적 경로에 따라 일정 항목 생성
-            List<ItineraryItem> items = createItineraryItems(optimalPath, usedMeals, usedActivities);
+            List<ItineraryItem> items = createItineraryItems(orderedPath, usedMeals, usedActivities);
             itineraryDays.add(ItineraryDay.builder().dayNumber(day).items(items).build());
         }
 
@@ -103,6 +193,21 @@ public class ItineraryServiceImpl implements ItineraryService {
         Optional<Itinerary> result = itineraryRepository.findById(id);
         Itinerary itinerary = result.orElseThrow();
         return modelMapper.map(itinerary, ItineraryDTO.class);
+    }
+
+    /**
+     * TSP 결과를 원래의 의도된 순서로 복원하는 메서드
+     */
+    private List<Place> reorderDailyPlaces(List<Place> tspPath, List<Place> originalOrder) {
+        List<Place> reorderedPlaces = new ArrayList<>();
+
+        for (Place place : originalOrder) {
+            if (tspPath.contains(place)) {
+                reorderedPlaces.add(place);
+            }
+        }
+
+        return reorderedPlaces;
     }
 
     private List<Place> filterAccommodations(List<Place> accommodations) {

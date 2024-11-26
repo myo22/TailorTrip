@@ -1,4 +1,4 @@
-  let startDate = null; // 전역 변수로 선언
+let startDate = null; // 전역 변수로 선언
 let endDate = null;
 let selectedRegion = null; // 선택된 지역을 저장하는 전역 변수
 
@@ -266,6 +266,21 @@ function submitAllUserPreferences() {
         console.error('Error:', error);
         alert('모든 질문을 선택하지 않았습니다.');
       });
+}
+
+// 섹션으로 부드럽게 스크롤하는 함수
+function scrollToNextSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// previous 버튼 클릭 시 각 섹션으로 이동하는 함수
+for (let i = 1; i <= 5; i++) {
+  document.querySelector(`.previous${i}`).addEventListener('click', function() {
+    scrollToNextSection(`section${i + 1}`); // 예: previous1 -> section2, previous2 -> section3
+  });
 }
 
 // ----------------------------------최종 데이터 전송 끝---------------------------------------------------------------------------------------

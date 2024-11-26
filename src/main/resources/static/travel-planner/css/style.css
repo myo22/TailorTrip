@@ -1,4 +1,10 @@
 /* container 높이 설정 */
+body{
+  overflow: hidden;
+}
+html{
+  overflow: hidden;
+}
 .container {
   height: 100vh;
   padding: 0 160px;
@@ -20,6 +26,24 @@
   width: 50%;
 
 }
+.buttonwrap{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+.previous1,
+.previous2,
+.previous3,
+.previous4,
+.previous5,
+.previous6
+{
+  width: 100px;
+  background-color: black;
+  color: #fff;
+
+}
+
 
 /* 버튼 스타일 */
 button {
@@ -168,7 +192,7 @@ span {
 }
 
 .section3 .sec-3-button {
-  width: 100%;
+  width: 100px;
   background-color: #222;
   color: white;
   font-weight: 600;
@@ -260,7 +284,7 @@ span {
 .section5 button,
 .section6 button,
 .section7 button {
-  width: 100%;
+  width: 100px;
   background-color: #222;
   color: white;
   font-weight: 600;
@@ -302,7 +326,9 @@ span {
 .section7 .sec-7-box.on {
   filter: grayscale(0);
 }
-
+.section4 .right-box p{
+  font-size: 1.3rem;
+}
 
 .section4 .right-box {
   width: 600px;
@@ -335,7 +361,9 @@ span {
   font-size: 0.875rem;
   color: #222;
 }
-
+.section5 .right-box p{
+  font-size: 1.3rem;
+}
 .section5 .right-box {
   width: 600px;
   height: 600px;
@@ -462,7 +490,7 @@ span {
   bottom: 8px;
   left: 12px;
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 1.3rem;
   color: #222;
 }
 

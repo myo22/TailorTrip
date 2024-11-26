@@ -97,7 +97,7 @@ document.addEventListener(`DOMContentLoaded`, function () {
         scrollingSpeed: 600,
         onLeave: (origin, destination, direction) => {
             // 2번째(1)부터 7번째(6) 섹션에서 스크롤 차단
-            if (destination.index >= 1 && destination.index <= 6) {
+            if (destination.index >= 0 && destination.index <= 6) {
                 fullpage_api.setAllowScrolling(false); // 스크롤 비활성화
             } else {
                 fullpage_api.setAllowScrolling(true);  // 스크롤 활성화

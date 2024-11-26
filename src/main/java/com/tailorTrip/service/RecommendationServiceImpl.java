@@ -77,6 +77,10 @@ public class RecommendationServiceImpl implements RecommendationService {
                 }
             }
 
+            // HubRank 점수 추가 반영
+            score += normalizedHubRankScore * 0.2; // 0.2는 가중치, 필요에 따라 조정 가능
+
+
             // 카테고리별로 장소 추가
             categorizedPlaces.computeIfAbsent(place.getCat1(), k -> new ArrayList<>())
                     .add(new PlaceScore(place, score));

@@ -254,6 +254,14 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     private List<Place> findNearbyPlaces(Place accommodation, List<Place> places, Set<Place> usedPlaces) {
+        if (accommodation == null) {
+            // 거리 계산 없이 사용하지 않은 장소만 반환
+            return places.stream()
+                    .filter(place -> !usedPlaces.contains(place))
+                    .collect(Collectors.toList());
+        }
+
+        // 숙소가 있을 경우 거리 계산
         return places.stream()
                 .filter(place -> !usedPlaces.contains(place))
                 .sorted(Comparator.comparingDouble(place -> calculateDistance(

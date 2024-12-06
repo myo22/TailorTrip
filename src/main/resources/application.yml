@@ -3,7 +3,7 @@ spring:
     restart:
       enabled: false
   datasource:
-    url: jdbc:mysql://3.34.25.202:3306/sys?useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://3.34.25.202:3306/tailortrip_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: myo
     password: 220211
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,9 +11,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-      dialect: org.hibernate.dialect.MySQLDialect
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         # JPA? ???? SQL? ?? ????? ??.
         show_sql: true
         # ??? ???? SQL? ????? ???? ?? ?????.

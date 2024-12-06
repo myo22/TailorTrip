@@ -3,8 +3,8 @@ spring:
     restart:
       enabled: false
   datasource:
-    url: jdbc:mysql://localhost:3306/tailortrip_db?useUnicode=true&serverTimezone=Asia/Seoul
-    username: root
+    url: jdbc:mysql://3.34.25.202:3306/sys?useUnicode=true&serverTimezone=Asia/Seoul
+    username: myo
     password: 220211
     driver-class-name: com.mysql.cj.jdbc.Driver
 

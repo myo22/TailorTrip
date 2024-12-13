@@ -208,3 +208,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 });
+
+
+// 직접 baseUrl을 설정
+var baseUrl = window.location.origin;  // 동적으로 현재 URL을 기반으로 설정
+
+// 모든 .subpage 요소에 대해 href 값 동적으로 설정
+document.querySelectorAll('.subpage').forEach(el => {
+  el.href = `${baseUrl}/travel-planner/travel-planner.html`;
+});

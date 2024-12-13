@@ -3,6 +3,3 @@ spring:
     url: jdbc:mysql://3.34.25.202:3306/tailortrip_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: myo
     password: 220211
-
-# 배포 환경 (.env.production)
-base-url: https://yeohaeng.site

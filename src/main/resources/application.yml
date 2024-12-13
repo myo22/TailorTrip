@@ -7,6 +7,9 @@ spring:
     restart:
       enabled: false
 
+  profiles:
+    active: dev
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
 

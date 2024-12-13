@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/tailortrip_db_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/tailortrip_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: root
     password: 220211
 

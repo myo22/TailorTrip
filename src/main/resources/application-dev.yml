@@ -3,4 +3,6 @@ spring:
     url: jdbc:mysql://localhost:3306/tailortrip_db_dev?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: root
     password: 220211
-    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 로컬 (.env.development)
+base-url: http://localhost:8080

@@ -210,10 +210,14 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// window.location.origin을 사용해 현재 도메인에 맞는 baseUrl 설정
-var baseUrl = window.location.origin;  // http://localhost:8080 또는 https://yourdomain.com
+// // window.location.origin을 사용해 현재 도메인에 맞는 baseUrl 설정
+// var baseUrl = window.location.origin;  // http://localhost:8080 또는 https://yourdomain.com
+//
+// // 모든 .subpage 요소에 대해 href 값 동적으로 설정
+// document.querySelectorAll('.subpage').forEach(el => {
+//   el.href = `${baseUrl}/travel-planner/travel-planner.html`;
+// });
 
-// 모든 .subpage 요소에 대해 href 값 동적으로 설정
 document.querySelectorAll('.subpage').forEach(el => {
-  el.href = `${baseUrl}/travel-planner/travel-planner.html`;
+  el.href = '/travel-planner/travel-planner.html';
 });

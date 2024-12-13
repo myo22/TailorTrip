@@ -210,8 +210,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// 직접 baseUrl을 설정
-var baseUrl = window.location.origin;  // 동적으로 현재 URL을 기반으로 설정
+// window.location.origin을 사용해 현재 도메인에 맞는 baseUrl 설정
+var baseUrl = window.location.origin;  // http://localhost:8080 또는 https://yourdomain.com
 
 // 모든 .subpage 요소에 대해 href 값 동적으로 설정
 document.querySelectorAll('.subpage').forEach(el => {

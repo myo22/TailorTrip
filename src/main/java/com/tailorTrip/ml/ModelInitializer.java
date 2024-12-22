@@ -36,7 +36,7 @@ public class ModelInitializer implements CommandLineRunner {
             initializeAndTrainModel();
         }
         // 지속적인 학습 주기 시작 (미세조정 없이)
-        startContinuousTraining(); // 새로운 데이터가 들어오면 계속 학습하도록 설정
+//        startContinuousTraining(); // 새로운 데이터가 들어오면 계속 학습하도록 설정
     }
 
     private void initializeAndTrainModel() {

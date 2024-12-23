@@ -10,7 +10,7 @@ let userPreferences = {
   foodPreferences: [],
   petPreference: false,
   travelStyle: null,
-  accommodation: null
+  accommodation: []
 };
 
 // submitRegionData.js

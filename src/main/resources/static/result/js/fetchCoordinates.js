@@ -51,10 +51,27 @@ function updateContentBox(data) {
     const pElement = document.createElement('p');
     pElement.innerHTML = item.address;
 
-    // 새로운 p 요소 생성 및 추가
     const pElementCategory = document.createElement('p');
-    pElementCategory.className = 'category';  // 기존 class 이름 유지
+    pElementCategory.className = 'category';
     pElementCategory.textContent = item.category;
+
+    // contenttypeid 요소 생성 후 category 아래에 추가
+    const contenttypeidElement = document.createElement('div');
+    contenttypeidElement.className = 'contenttypeid'; // 클래스 이름 설정
+    contenttypeidElement.style.display = 'none'; // 요소를 숨김
+    contenttypeidElement.textContent = item.contenttypeid; // 데이터 설정
+
+    // category 아래에 contenttypeid 추가
+    pElementCategory.appendChild(contenttypeidElement);
+
+    // 요소들을 계층 구조에 추가
+    textBox.appendChild(h3Element);
+    textBox.appendChild(pElement);
+    textBox.appendChild(pElementCategory);
+
+    box.appendChild(textBox);
+    contentBox.appendChild(imageUrlBox);
+    contentBox.appendChild(box);
 
     switch (item.category) {
       case '음식':
@@ -426,8 +443,19 @@ function initMapWithData() {
 
 // 로컬스토리지
 document.getElementById('moveButton').addEventListener('click', () => {
+  console.log('버튼 클릭됨!');
+
   // left-box2에서 데이터 수집
   const leftBox2Contents = document.querySelectorAll('.left-box2 .content');
+
+  // leftBox2Contents가 잘 가져와졌는지 확인
+  if (!leftBox2Contents || leftBox2Contents.length === 0) {
+    console.error('left-box2에 .content 요소가 없습니다.');
+  } else {
+    console.log(`left-box2에서 ${leftBox2Contents.length}개의 .content 요소를 가져왔습니다.`);
+    console.log(leftBox2Contents); // NodeList 출력
+  }
+
   const dataToSend = [];
 
   // 각 콘텐츠 박스의 정보를 수집하기
@@ -443,6 +471,8 @@ document.getElementById('moveButton').addEventListener('click', () => {
     // 데이터를 dataToSend 배열에 추가
     dataToSend.push({ title, info, category, url, contenttypeid });
   });
+
+  console.log('수집된 데이터:', dataToSend);
 
   // 로컬 스토리지에 데이터 저장
   localStorage.setItem('leftBox2Data', JSON.stringify(dataToSend));

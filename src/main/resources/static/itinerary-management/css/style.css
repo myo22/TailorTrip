@@ -1,0 +1,139 @@
+@charset "UTF-8";
+
+#dataContainer {
+  width: calc(100% - 100px);
+  /* 부모 요소의 너비 */
+  overflow: visible;
+  /* 넘칠 때 잘리지 않고 표시 */
+
+}
+
+html {
+  height: 100%;
+}
+
+#wrap {
+  height: 100%;
+}
+
+body {
+  font-size: 100%;
+  overflow: hidden;
+  font-family: 'Pretendard', sans-serif;
+  color: #222;
+  height: 100%;
+}
+
+/* content box 안 코딩 */
+.content-box {
+
+  padding: 4px;
+  border-right: 2px solid #81D4FA;
+
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
+  height: 80px;
+  margin-bottom: 8px;
+
+}
+.txt-box{
+  display: flex;
+}
+.txt-box h3 {
+  font-size: 28px;
+ 
+  margin-bottom: 4px;
+  color: #222;
+}
+
+.txt-box p {
+  font-size: 14px;
+  color: #b0b0b0;
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+
+.plane{
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: -15px;
+  top: 20px;
+}
+
+.con{
+  margin: 8px 8px 8px 0px;
+  position: relative;
+  
+}
+
+#dataContainer .con-box h1 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.con-box {
+  display: flex;
+
+}
+
+.content-box .info {
+  font-size: 0.725rem;
+  white-space: nowrap;
+  /* 텍스트가 줄바꿈 없이 한 줄로 표시 */
+  overflow: hidden;
+  /* 내용이 넘치면 숨김 처리 */
+  text-overflow: ellipsis;
+  width: 150px;
+  margin-bottom: 15px;
+}
+
+.title {
+  font-size: 1.3rem;
+  white-space: nowrap;
+  /* 텍스트가 줄바꿈 없이 한 줄로 표시 */
+  overflow: hidden;
+  /* 내용이 넘치면 숨김 처리 */
+  text-overflow: ellipsis;
+  width: 160px;
+}
+
+.category {
+  font-size: 0, 875rem;
+}
+
+/* wrap */
+#wrap {
+  display: flex;
+}
+
+/* btn */
+.btn {
+  background-color: #81D4FA;
+  width: 100px;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+
+.box2 img {
+  border-radius: 15px;
+  height: 70px;
+  width: 70px;
+}
+
+.logo {
+  background: url(../images/Group\ 12332.png)no-repeat center;
+  width: 80px;
+  height: 50px;
+  margin-right: 8px;
+}
+
+a {
+  width: 80px;
+  height: 100px;
+}

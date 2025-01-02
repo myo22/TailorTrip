@@ -160,30 +160,6 @@ function clearMarkers() {
 
 
 
-// 버튼 클릭하면 다음페이지로 이동하면서 데이터 받기코드 html에 버튼 추가해라
-document.getElementById('moveButton').addEventListener('click', () => {
-  // left-box2에서 데이터 수집
-  const leftBox2Contents = document.querySelectorAll('.left-box2 .content');
-  const dataToSend = [];
-
-  // 각 콘텐츠 박스의 정보를 수집하기
-  leftBox2Contents.forEach(contentBox => {
-    const title = contentBox.querySelector('h3').textContent; // 제목 가져오기
-    const info = contentBox.querySelector('p').innerHTML; // 정보 가져오기
-    dataToSend.push({ title, info });
-  });
-
-  // 로컬 스토리지에 데이터 저장
-  localStorage.setItem('leftBox2Data', JSON.stringify(dataToSend));
-
-  // 페이지 이동
-  window.location.href = 'nextPage.html'; // 다음 페이지로 이동
-});
-
-
-
-
-
 
 
 

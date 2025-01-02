@@ -328,7 +328,7 @@ function updateContentBox(data) {
 
 
     // 원본 박스 이동을 위한 버튼 리스너 설정
-    setupMoveButton(contentBox, 'main', item.contenttypeid);
+      setupMoveButton(contentBox, 'main', item.contenttypeid);
   });
 
   // 이동 버튼 이벤트 리스너 설정하는 함수
@@ -423,6 +423,33 @@ function initMapWithData() {
 
   window.initMap(itineraryData); // 데이터와 함께 initMap 호출
 }
+
+// 로컬스토리지
+document.getElementById('moveButton').addEventListener('click', () => {
+  // left-box2에서 데이터 수집
+  const leftBox2Contents = document.querySelectorAll('.left-box2 .content');
+  const dataToSend = [];
+
+  // 각 콘텐츠 박스의 정보를 수집하기
+  leftBox2Contents.forEach(contentBox => {
+    const title = contentBox.querySelector('h3').textContent; // 제목 가져오기
+    const info = contentBox.querySelector('p').innerHTML; // 정보 가져오기
+    const category = contentBox.querySelector('.category').textContent.trim().replace(/\d+/g, '');
+
+    // category 가져오기
+    const url = contentBox.querySelector('.image-url-box img').src; // 이미지 URL 가져오기
+    const contenttypeid = contentBox.querySelector('.contenttypeid').textContent; // contenttypeid 가져오기 (숨겨진 요소)
+
+    // 데이터를 dataToSend 배열에 추가
+    dataToSend.push({ title, info, category, url, contenttypeid });
+  });
+
+  // 로컬 스토리지에 데이터 저장
+  localStorage.setItem('leftBox2Data', JSON.stringify(dataToSend));
+
+  // 페이지 이동
+  window.location.href = '/travel-planner/travel-planner.html'; // 다음 페이지로 이동
+});
 
 
 

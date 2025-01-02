@@ -448,7 +448,7 @@ document.getElementById('moveButton').addEventListener('click', () => {
   localStorage.setItem('leftBox2Data', JSON.stringify(dataToSend));
 
   // 페이지 이동
-  window.location.href = '/travel-planner/travel-planner.html'; // 다음 페이지로 이동
+  window.location.href = '/itinerary-management/itinerary-management.html'; // 다음 페이지로 이동
 });
 
 

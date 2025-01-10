@@ -121,13 +121,9 @@ function updateContentBox(data) {
       const img = moveButton.querySelector('img');
 
       // isMoved가 false일 때만 이미지 변경
-      if (isMoved == false) {
-        img.src = './image/res_select.svg';  // 새로운 이미지로 변경
-        isMoved = true;  // 상태 변경
-      } else {
-        img.src = './image/res_select.svg';
-      }
+
     });
+
 
     contentBox.appendChild(moveButton);
     contentBox.appendChild(deleteButton); // 삭제 버튼 추가

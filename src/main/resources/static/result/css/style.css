@@ -249,6 +249,26 @@
 
 }
 
+#backButton {
+  padding: 10px 20px;
+  /* 패딩 설정 */
+  border-radius: 5px;
+  /* 둥근 모서리 */
+  cursor: pointer;
+  /* 마우스 포인터 */
+  width: 100px;
+  height: auto;
+  line-height: normal;
+  font-size: 20px;
+  font-weight: 700;
+  position: absolute;
+  bottom: 80px;
+  left: 1px;
+  background-color: #222;
+  color: #fff;
+  border-radius: 15px;
+}
+
 /* script로 짠 구조 코딩 */
 
 .dmdrk {

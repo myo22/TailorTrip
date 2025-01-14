@@ -229,6 +229,13 @@
 
 }
 
+.open img {
+  width: 24px; /* 이미지를 고정된 크기로 설정 */
+  height: 24px; /* 이미지를 고정된 크기로 설정 */
+  object-fit: contain; /* 이미지 비율 유지 */
+  display: block; /* 이미지가 제대로 표시되도록 */
+}
+
 #moveButton {
   padding: 10px 20px;
   /* 패딩 설정 */

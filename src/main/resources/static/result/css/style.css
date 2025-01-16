@@ -36,8 +36,7 @@
 /* tab 영역 */
 
 .btn {
-  width: 100px;
-
+  width: 100%;
 }
 
 .btn li {
@@ -59,16 +58,12 @@
 .tab_inner {
   display: flex;
   width: 600px;
-
-
 }
 
 .pick {
   font-size: 14px;
   color: #222;
 }
-
-
 
 .btn li:hover,
 .btn li.active {
@@ -241,15 +236,16 @@
   margin-left: -10px;
 }
 
+
 #moveButton {
   padding: 10px 20px;
   /* 패딩 설정 */
-  border-radius: 5px;
+  border-radius: 15px;
   /* 둥근 모서리 */
   cursor: pointer;
   /* 마우스 포인터 */
-  width: 100px;
-  height: 60px;
+  width: 80px;
+  height: auto;
   font-size: 20px;
   font-weight: 700;
   position: absolute;
@@ -257,18 +253,17 @@
   left: 1px;
   background-color: #222;
   color: #fff;
-  border-radius: 15px;
-
+  white-space: nowrap;
 }
 
 #backButton {
   padding: 10px 20px;
   /* 패딩 설정 */
-  border-radius: 5px;
+  border-radius: 15px;
   /* 둥근 모서리 */
   cursor: pointer;
   /* 마우스 포인터 */
-  width: 100px;
+  width: 80px;
   height: auto;
   line-height: normal;
   font-size: 20px;
@@ -278,7 +273,7 @@
   left: 1px;
   background-color: #222;
   color: #fff;
-  border-radius: 15px;
+  white-space: nowrap;
 }
 
 /* script로 짠 구조 코딩 */

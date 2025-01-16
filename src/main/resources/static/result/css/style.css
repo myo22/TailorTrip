@@ -78,7 +78,6 @@
 
 .tabs {
   width: 100%;
-  box-sizing: border-box;
 }
 
 .tabs>div {
@@ -86,7 +85,7 @@
   background-color: #fff;
   box-sizing: border-box;
   overflow-y: auto;
-  max-height: 1080px;
+  max-height: 85vh;
 
 }
 

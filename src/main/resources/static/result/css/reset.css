@@ -25,3 +25,7 @@ a{
   color: inherit;
   display: block;
 }
+button, input, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}

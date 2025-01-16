@@ -211,29 +211,33 @@
   justify-content: center;
 
   background-color: white;
+  width: 60px; /* 버튼의 가로 크기 증가 */
+  height: 60px; /* 버튼의 세로 크기 증가 */
   padding: 12px;
   font-size: 20px;
   font-weight: 700;
   cursor: pointer;
   position: absolute;
-  right: -37px;
+  right: -60px;
   transform: translateY(-50%);
   top: 50%;
   z-index: 10;
   /* 왼쪽 상단 모서리 둥글게 */
-  border-top-right-radius: 15px;
+  border-top-right-radius: 20px;
   /* 오른쪽 상단 모서리 둥글게 */
   /* 왼쪽 하단 모서리 둥글게 */
-  border-bottom-right-radius: 15px;
+  border-bottom-right-radius: 20px;
   transform: 0.5s;
 
+  overflow: hidden;
 }
 
 .open img {
-  width: 24px; /* 이미지를 고정된 크기로 설정 */
-  height: 24px; /* 이미지를 고정된 크기로 설정 */
+  width: 75px; /* 이미지를 고정된 크기로 설정 */
+  height: 75px; /* 이미지를 고정된 크기로 설정 */
   object-fit: contain; /* 이미지 비율 유지 */
   display: block; /* 이미지가 제대로 표시되도록 */
+  margin-left: -10px;
 }
 
 #moveButton {

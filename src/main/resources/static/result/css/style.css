@@ -82,7 +82,8 @@
 }
 
 .tabs {
-  width: 500px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .tabs>div {

@@ -163,6 +163,8 @@
   width: 0;
   /* 초기 width를 0으로 설정 */
   position: relative;
+  /* 요소 사이 여백 */
+  gap: 10px;
   max-height: 100vh;
   overflow-y: auto;
   transition: width 0.5s ease, opacity 0.3s ease;
@@ -247,12 +249,12 @@
   height: auto;
   font-size: 20px;
   font-weight: 700;
-  position: absolute;
-  bottom: 10px;
+  position: static;
   left: 3px;
   background-color: #222;
   color: #fff;
   white-space: nowrap;
+  margin-bottom: 5px;
 }
 
 #backButton {

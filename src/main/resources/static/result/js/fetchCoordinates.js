@@ -33,8 +33,16 @@ function updateContentBox(data) {
     const imageUrlBox = document.createElement('div'); // 새로운 div 박스 생성
     imageUrlBox.className = 'image-url-box'; // 클래스 이름 지정
     const imageElement = document.createElement('img'); // 이미지 요소 생성
-    imageElement.src = item.url; // URL 값 설정 (item.url을 사용하는 가정)
+
+    // 이미지 URL 설정 (null 또는 undefined일 경우 기본 이미지 설정)
+    imageElement.src = item.url ? item.url : './image/default-image.jpg'; // 기본 이미지 경로 설정
     imageElement.alt = '이미지'; // 이미지 설명 추가
+
+    // 이미지 로드 실패 시 기본 이미지로 대체
+    imageElement.onerror = () => {
+      imageElement.src = './image/default-image.jpg'; // 기본 이미지 경로
+    };
+
     imageUrlBox.appendChild(imageElement); // 이미지 박스에 이미지 추가
 
     // box 부분 생성

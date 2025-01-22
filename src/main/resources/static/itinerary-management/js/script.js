@@ -92,9 +92,7 @@ function saveItinerary (){
   const accessToken =  localStorage.getItem('accessToken');
 
   if(!accessToken){
-    // 로그인 화면으로 이동 시 원래 요청 URL 추가
-    const currentURL = encodeURIComponent(window.location.href);
-    window.location.href = '/member/login';
+    window.location.href = `/member/login`;
   } else {
     const itineraryData = { };
     fetch('/save', {

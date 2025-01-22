@@ -87,3 +87,30 @@ if (storedData) {
 else {
   console.log('로컬 스토리지에 데이터가 없습니다.');
 }
+
+function saveItinerary (){
+  const accessToken =  localStorage.getItem('accessToken');
+
+  if(!accessToken){
+    window.location.href = '/member/login';
+  } else {
+    const itineraryData = { };
+    fetch('/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`, // Authorization 헤더에 토큰 추가
+      },
+      body: JSON.stringify(itineraryData),
+    })
+        .then(response => response.json())
+        .then(data => {
+          alert('일정이 저장되었습니다.')
+        })
+        .catch(error => {
+          console.log('Error:', error);
+        });
+  }
+}
+
+document.getElementById('saveButton').addEventListener("click", saveItinerary);

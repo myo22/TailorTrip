@@ -21,9 +21,10 @@ public class ItineraryController {
     @PostMapping("/save")
     public ResponseEntity<String> saveItinerary(@RequestBody ItineraryDTO itineraryDTO, Principal principal) {
 
-        if(principal == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("로그인이 필요합니다.");
-        }
+//        필터에서 인증을 처리했기 때문에 불필요하다.
+//        if(principal == null){
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("로그인이 필요합니다.");
+//        }
 
         String userId = principal.getName(); // 현재 로그인한 사용자 ID
 

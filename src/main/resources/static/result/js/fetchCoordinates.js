@@ -490,7 +490,32 @@ document.getElementById('moveButton').addEventListener('click', () => {
   window.location.href = '/itinerary-management/itinerary-management.html'; // 다음 페이지로 이동
 });
 
+function saveItinerary (){
+  const accessToken =  localStorage.getItem('accessToken');
 
+  if(!accessToken){
+    window.location.href = '/login';
+  } else {
+    const itineraryData = { };
+    fetch('/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`, // Authorization 헤더에 토큰 추가
+      },
+      body: JSON.stringify(itineraryData),
+    })
+        .then(response => response.json())
+        .then(data => {
+          alert('일정이 저장되었습니다.')
+        })
+        .catch(error => {
+          console.log('Error:', error);
+        });
+  }
+}
+
+document.getElementById('saveButton').addEventListener("click", saveItinerary);
 
 
 

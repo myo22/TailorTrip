@@ -2,6 +2,7 @@ package com.tailorTrip.controller;
 
 import com.tailorTrip.domain.Itinerary;
 import com.tailorTrip.dto.ItineraryDTO;
+import com.tailorTrip.dto.ItineraryRequestDTO;
 import com.tailorTrip.service.ItineraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class ItineraryController {
     private final ItineraryService itineraryService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveItinerary(@RequestBody ItineraryDTO itineraryDTO, Principal principal) {
+    public ResponseEntity<String> saveItinerary(@RequestBody List<ItineraryRequestDTO> itineraryList, Principal principal) {
 
 //        필터에서 인증을 처리했기 때문에 불필요하다.
 //        if(principal == null){
@@ -28,7 +30,9 @@ public class ItineraryController {
 
         String userId = principal.getName(); // 현재 로그인한 사용자 ID
 
-        itineraryService.saveItinerary(itineraryDTO, userId);
+        for(ItineraryRequestDTO itineraryRequestDTO : itineraryList) {
+            itineraryService.saveItinerary(itineraryRequestDTO, userId);
+        }
 
         return ResponseEntity.ok("Itinerary saved successfully!");
     }

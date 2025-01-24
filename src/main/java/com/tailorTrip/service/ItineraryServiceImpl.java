@@ -5,6 +5,7 @@ import com.tailorTrip.domain.*;
 import com.tailorTrip.dto.ItineraryDTO;
 import com.tailorTrip.dto.ItineraryDay;
 import com.tailorTrip.dto.ItineraryItem;
+import com.tailorTrip.dto.ItineraryRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -167,10 +168,10 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     @Override
-    public void saveItinerary(ItineraryDTO itineraryDTO, String userId) {
+    public void saveItinerary(ItineraryRequestDTO itineraryRequestDTO, String userId) {
         Member member = memberService.findMemberById(userId);
 
-        Itinerary itinerary = modelMapper.map(itineraryDTO, Itinerary.class);
+        Itinerary itinerary = modelMapper.map(itineraryRequestDTO, Itinerary.class);
         itinerary.assignMember(member); // Using custom method
         itineraryRepository.save(itinerary);
     }

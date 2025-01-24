@@ -23,10 +23,15 @@ public class Itinerary {
     @JoinColumn(name = "mid", nullable = false)
     private Member member;
 
-    private int duration; // 여행 기간
+    private String title;
 
-    @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL)
-    private List<ItineraryDay> days; // 일자별 일정
+    private String info;
+
+    private String category;
+
+    private String url;
+
+    private String contenttypeid;
 
     public void assignMember(Member member) {
         this.member = member;

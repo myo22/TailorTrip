@@ -48,6 +48,10 @@
 
         const data = { mid, mpw }; // axios 전송 데이터 설정
 
+        // 현재 URL에서 쿼리 파라미터 추출
+        const params = new URLSearchParams(window.location.search);
+        const redirectURL = params.get('redirect') || '/'; // 기본값으로 '/' 설정
+
         // 토큰 요청
         axios.post("http://localhost:8080/generateToken", data)
             .then(res => {
@@ -59,7 +63,7 @@
                 localStorage.setItem("refreshToken", refreshToken);
 
                 alert("로그인 성공!");
-                window.location.href = "/"; // 원하는 리디렉션 경로
+                window.location.href = redirectURL; // 원하는 리디렉션 경로
             })
             .catch(error => {
                 console.error("로그인 실패:", error);

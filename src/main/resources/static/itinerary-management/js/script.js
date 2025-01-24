@@ -93,7 +93,7 @@ function saveItinerary (){
 
   if(!accessToken){
     // 현재 요청 정보를 localStorage에 저장
-    const itineraryData = JSON.parse(localStorage.getItem('itinerary')) || []; // POST 요청의 body 데이터
+    const itineraryData = JSON.parse(storedData) || []; // POST 요청의 body 데이터
     localStorage.setItem('pendingRequest', JSON.stringify({
       url: '/save',
       method: 'POST',
@@ -105,7 +105,7 @@ function saveItinerary (){
     const currentURL = encodeURIComponent('/');
     window.location.href = `/member/login?redirect=${currentURL}`;
   } else {
-    const itineraryData = JSON.parse(localStorage.getItem('itinerary')) || []; // POST 요청의 body 데이터
+    const itineraryData = JSON.parse(storedData) || []; // POST 요청의 body 데이터
     fetch('/save', {
       method: 'POST',
       headers: {

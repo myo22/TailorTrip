@@ -92,8 +92,17 @@ function saveItinerary (){
   const accessToken =  localStorage.getItem('accessToken');
 
   if(!accessToken){
+    // 현재 요청 정보를 localStorage에 저장
+    const itineraryData = {}; // POST 요청의 body 데이터
+    localStorage.setItem('pendingRequest', JSON.stringify({
+      url: '/save',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: itineraryData,
+    }));
+
     // 로그인 화면으로 이동 시 원래 요청 URL 추가
-    const currentURL = encodeURIComponent('/save');
+    const currentURL = encodeURIComponent('/');
     window.location.href = `/member/login?redirect=${currentURL}`;
   } else {
     const itineraryData = { };

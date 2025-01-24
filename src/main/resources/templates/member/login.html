@@ -63,6 +63,32 @@
                 localStorage.setItem("refreshToken", refreshToken);
 
                 alert("로그인 성공!");
+
+                // 저장된 요청 복원
+                const pendingRequest = JSON.parse(localStorage.getItem('pendingRequest'));
+                if (pendingRequest) {
+                    // POST 요청 재실행
+                    fetch(pendingRequest.url, {
+                        method: pendingRequest.method,
+                        headers: {
+                            ...pendingRequest.headers,
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                        body: JSON.stringify(pendingRequest.body),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert('일정이 저장되었습니다.');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        })
+                        .finally(() => {
+                            // 요청 완료 후 pendingRequest 삭제
+                            localStorage.removeItem('pendingRequest');
+                        });
+                }
+
                 window.location.href = redirectURL; // 원하는 리디렉션 경로
             })
             .catch(error => {

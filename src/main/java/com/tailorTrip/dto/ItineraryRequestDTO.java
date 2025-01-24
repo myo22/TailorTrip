@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ItineraryRequestDTO {
     private String title;
-    private String address;
+    private String info;
     private String category;
-    private String imageUrl;
+    private String url;
     private String contenttypeid;
 }

@@ -50,7 +50,7 @@
 
         // 현재 URL에서 쿼리 파라미터 추출
         const params = new URLSearchParams(window.location.search);
-        const redirectURL = params.get('redirect') || '/'; // 기본값으로 '/' 설정
+        const redirectURL = params.get('redirect') || '/travel-planner/travel-planner.html'; // 기본값으로 '/' 설정
 
         // 토큰 요청
         axios.post("http://localhost:8080/generateToken", data)

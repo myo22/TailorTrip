@@ -97,7 +97,7 @@ public class CustomSecurityConfig {
 
         http.oauth2Login(oauth2Login ->
                 oauth2Login.loginPage("/member/login")
-                        .defaultSuccessUrl("/") // 로그인 성공 후 리디렉션 URL
+                        .defaultSuccessUrl("/travel-planner/travel-planner.html") // 로그인 성공 후 리디렉션 URL
                         .failureUrl("/member/login?error=true") // 로그인 실패 시
                         .successHandler(authenticationSuccessHandler()));
 

@@ -285,8 +285,12 @@ for (let i = 1; i <= 5; i++) {
 
 // ----------------------------------최종 데이터 전송 끝---------------------------------------------------------------------------------------
 
-document.querySelector(".login-link").addEventListener('click', login);
+const token = localStorage.getItem('AccessToken');
 
-function login() {
+const updateLoginStatus = async () => {
+  if (token) {
+    const response = await fetch('/', {
 
-}
+    })
+  }
+  }

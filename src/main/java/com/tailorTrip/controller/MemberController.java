@@ -1,14 +1,18 @@
 package com.tailorTrip.controller;
 
 import com.tailorTrip.dto.MemberJoinDTO;
+import com.tailorTrip.security.dto.MemberSecurityDTO;
 import com.tailorTrip.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/member")
@@ -26,6 +30,11 @@ public class MemberController {
         if(logout != null){
             log.info("user logout.......");
         }
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<String> getCurrentUser(Principal principal){
+         return ResponseEntity.ok(principal.getName());
     }
 
     @GetMapping("/join")

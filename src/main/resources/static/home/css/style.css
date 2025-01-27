@@ -9,6 +9,42 @@
   color: #A8A8A8;
 }
 
+/* 헤더 스타일 */
+.header {
+  width: 100%;
+  background-color: #f8f9fa; /* 헤더 배경색 */
+  padding: 10px 20px; /* 상하 여백과 좌우 패딩 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 살짝의 그림자 효과 */
+}
+
+.header-container {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+/* 로고 스타일 */
+.logo div {
+  background: url("../images/Group 12332.png") no-repeat center;
+  width: 100px;
+  height: 65px;
+  background-size: contain; /* 크기를 비율에 맞게 조정 */
+}
+
+/* 로그인 버튼 스타일 */
+.login {
+  background: url("../images/login1.png") no-repeat center;
+  width: 100px;
+  height: 65px;
+  background-size: contain;
+}
+
 
 /* ----------------font */
 /* ---------배너------------- */

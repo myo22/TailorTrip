@@ -47,7 +47,7 @@ html{
 }
 
 /* 로그인 버튼 스타일 */
-.login {
+.login a{
   background: url("../images/login1.png") no-repeat center;
   width: 80px;
   height: 50px;

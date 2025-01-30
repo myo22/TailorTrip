@@ -284,13 +284,47 @@ for (let i = 1; i <= 5; i++) {
 }
 
 // ----------------------------------최종 데이터 전송 끝---------------------------------------------------------------------------------------
-
-const token = localStorage.getItem('AccessToken');
-
 const updateLoginStatus = async () => {
-  if (token) {
-    const response = await fetch('/', {
+  console.log("call server 1...");
 
-    })
+  const accessToken = localStorage.getItem('accessToken');
+
+  if (!accessToken) {
+    throw 'Cannot Find Access Token';
   }
+
+  const authHeader = { "Authorization": `Bearer ${accessToken}` };
+
+  try {
+    const res = await axios.get("http://localhost:8080/member/user", { headers: authHeader });
+    return res.data;
+  } catch (err) {
+    // err.response가 있는지 먼저 확인
+    if (err.response && err.response.data && err.response.data.msg === 'Expired Token') {
+      console.log("Refresh your Token");
+
+      try {
+        await callRefresh()
+        console.log("new tokens....savaed..")
+        return updateLoginStatus()
+      }catch (refreshErr){
+        throw refreshErr.response.data.msg
+      }
+    }
   }
+};
+
+const callRefresh = async () => {
+
+  const accessToken = localStorage.getItem("accessToken")
+  const refreshToken = localStorage.getItem("refreshToken")
+
+  const tokens = {accessToken, refreshToken}
+  const res = await axios.post("http://localhost:8080/refreshToken", tokens)
+  localStorage.setItem("accessToken", res.data.accessToken)
+  localStorage.setItem("refreshToken", res.data.refreshToken)
+}
+
+
+// 페이지가 로드될 때 로그인 상태 확인
+updateLoginStatus();

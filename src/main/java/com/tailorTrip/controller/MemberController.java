@@ -1,11 +1,17 @@
 package com.tailorTrip.controller;
 
+import com.tailorTrip.domain.Member;
 import com.tailorTrip.dto.MemberJoinDTO;
+import com.tailorTrip.dto.UserProfileDTO;
 import com.tailorTrip.security.dto.MemberSecurityDTO;
 import com.tailorTrip.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,8 +39,24 @@ public class MemberController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<String> getCurrentUser(Principal principal){
-         return ResponseEntity.ok(principal.getName());
+    public ResponseEntity<UserProfileDTO> getCurrentUser(Principal principal){
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 인증되지 않은 경우 401 응답
+        }
+
+         Authentication authentication = (Authentication) principal;
+         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+         // UserDetails가 Member 엔티티와 연결되어 있기 때문에 가능
+         Member member = (Member) userDetails;
+
+         UserProfileDTO memberDTO = new UserProfileDTO(
+                 member.getMid(),
+                 member.getEmail(),
+                 member.getRoleSet()
+         );
+
+         return ResponseEntity.ok().body(memberDTO);
     }
 
     @GetMapping("/join")

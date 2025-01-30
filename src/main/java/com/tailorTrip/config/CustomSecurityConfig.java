@@ -51,16 +51,10 @@ public class CustomSecurityConfig {
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
 
         // AuthenticationManager 설정
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-
-        authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         // Get AuthenticationManager
-        AuthenticationManager authenticationManager =
-                authenticationManagerBuilder.build();
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
         // 반드시 필요
         http.authenticationManager(authenticationManager);

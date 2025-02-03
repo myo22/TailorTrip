@@ -285,46 +285,53 @@ for (let i = 1; i <= 5; i++) {
 
 // ----------------------------------최종 데이터 전송 끝---------------------------------------------------------------------------------------
 const updateLoginStatus = async () => {
-  console.log("call server 1...");
+  console.log("서버 인증 요청 시작...");
+  let token = localStorage.getItem('accessToken');
 
-  const accessToken = localStorage.getItem('accessToken');
-
-  if (!accessToken) {
-    throw 'Cannot Find Access Token';
+  if (!token) {
+    console.log("Access Token 없음");
+    updateUI(false);
+    return;
   }
 
-  const authHeader = { "Authorization": `Bearer ${accessToken}` };
-
   try {
-    const res = await axios.get("http://localhost:8080/member/user", { headers: authHeader });
-    return res.data;
-  } catch (err) {
-    // err.response가 있는지 먼저 확인
-    if (err.response && err.response.data && err.response.data.msg === 'Expired Token') {
-      console.log("Refresh your Token");
+    // 사용자 정보 가져오기
+    const response = await fetch('/member/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
 
-      try {
-        await callRefresh()
-        console.log("new tokens....savaed..")
-        return updateLoginStatus()
-      }catch (refreshErr){
-        throw refreshErr.response.data.msg
-      }
+    if (!response.ok) {
+      throw new Error("서버 인증 실패 (401 Unauthorized)");
     }
+
+    const userData = await response.json();
+    console.log("로그인된 사용자 데이터:", userData);
+
+    // 이름 표시
+    updateUI(true, userData.email);
+
+  } catch (error) {
+    console.log("요청 실패:", error);
+    updateUI(false); // 로그인 실패 시 UI 초기화
   }
 };
 
-const callRefresh = async () => {
 
-  const accessToken = localStorage.getItem("accessToken")
-  const refreshToken = localStorage.getItem("refreshToken")
+const updateUI = (isLoggedIn, username = "") => {
+  const loginElement = document.querySelector(".login");
 
-  const tokens = {accessToken, refreshToken}
-  const res = await axios.post("http://localhost:8080/refreshToken", tokens)
-  localStorage.setItem("accessToken", res.data.accessToken)
-  localStorage.setItem("refreshToken", res.data.refreshToken)
-}
+  if (isLoggedIn) {
+    // 로그인된 상태일 때는 사용자 이름을 표시
+    loginElement.innerHTML = `<span>환영합니다, ${username}님!</span>`;
+  } else {
+    // 로그인되지 않은 상태일 때는 원래 사용하던 이미지를 표시
+    loginElement.innerHTML = `<a href="/member/login"></a>`;
+  }
+};
 
-
-// 페이지가 로드될 때 로그인 상태 확인
+// 페이지 로드 시 로그인 상태 확인
 updateLoginStatus();

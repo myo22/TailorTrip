@@ -5,6 +5,7 @@ import com.tailorTrip.dto.MemberJoinDTO;
 import com.tailorTrip.dto.UserProfileDTO;
 import com.tailorTrip.security.dto.MemberSecurityDTO;
 import com.tailorTrip.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -39,24 +40,34 @@ public class MemberController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserProfileDTO> getCurrentUser(Principal principal){
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();  // 인증되지 않은 경우 401 응답
+    public ResponseEntity<UserProfileDTO> getCurrentUser(HttpServletRequest request, Principal principal){
+        String authHeader = request.getHeader("Authorization");
+        log.info("Authorization 헤더: " + authHeader);
+        log.info("Principal 값: " + principal);
+
+        Authentication authentication = (Authentication) principal;
+        Object principalObj = authentication.getPrincipal();
+
+        if (!(principalObj instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 올바르지 않은 인증 정보
         }
 
-         Authentication authentication = (Authentication) principal;
-         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principalObj;
 
-         // UserDetails가 Member 엔티티와 연결되어 있기 때문에 가능
-         Member member = (Member) userDetails;
+        if (!(userDetails instanceof MemberSecurityDTO)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // 403 응답
+        }
 
-         UserProfileDTO memberDTO = new UserProfileDTO(
-                 member.getMid(),
-                 member.getEmail(),
-                 member.getRoleSet()
-         );
+        MemberSecurityDTO memberDTO = (MemberSecurityDTO) userDetails;
 
-         return ResponseEntity.ok().body(memberDTO);
+        UserProfileDTO userProfileDTO = UserProfileDTO.builder()
+                .email(memberDTO.getEmail())
+                .username(memberDTO.getUsername())
+                .del(memberDTO.isDel())
+                .social(memberDTO.isSocial()).build();
+
+
+         return ResponseEntity.ok().body(userProfileDTO);
     }
 
     @GetMapping("/join")

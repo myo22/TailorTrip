@@ -33,7 +33,7 @@ public class TokenCheckFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // save로 시작하는 모든 필터에 적용 즉, 토크없이 접근해서는 안 되는 기능에 제한을 건다.
-        if(!path.startsWith("/save")) {
+        if (!path.startsWith("/save") && !path.startsWith("/member/user")) {
             filterChain.doFilter(request, response);
             return;
         }

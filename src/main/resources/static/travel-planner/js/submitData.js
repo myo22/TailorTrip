@@ -326,12 +326,63 @@ const updateUI = (isLoggedIn, username = "") => {
 
   if (isLoggedIn) {
     // 로그인된 상태일 때는 사용자 이름을 표시
-    loginElement.innerHTML = `<span>환영합니다, ${username}님!</span>`;
+    loginElement.innerHTML = `
+      <span id="user-name" class="user-name">${username} ▼</span>
+      <div class="dropdown-menu hidden">
+        <button href="/member/mypage" class="dropdown-item">마이페이지</button>
+        <button id="logout-btn" class="dropdown-item">로그아웃</button>
+      </div>
+    `;
+
+    // 토글 기능 추가 (이름 클릭 시 드롭다운 메뉴 표시/숨김)
+    document.getElementById("user-name").addEventListener("click", () => {
+      document.querySelector(".dropdown-menu").classList.toggle("hidden");
+    });
+
+    // 로그아웃 기능 추가
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      updateUI(false); // 로그아웃 후 UI 초기화
+    });
   } else {
     // 로그인되지 않은 상태일 때는 원래 사용하던 이미지를 표시
     loginElement.innerHTML = `<a href="/member/login"></a>`;
   }
 };
+
+// 스타일 추가 (토글을 위한 CSS)
+const style = document.createElement("style");
+style.innerHTML = `
+  .dropdown-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    width: 120px;
+    text-align: center;
+    top: 50px;
+    right: 0;
+  }
+  .dropdown-item {
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+    color: black;
+  }
+  .dropdown-item:hover {
+    background-color: #f0f0f0;
+  }
+  .hidden {
+    display: none;
+  }
+  .user-name {
+    cursor: pointer;
+    font-weight: bold;
+  }
+`;
+document.head.appendChild(style);
 
 // 페이지 로드 시 로그인 상태 확인
 updateLoginStatus();

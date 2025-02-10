@@ -1,6 +1,9 @@
 package com.tailorTrip.security.handler;
 
 import com.google.gson.Gson;
+import com.tailorTrip.Repository.RefreshTokenRepository;
+import com.tailorTrip.domain.RefreshToken;
+import com.tailorTrip.security.dto.MemberSecurityDTO;
 import com.tailorTrip.util.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Log4j2
@@ -19,6 +23,8 @@ import java.util.Map;
 public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -30,11 +36,18 @@ public class APILoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info(authentication);
         log.info(authentication.getName()); // username
 
+        MemberSecurityDTO memberSecurityDTO = (MemberSecurityDTO) authentication.getPrincipal();
+
         Map<String, Object> claim = Map.of("mid", authentication.getName());
+
         //Access Token 유효기간 1일
         String accessToken = jwtUtil.generateToken(claim, 1);
         // Refresh Token 유효기간 30일
         String refreshToken = jwtUtil.generateToken(claim, 30);
+
+        // 기존에 있는 RefreshToken 삭제 후 저장 (중복 방지)
+        refreshTokenRepository.deleteByMid(memberSecurityDTO.getEmail()); // 기존 토큰 제거
+        refreshTokenRepository.save(new RefreshToken(null, memberSecurityDTO.getEmail(), refreshToken, LocalDateTime.now().plusDays(30)));
 
         Gson gson = new Gson();
 

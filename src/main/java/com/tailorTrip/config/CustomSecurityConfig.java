@@ -1,5 +1,6 @@
 package com.tailorTrip.config;
 
+import com.tailorTrip.Repository.RefreshTokenRepository;
 import com.tailorTrip.security.CustomUserDetailsService;
 import com.tailorTrip.security.filter.APILoginFilter;
 import com.tailorTrip.security.filter.RefreshTokenFilter;
@@ -40,6 +41,7 @@ public class CustomSecurityConfig {
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
     private final JWTUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -64,7 +66,7 @@ public class CustomSecurityConfig {
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
         // APILoginSuccessHandler
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil, refreshTokenRepository);
         // SuccessHandler 세팅
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
@@ -78,7 +80,7 @@ public class CustomSecurityConfig {
         );
 
         // refreshToken 호출처리
-        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil),
+        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil, refreshTokenRepository),
                 TokenCheckFilter.class);
 
         // 로그인 화면에서 로그인을 진행한다는 설정, 커스텀 로그인 페이지

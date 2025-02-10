@@ -1,5 +1,6 @@
 package com.tailorTrip.controller;
 
+import com.tailorTrip.Repository.RefreshTokenRepository;
 import com.tailorTrip.domain.Member;
 import com.tailorTrip.dto.MemberJoinDTO;
 import com.tailorTrip.dto.UserProfileDTO;
@@ -16,10 +17,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/member")
@@ -28,6 +31,7 @@ import java.security.Principal;
 public class MemberController {
 
     private final MemberService memberService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @GetMapping("/login")
     public void loginGET(String error, String logout){
@@ -68,6 +72,15 @@ public class MemberController {
 
 
          return ResponseEntity.ok().body(userProfileDTO);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> logout(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+
+        refreshTokenRepository.deleteByRefreshToken(refreshToken);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/join")

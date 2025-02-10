@@ -340,10 +340,15 @@ const updateUI = (isLoggedIn, username = "") => {
     });
 
     // 로그아웃 기능 추가
-    document.getElementById("logout-btn").addEventListener("click", () => {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      updateUI(false); // 로그아웃 후 UI 초기화
+    document.getElementById("logout-btn").addEventListener("click", function() {
+      const refreshToken = localStorage.getItem("refreshToken");
+      axios.post("http://localhost:8080/logout", { refreshToken })
+          .then(() => {
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              updateUI(false); // 로그아웃 후 UI 초기화
+          })
+          .catch(err => console.error("로그아웃 실패: ", err));
     });
   } else {
     // 로그인되지 않은 상태일 때는 원래 사용하던 이미지를 표시

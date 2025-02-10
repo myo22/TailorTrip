@@ -9,4 +9,5 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     Optional<RefreshToken> findByMid(String mid);
     void deleteByMid(String mid);
+    void deleteByRefreshToken(String refreshToken);
 }

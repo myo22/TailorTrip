@@ -1,6 +1,8 @@
 package com.tailorTrip.security.filter;
 
 import com.google.gson.Gson;
+import com.tailorTrip.Repository.RefreshTokenRepository;
+import com.tailorTrip.domain.RefreshToken;
 import com.tailorTrip.security.exception.RefreshTokenException;
 import com.tailorTrip.util.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,8 +21,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -29,6 +33,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
     private final String refreshPath;
 
     private final JWTUtil jwtUtil;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -46,7 +52,6 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
         //전송된 JSON에서 accessToken과 refreshToken을 얻어온다.
         Map<String, String> tokens = parseRequestJSON(request);
-
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
 
@@ -94,6 +99,9 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
                 refreshTokenValue = jwtUtil.generateToken(Map.of("mid", mid), 30);
             }
 
+            // DB에서도 Refresh Token 업데이트
+            refreshTokenRepository.save(new RefreshToken(null, mid, refreshTokenValue, LocalDateTime.now().plusDays(30)));
+
             log.info("Refresh Token result............................");
             log.info("accessToken: " + accessTokenValue);
             log.info("refreshToken: " + refreshTokenValue);
@@ -135,6 +143,16 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
         try {
             Map<String, Object> values = jwtUtil.validateToken(refreshToken);
+
+            String mid = (String) values.get("mid");
+
+            Optional<RefreshToken> storedTokenOpt = refreshTokenRepository.findByMid(mid);
+
+            if (storedTokenOpt.isEmpty() || !storedTokenOpt.get().getToken().equals(refreshToken)) {
+                log.warn("Invalid Refresh Token: Token does not match DB record");
+                throw new RefreshTokenException(RefreshTokenException.ErrorCase.NO_REFRESH);
+            }
+
             return values;
         }catch(ExpiredJwtException expiredJwtException) {
             throw new RefreshTokenException(RefreshTokenException.ErrorCase.OLD_REFRESH);

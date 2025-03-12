@@ -100,11 +100,11 @@ public class MemberController {
         } catch (MemberService.MidExistException e) {
 
             redirectAttributes.addFlashAttribute("error", "mid");
-            return "redirect:/member/join";
+            return "redirect:/auth/register/index.html";
         }
 
         redirectAttributes.addFlashAttribute("result", "success");
 
-        return "redirect:/member/login"; // 회원가입 후 로그인
+        return "redirect:/auth/login/index.html"; // 회원가입 후 로그인
     }
 }

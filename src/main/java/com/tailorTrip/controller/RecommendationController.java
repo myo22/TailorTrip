@@ -36,7 +36,7 @@ public class RecommendationController {
 
     @GetMapping("/")
     public String redirectToHome() {
-        return "redirect:/home/home.html"; // static 폴더 아래의 home.html로 리디렉션
+        return "redirect:/home/index.html"; // static 폴더 아래의 home.html로 리디렉션
     }
 
 

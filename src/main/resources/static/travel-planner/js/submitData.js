@@ -260,7 +260,7 @@ function submitAllUserPreferences() {
       .then(itinerary => {
         // 여기서 itinerary 데이터를 사용하여 페이지를 업데이트하거나 리디렉션
         localStorage.setItem('itinerary', JSON.stringify(itinerary)); // 일정 데이터를 Local Storage에 저장
-        window.location.href = '/result/result.html'; // 페이지 리디렉션
+        window.location.href = '../../result/index.html'; // 페이지 리디렉션
       })
       .catch(error => {
         console.error('Error:', error);
@@ -352,7 +352,7 @@ const updateUI = (isLoggedIn, username = "") => {
     });
   } else {
     // 로그인되지 않은 상태일 때는 원래 사용하던 이미지를 표시
-    loginElement.innerHTML = `<a href="/member/login"></a>`;
+    loginElement.innerHTML = `<a href="/auth/login/index.html"></a>`;
   }
 };
 

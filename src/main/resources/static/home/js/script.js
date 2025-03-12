@@ -215,9 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
 //
 // // 모든 .subpage 요소에 대해 href 값 동적으로 설정
 // document.querySelectorAll('.subpage').forEach(el => {
-//   el.href = `${baseUrl}/travel-planner/travel-planner.html`;
+//   el.href = `${baseUrl}/travel-planner/index.html`;
 // });
 
 document.querySelectorAll('.subpage').forEach(el => {
-  el.href = '/travel-planner/travel-planner.html';
+  el.href = '/travel-planner/index.html';
 });

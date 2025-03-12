@@ -50,8 +50,8 @@ spring:
             client-name: Kakao
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            client-id: f0758a30cb8b661db1c0fc6cf81da576
-            client-secret: 7WDgVcwpEEWapJalUp4PhiNwhji6Deqr
+            client-id:
+            client-secret: 
             client-authentication-method: client_secret_post  # new version orthography
             scope:
               - profile_nickname
@@ -60,8 +60,8 @@ spring:
             client-name: Google
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/google
-            client-id: 229264352456-nq7l48q0mkm2urqa0gvhvpb5teph96d1.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 
+            client-secret: 
             client-authentication-method: client_secret_post  # new version orthography
             scope:
               - profile
@@ -70,8 +70,8 @@ spring:
             client-name: Naver
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8080/login/oauth2/code/naver
-            client-id: Iudl2hoJisHTo2dC_aBE
-            client-secret: 5AZ4CsVU4K
+            client-id:
+            client-secret: 
             client-authentication-method: client_secret_post  # new version orthography
             scope:
               - name
@@ -92,18 +92,18 @@ batch:
 
 google:
   api:
-    key: AIzaSyD-jQLahI4UP9r5Zttz6yG7XJdhljzPjFw
+    key: 
 
 weather:
   api:
-    key: 58ac08cc8af3bbe943855ca0e973fff9
+    key: 
 
 model:
   path: ${user.dir}/models/model.zip
 
 kor:
   api:
-    key: FoR6012UjGbYqAvG0XkZn3oM1uPihEZw5xSPmo9GmJfyBN2teJH5o0eKlkbFoK3sEs%2FAwLmbH1dgCCDsEsQ%2BEA%3D%3D
+    key: 
 
 org:
   zerock:
@@ -111,5 +111,5 @@ org:
       path: C:\\upload
     #   JWT에서 사용할 비밀키
     jwt:
-      secret: hello1234567890hello1234567890hello1234567890
+      secret:
 

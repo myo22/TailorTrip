@@ -78,7 +78,7 @@ public class MemberController {
     public ResponseEntity<Void> logout(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
 
-        refreshTokenRepository.deleteByRefreshToken(refreshToken);
+        refreshTokenRepository.deleteByToken(refreshToken);
 
         return ResponseEntity.ok().build();
     }

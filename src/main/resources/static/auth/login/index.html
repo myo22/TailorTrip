@@ -7,7 +7,8 @@
   <title>로그인페이지</title>
   <link rel="stylesheet" href="./css/reset.css">
   <link rel="stylesheet" href="./css/style.css">
-  <script src="./js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="./js/script.js" defer></script>
 </head>
 
 <body>
@@ -29,7 +30,7 @@
           <p class="text">간단한 여행 추천 플래너, 여행어때</p>
           <div class="input-group group1">
             <label for="email">이메일</label>
-            <input type="email" id="email" placeholder="이메일 입력" required>
+            <input type="text" id="email" placeholder="이메일 입력" required>
           </div>
           <div class="input-group group2">
             <label for="password">비밀번호</label>
@@ -40,7 +41,7 @@
             <button type="submit">로그인</button>
             <div class="bottom-con1">
               <p>아직 회원이 아니세요?</p>
-              <a href="#" class="join">이메일회원가입</a>
+              <a href="auth/register/index.html" class="join">이메일회원가입</a>
             </div>
           </div>
           <div class="lines">
@@ -49,9 +50,15 @@
             <div class="line2"></div>
           </div>
           <div class="buttons">
-            <button><img src="./img/google_btn.67c87010.png" alt=""></button>
-            <button><img src="./img/kakaolink_btn.d6c9c8ae.png" alt=""></button>
-            <button><img src="./img/naver_btn.f60c41fb.png" alt=""></button>
+            <button onclick="location.href='/oauth2/authorization/google'">
+              <img src="./img/google_btn.67c87010.png" alt="Google 로그인">
+            </button>
+            <button onclick="location.href='/oauth2/authorization/kakao'">
+              <img src="./img/kakaolink_btn.d6c9c8ae.png" alt="카카오 로그인">
+            </button>
+            <button onclick="location.href='/oauth2/authorization/naver'">
+              <img src="./img/naver_btn.f60c41fb.png" alt="네이버 로그인">
+            </button>
           </div>
 
 

@@ -1,6 +1,6 @@
 .headtxt {
   font-family: "Roboto", sans-serif;
-  font-size: 3.75rem;
+  font-size: 3rem;
   font-weight: 700;
   color: #fff;
 }
@@ -12,10 +12,18 @@
 
 /* ----------------font */
 /* ---------배너------------- */
+.banner .container {
+  height: 100vh;
+}
+
+.banner .swiper {
+  height: 100%;
+}
+
 .banner .banner-background1 {
   background-image: url(../images/banner1.jpg);
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -23,11 +31,10 @@
   flex-direction: column;
 }
 
-
 .banner .banner-background2 {
   background-image: url(../images/banner2.png);
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -38,12 +45,13 @@
 .banner .banner-background3 {
   background-image: url(../images/banner3.png);
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-size: cover;
   display: flex;
   justify-content: center;
-  padding: 0 120px;
   flex-direction: column;
+  padding: 0 120px;
+
 }
 
 .banner h1 {
@@ -51,7 +59,7 @@
 }
 
 .banner p {
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: white;
 }
 
@@ -60,8 +68,14 @@
   background-image: url(../images/sec-1-background.gif);
 }
 
+.section1 .container {
+  width: 1600px;
+  padding: 60px 100px;
+  margin: 0 auto;
+}
+
 .section1 .land:hover {
-  fill: aqua;
+  fill: #4FC3F7;
 }
 
 .section1 path {
@@ -94,9 +108,7 @@
   z-index: 9999;
 }
 
-.section1 .container {
-  padding: 80px 120px;
-}
+
 
 .section1 .opa {
   display: none;
@@ -104,14 +116,14 @@
 
 .section1 .sec-1-p {
   margin: 24px 0;
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 600;
   color: white;
 }
 
 .section1 .headtxt {
   font-family: "Roboto", sans-serif;
-  font-size: 3.75rem;
+  font-size: 2.75rem;
   font-weight: 700;
   color: white;
   margin-top: 24px;
@@ -126,20 +138,22 @@
 .section1 .this-place-h .opa {
   margin-left: 12px;
 }
-.banner .subpage{
-  width: 250px;
+
+.banner .subpage {
+  width: 230px;
   height: 80px;
   border: 2px solid white;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 15px;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   background-color: white;
   margin-top: 24px;
 
 }
+
 .section1 .subpage {
   width: 250px;
   height: 80px;
@@ -148,7 +162,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 15px;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   background-color: white;
 }
@@ -181,7 +195,9 @@
 
 /* section2 */
 .section2 .container {
-  padding: 100px 120px;
+  padding: 100px 60px;
+  width: 1600px;
+  margin: 0 auto;
 }
 
 .section2 .headtxt {
@@ -196,7 +212,7 @@
 
 .section2 .f_b-box {
   width: calc(33.333% - 36px);
-  height: 550px;
+  height: 450px;
   margin-right: 36px;
   border-radius: 15px;
   position: relative;
@@ -213,21 +229,21 @@
 .section2 .txt-box {
   margin-top: 40px;
   margin-left: 24px;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: white;
   font-weight: 700;
   font-family: "Roboto", sans-serif;
 }
 
 .section2 .b-box h3 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-family: "Roboto", sans-serif;
   color: #4FC3F7;
   margin-bottom: 32px;
 }
 
 .section2 .b-box p {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   line-height: 1.5;
 }
 
@@ -256,7 +272,6 @@
 
 .out-box div {
   transition-duration: 0.3s;
-
   border-radius: 15px;
   overflow: hidden;
   /* .out-box 객체에게 원형으로 변경되는 속성을 걸어줬지만 안쪽에 있는 div 박스들은 원형으로 변경되지 않아 뒤집히는 느낌이 어색함 -> 안쪽에 있는 div 객체도 원형으로 만들어줌 */
@@ -265,7 +280,9 @@
 
 /* section3 */
 .section3 .container {
-  padding: 100px 120px;
+  padding: 100px 0;
+  width: 1400px;
+  margin: 0 auto;
 }
 
 .section3 .headtxt {
@@ -285,7 +302,7 @@
 
 .section3 .content {
   width: calc(33.333% - 50px);
-  height: 550px;
+  height: 450px;
   margin-right: 50px;
   margin-bottom: 100px;
   cursor: pointer;
@@ -296,13 +313,13 @@
 }
 
 .section3 .sec-3-kr {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
 }
 
 .section3 .sec-3-en {
   font-family: "Oxanium", sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
@@ -370,6 +387,8 @@
 /* section4 */
 .section4 .container {
   padding: 100px 120px;
+  width: 1600px;
+  margin: 0 auto;
 }
 
 .section4 .headtxt {
@@ -386,16 +405,15 @@
 .section4 .box {
   position: relative;
   width: 10%;
-  height: 650px;
+  height: 550px;
   margin-right: 15px;
-
   cursor: pointer;
   transition: 0.5s;
 
 }
 
 .section4 .f-txt {
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: white;
   font-weight: 700;
   position: absolute;
@@ -429,7 +447,7 @@
 
 .section4 .sec-4-head {
   font-weight: 700;
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: white;
   font-family: "Roboto", sans-serif;
   margin-bottom: 8px;
@@ -448,7 +466,7 @@
 }
 
 .section4 .sec-4-sub-txt {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: white;
   font-weight: 500;
   margin-top: 8px;
@@ -467,6 +485,7 @@
   flex-direction: column;
 
 }
+
 .top-btn {
   width: 50px;
   height: 50px;
@@ -478,6 +497,7 @@
   cursor: pointer;
   opacity: 0;
   transition: 0.3s;
+  z-index: 9999;
 }
 
 .top-btn.on {
@@ -503,14 +523,24 @@
   display: flex;
   margin: 16px 0;
 }
-.top-box>p:nth-child(2){
+
+.top-box>p:nth-child(2) {
   margin-right: 4px;
 }
-.middle-box>p:nth-child(2){
+
+.middle-box>p:nth-child(2) {
   margin-right: 4px;
 }
+
 /* -----------------반응형--------------- */
 @media (max-width: 1600px) {
+
+  .section1 .container,
+  .section2 .container,
+  .section3 .container,
+  .section4 .container {
+    width: 100%;
+  }
 
   .banner .banner-background1,
   .banner .banner-background2,
@@ -528,7 +558,7 @@
 }
 
 @media (max-width: 1420px) {
-  .section1 .this-place-h{
+  .section1 .this-place-h {
     display: none;
   }
 
@@ -596,6 +626,7 @@
   }
 
 
+
 }
 
 @media (max-width: 760px) {
@@ -656,6 +687,7 @@
   .footer .wrap-box {
     align-items: baseline;
   }
+
   .section3 .modal {
     display: none;
     /* 기본적으로 숨김 */
@@ -763,6 +795,10 @@
 }
 
 @media (max-width: 550px) {
+  .banner .container {
+    height: 50vh;
+  }
+  .banner 
   .headtxt {
     font-size: 1.2rem;
   }
@@ -771,7 +807,8 @@
     font-size: 0.8125rem;
 
   }
-  .footer .middle-box p:nth-child(3){
+
+  .footer .middle-box p:nth-child(3) {
     display: none;
   }
 
@@ -838,14 +875,29 @@
     font-size: 1.2rem;
   }
 
+  .top-btn {
+    width: 30px;
+    height: 30px;
+  }
+
 
 }
+
 @media (max-width: 376px) {
-  .section1 .img-box{
+  .section1 .img-box {
     margin-right: 100px;
   }
-  .section2 .out-box{
+
+  .section2 .out-box {
     height: 350px;
+
+  }
+
+  .banner .subpage {
+    width: 120px;
+    height: 50px;
+    font-size: 1rem;
+    font-weight: 500;
 
   }
 }

@@ -220,7 +220,7 @@ span {
 .section3 .section3-box2 {
   box-shadow: 4px 4px 10px 0 rgba(0, 0, 0, 0.3);
   width: 600px;
-  height: 600px;
+  height: 650px;
   display: flex;
 
   flex-direction: column;

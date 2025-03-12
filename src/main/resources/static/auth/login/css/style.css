@@ -1,0 +1,132 @@
+body {
+  font-family: 'Pretendard', sans-serif;
+  color: #222;
+  background-color: #FAFAFA;
+}
+
+.login .container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login .container .logo {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.login .container .text {
+  text-align: center;
+  margin-bottom: 68px;
+}
+
+.login .container #loginForm {
+  width: 660px;
+  height: 826px;
+  background: #fff;
+  border-radius: 15px;
+  border: 1px solid #ddd;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.login .container .group1 {
+  margin-bottom: 28px;
+}
+
+.login .container .group2 {
+  margin-bottom: 12px;
+}
+
+.login .container .group2 .pass_for {
+  color: #B2B1BF;
+  margin-top: 12px;
+  margin-bottom: 54px;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+  width: 90%;
+  margin: 0 auto;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  color: #B2B1BF;
+}
+
+input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #B2B1BF;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.bottom-box {
+  width: 100%;
+  text-align: center;
+}
+
+.bottom-box .bottom-con1 {
+  justify-content: center;
+  display: flex;
+  margin-top: 12px;
+  margin-bottom: 36px;
+}
+
+.bottom-box .bottom-con1>a {
+  margin-left: 12px;
+  color: #81D4FA;
+}
+
+.bottom-box button {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0.8rem;
+  background-color: #81D4FA;
+  color: #fff;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #0288D1;
+}
+
+.login .lines {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  color: #B2B1BF;
+}
+
+.login .lines .line1 {
+  width: 30%;
+  border-top: 1px solid #B2B1BF;
+  position: absolute;
+  left: 0;
+  top: 50%;
+
+}
+
+.login .lines .line2 {
+  width: 30%;
+  border-top: 1px solid #B2B1BF;
+  position: absolute;
+  right: 0;
+  top: 50%;
+}
+
+.buttons {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 65px;
+}
+
+.buttons button {
+  width: 70px;
+  height: 70px;
+}

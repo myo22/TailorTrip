@@ -1,0 +1,153 @@
+body {
+  font-family: 'Pretendard', sans-serif;
+  color: #222;
+  background-color: #FAFAFA;
+}
+
+.login .container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.login .container .logo {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+
+
+.login .container .text {
+  margin-bottom: 68px;
+}
+
+.login .container #loginForm {
+  width: 660px;
+  height: 724px;
+  background: #fff;
+  border-radius: 15px;
+  border: 1px solid #ddd;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 65px 28px;
+}
+
+.login .container .group1 {
+  margin-bottom: 28px;
+}
+
+.login .container .group2 {
+  margin-bottom: 48px;
+}
+
+.login .container .group3 {
+  margin-bottom: 16px;
+
+}
+
+.login .container .group2 .pass_for {
+  color: #B2B1BF;
+  margin-top: 12px;
+  margin-bottom: 54px;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  color: #B2B1BF;
+}
+
+.box {
+  margin-right: -16px;
+  width: 100%;
+
+}
+
+.box {
+  margin-right: -16px;
+  width: 100%;
+
+}
+
+input {
+  width: calc(80% - 16px);
+  padding: 0.8rem;
+  border: 1px solid #B2B1BF;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+#password {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #B2B1BF;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.login .emailbutton {
+  width: 20%;
+  padding: 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #B2B1BF;
+  background-color: #81D4FA;
+}
+
+.login .namebutton {
+  width: 20%;
+  padding: 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #B2B1BF;
+  background-color: #81D4FA;
+}
+
+.opa {
+  margin-top: 16px;
+  display: none;
+}
+
+.opa.active {
+  display: block;
+}
+
+.bottom-box {
+  text-align: center;
+}
+
+.bottom-box .bottom-con1 {
+  justify-content: center;
+  display: flex;
+  margin-top: 12px;
+  margin-bottom: 36px;
+}
+
+.bottom-box button {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.8rem;
+  background-color: #81D4FA;
+  color: #fff;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #0288D1;
+}
+
+.gologin {
+  text-align: center;
+  margin-top: 36px;
+}

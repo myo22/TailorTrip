@@ -84,7 +84,7 @@ public class CustomSecurityConfig {
                 TokenCheckFilter.class);
 
         // 로그인 화면에서 로그인을 진행한다는 설정, 커스텀 로그인 페이지
-        http.formLogin(form -> form.loginPage("/member/login"));
+        http.formLogin(form -> form.loginPage("/auth/login/index.html"));
 
         // CSRF 토큰 비활성화
         http.csrf(csrf -> csrf.disable());
@@ -92,9 +92,9 @@ public class CustomSecurityConfig {
         http.exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(accessDeniedHanler())); // 403
 
         http.oauth2Login(oauth2Login ->
-                oauth2Login.loginPage("/member/login")
-                        .defaultSuccessUrl("/travel-planner/travel-planner.html") // 로그인 성공 후 리디렉션 URL
-                        .failureUrl("/member/login?error=true") // 로그인 실패 시
+                oauth2Login.loginPage("/auth/login/index.html")
+                        .defaultSuccessUrl("/travel-planner/index.html") // 로그인 성공 후 리디렉션 URL
+                        .failureUrl("/auth/login/index.html?error=true") // 로그인 실패 시
                         .successHandler(authenticationSuccessHandler()));
 
 

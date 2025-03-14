@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
 
-
+  let error = /*[[${error}]]*/ null;
+  if (error && error === 'mid') {
+    alert("동일한 MID를 가진 계정이 존재합니다.");
+  }
 
 });

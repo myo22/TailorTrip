@@ -264,7 +264,7 @@ function submitAllUserPreferences() {
       })
       .catch(error => {
         console.error('Error:', error);
-        alert('모든 질문을 선택하지 않았습니다.');
+        
       });
 }
 

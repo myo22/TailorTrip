@@ -249,23 +249,23 @@ function submitAllUserPreferences() {
     },
     body: JSON.stringify(userPreferences), // userPreferences 객체를 JSON 형식으로 전송
   })
-      .then(response => {
-        console.log('Response status:', response.status); // 상태 코드 출력
-        console.log('Response body:', response); // 응답 객체 출력
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(itinerary => {
-        // 여기서 itinerary 데이터를 사용하여 페이지를 업데이트하거나 리디렉션
-        localStorage.setItem('itinerary', JSON.stringify(itinerary)); // 일정 데이터를 Local Storage에 저장
-        window.location.href = '../../result/index.html'; // 페이지 리디렉션
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        
-      });
+    .then(response => {
+      console.log('Response status:', response.status); // 상태 코드 출력
+      console.log('Response body:', response); // 응답 객체 출력
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(itinerary => {
+      // 여기서 itinerary 데이터를 사용하여 페이지를 업데이트하거나 리디렉션
+      localStorage.setItem('itinerary', JSON.stringify(itinerary)); // 일정 데이터를 Local Storage에 저장
+      window.location.href = '../../result/index.html'; // 페이지 리디렉션
+    })
+    .catch(error => {
+      console.error('Error:', error);
+
+    });
 }
 
 // 섹션으로 부드럽게 스크롤하는 함수
@@ -278,7 +278,7 @@ function scrollToNextSection(sectionId) {
 
 // previous 버튼 클릭 시 각 섹션으로 이동하는 함수
 for (let i = 1; i <= 5; i++) {
-  document.querySelector(`.previous${i}`).addEventListener('click', function() {
+  document.querySelector(`.previous${i}`).addEventListener('click', function () {
     scrollToNextSection(`section${i + 1}`); // 예: previous1 -> section2, previous2 -> section3
   });
 }
@@ -322,69 +322,68 @@ const updateLoginStatus = async () => {
 
 
 const updateUI = (isLoggedIn, username = "") => {
-  const loginElement = document.querySelector(".login");
+  const loginElement = document.querySelector(".main_menu");
 
   if (isLoggedIn) {
-    // 로그인된 상태일 때는 사용자 이름을 표시
+    // 로그인 상태일 때
     loginElement.innerHTML = `
-      <span id="user-name" class="user-name">${username} ▼</span>
-      <div class="dropdown-menu hidden">
-        <button href="/member/mypage" class="dropdown-item">마이페이지</button>
-        <button id="logout-btn" class="dropdown-item">로그아웃</button>
-      </div>
+      
+     
+        <li id="user-name" class="user-name">${username} ▼</li>
+        <li><button id="logout-btn" class="dropdown-item">로그아웃</button></li>
+        <li><a href="/member/mypage" class="dropdown-item">마이페이지</a></li>
+      
+    
     `;
 
-    // 토글 기능 추가 (이름 클릭 시 드롭다운 메뉴 표시/숨김)
+    // 드롭다운 메뉴 토글
     document.getElementById("user-name").addEventListener("click", () => {
       document.querySelector(".dropdown-menu").classList.toggle("hidden");
     });
 
     // 로그아웃 기능 추가
-    document.getElementById("logout-btn").addEventListener("click", function() {
+    document.getElementById("logout-btn").addEventListener("click", function () {
       const refreshToken = localStorage.getItem("refreshToken");
       axios.post("http://localhost:8080/logout", { refreshToken })
-          .then(() => {
-              localStorage.removeItem("accessToken");
-              localStorage.removeItem("refreshToken");
-              updateUI(false); // 로그아웃 후 UI 초기화
-          })
-          .catch(err => console.error("로그아웃 실패: ", err));
+        .then(() => {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          updateUI(false);
+        })
+        .catch(err => console.error("로그아웃 실패: ", err));
     });
+
   } else {
-    // 로그인되지 않은 상태일 때는 원래 사용하던 이미지를 표시
-    loginElement.innerHTML = `<a href="/auth/login/index.html"></a>`;
+    // 로그아웃 상태일 때 원래 UI 유지
+    loginElement.innerHTML = `
+      <li class="en login"><a href="/auth/login/index.html" class="menu">로그인</a></li>
+      <li class="en"><a href="/auth/signup/index.html" class="menu">회원가입</a></li>
+      <li class="en"><a href="/member/mypage" class="menu">마이페이지</a></li>
+    `;
   }
 };
+
 
 // 스타일 추가 (토글을 위한 CSS)
 const style = document.createElement("style");
 style.innerHTML = `
-  .dropdown-menu {
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    width: 120px;
-    text-align: center;
-    top: 50px;
-    right: 0;
+  .main_menu {
+    display: flex;
   }
-  .dropdown-item {
-    display: block;
-    padding: 5px;
-    text-decoration: none;
-    color: black;
+  .main_menu li{
+    font-weight: 500;
+    color: #222;
+    margin-right: 8px;
   }
-  .dropdown-item:hover {
-    background-color: #f0f0f0;
+  .main_menu li:hover {
+    background-color: #888;
   }
   .hidden {
     display: none;
   }
   .user-name {
     cursor: pointer;
-    font-weight: bold;
+    
   }
 `;
 document.head.appendChild(style);

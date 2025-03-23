@@ -330,7 +330,7 @@ const updateUI = (isLoggedIn, username = "") => {
       
      
         <li id="user-name" class="user-name">${username} ▼</li>
-        <li><button id="logout-btn" class="dropdown-item">로그아웃</button></li>
+        <li id="logout-btn" class="dropdown-item">로그아웃</li>
         <li><a href="/member/mypage" class="dropdown-item">마이페이지</a></li>
       
     

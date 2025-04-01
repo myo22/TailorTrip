@@ -357,7 +357,7 @@ const updateUI = (isLoggedIn, username = "") => {
     // 로그아웃 상태일 때 원래 UI 유지
     loginElement.innerHTML = `
       <li class="en login"><a href="/auth/login/index.html" class="menu">로그인</a></li>
-      <li class="en"><a href="/auth/signup/index.html" class="menu">회원가입</a></li>
+      <li class="en"><a href="/auth/register/index.html" class="menu">회원가입</a></li>
       <li class="en"><a href="/member/mypage" class="menu">마이페이지</a></li>
     `;
   }

@@ -331,7 +331,7 @@ const updateUI = (isLoggedIn, username = "") => {
      
         <li id="user-name" class="user-name">${username} ▼</li>
         <li id="logout-btn" class="dropdown-item">로그아웃</li>
-        <li><a href="/member/mypage" class="dropdown-item">마이페이지</a></li>
+<!--        <li><a href="/member/mypage" class="dropdown-item">마이페이지</a></li>-->
       
     
     `;
@@ -358,7 +358,7 @@ const updateUI = (isLoggedIn, username = "") => {
     loginElement.innerHTML = `
       <li class="en login"><a href="/auth/login/index.html" class="menu">로그인</a></li>
       <li class="en"><a href="/auth/register/index.html" class="menu">회원가입</a></li>
-      <li class="en"><a href="/member/mypage" class="menu">마이페이지</a></li>
+<!--      <li class="en"><a href="/member/mypage" class="menu">마이페이지</a></li>-->
     `;
   }
 };
